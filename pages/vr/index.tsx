@@ -56,15 +56,13 @@ const VRPage: NextPage = () => {
       <Entity
         handTrackingControls={{
           hand: "left",
-          modelColor: "#ff0000",
-          modelStyle: "mesh",
+          modelColor: "#fbceb1",
         }}
       />
       <Entity
         handTrackingControls={{
           hand: "right",
-          modelColor: "#ff0000",
-          modelStyle: "mesh",
+          modelColor: "#fbceb1",
         }}
       />
     </Scene>
