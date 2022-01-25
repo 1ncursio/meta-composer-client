@@ -7,7 +7,7 @@ import fetcher from "../lib/api/fetcher";
 import styles from "../styles/Home.module.css";
 
 const Home: NextPage = () => {
-  const { data: userData } = useSWR("/api/user", fetcher);
+  const { data: userData } = useSWR("/auth", fetcher);
 
   useEffect(() => {
     if (userData) {
