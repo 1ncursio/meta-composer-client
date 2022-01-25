@@ -14,18 +14,16 @@ const Header = () => {
           </Link>
         </div>
         <div className="flex items-center">
-          <a
-            href="/vr"
-            className="px-4 py-2 text-gray-900 border-b-2 border-gray-900 hover:border-gray-700 hover:text-gray-700"
-          >
-            VR
-          </a>
-          <a
-            href="/chat"
-            className="px-4 py-2 text-gray-900 border-b-2 border-gray-900 hover:border-gray-700 hover:text-gray-700"
-          >
-            Chat
-          </a>
+          <Link href="/vr">
+            <a className="px-4 py-2 text-gray-900 border-b-2 border-gray-900 hover:border-gray-700 hover:text-gray-700">
+              VR
+            </a>
+          </Link>
+          <Link href="/chat">
+            <a className="px-4 py-2 text-gray-900 border-b-2 border-gray-900 hover:border-gray-700 hover:text-gray-700">
+              Chat
+            </a>
+          </Link>
           <Avatar />
         </div>
       </div>

@@ -1,9 +1,6 @@
-import { ServerResponse } from "../../typings/ServerResponse";
 import client from "./client";
 
 const fetcher = <Data>(url: string) =>
-  client
-    .request<Data>({ url, transformResponse: (r: ServerResponse) => r.data })
-    .then((res) => res.data);
+  client.request<{ payload: Data }>({ url }).then((res) => res.data.payload);
 
 export default fetcher;
