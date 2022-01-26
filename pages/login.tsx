@@ -13,7 +13,7 @@ export default function Login() {
   }
 
   function login() {
-    client
+    axios
       .post("http://localhost:8000/api/login", {
         username: id,
         password: pw,
