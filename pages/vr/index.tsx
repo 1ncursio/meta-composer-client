@@ -1,15 +1,7 @@
-import React, { useEffect, useState } from "react";
-import {
-  Scene,
-  Box,
-  Sphere,
-  Cylinder,
-  Plane,
-  Sky,
-  Text,
-  Entity,
-} from "@belivvr/aframe-react";
+import { Entity, Plane, Scene, Sky, Text } from "@belivvr/aframe-react";
 import { NextPage } from "next";
+import React, { useEffect, useState } from "react";
+import Piano from "../../components/AFrame/Piano";
 
 const VRPage: NextPage = () => {
   const [rendered, setRendered] = useState<boolean>(false);
@@ -27,30 +19,41 @@ const VRPage: NextPage = () => {
   }
 
   return (
-    <Scene>
-      <Box
-        position={{ x: -1, y: 0.5, z: -3 }}
-        rotation={{ x: 0, y: 45, z: 0 }}
-        color="#4CC3D9"
-      />
-      <Sphere
-        position={{ x: 0, y: 1.25, z: -5 }}
-        radius={1.25}
-        color="#EF2D5E"
-      />
-      <Cylinder
-        position={{ x: 1, y: 0.75, z: -3 }}
-        radius={0.5}
-        height={1.5}
-        color="#FFC65D"
+    <Scene
+    // inspector={{
+    //   url: new URL(
+    //     "https://cdn.jsdelivr.net/gh/aframevr/aframe-inspector@master/dist/aframe-inspector.min.js"
+    //     // "https://aframe.io/aframe-inspector/dist/aframe-inspector.min.js",
+    //   ),
+    // }}
+    >
+      {/* <Camera
+        lookControls={{
+          enabled: true,
+        }}
+      >
+        <Cursor fuse={false} fuseTimeout={500} />
+      </Camera> */}
+      <Piano
+        position={{
+          x: 0,
+          y: 0.75,
+          z: -0.4,
+        }}
       />
       <Plane
-        position={{ x: 0, y: 0, z: -4 }}
+        position={{ x: 0, y: 0, z: 0 }}
         rotation={{ x: -90, y: 0, z: 0 }}
-        width={4}
-        height={4}
+        width={1}
+        height={1}
         color="#7BC8A4"
       />
+      {/* <Entity
+        cursor={{
+          rayOrigin: "mouse",
+          downEvents: ["click"],
+        }}
+      /> */}
       <Text value="Hello World" position={{ x: 0, y: 1.5, z: -4 }} />
       <Sky color="#ECECEC" />
       <Entity
@@ -58,12 +61,24 @@ const VRPage: NextPage = () => {
           hand: "left",
           modelColor: "#fbceb1",
         }}
+        // laserControls={{
+        //   hand: "left",
+        // }}
+        // raycaster={{
+        //   far: 100,
+        // }}
       />
       <Entity
         handTrackingControls={{
           hand: "right",
           modelColor: "#fbceb1",
         }}
+        // laserControls={{
+        //   hand: "right",
+        // }}
+        // raycaster={{
+        //   far: 100,
+        // }}
       />
     </Scene>
   );
