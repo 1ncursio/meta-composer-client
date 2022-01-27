@@ -5,10 +5,11 @@
     "dev": "next dev -p 3000",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "adb:reverse": "adb reverse tcp:3000 tcp:3000"
   },
   "dependencies": {
-    "@belivvr/aframe-react": "^0.2.4",
+    "@belivvr/aframe-react": "^0.2.5",
     "aframe": "github:aframevr/aframe#02e3ae714dd29fa6e60a02d720ad9d8c0a8d31d8",
     "async-mutex": "^0.3.2",
     "axios": "^0.25.0",
