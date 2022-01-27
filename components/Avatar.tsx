@@ -7,12 +7,6 @@ import IUser from "../typings/IUser";
 const Avatar = () => {
   const { data: userData } = useSWR<IUser>("/auth", fetcher);
 
-  useEffect(() => {
-    if (userData) {
-      console.log(userData);
-    }
-  }, [userData]);
-
   if (!userData) {
     return <div>loading</div>;
   }

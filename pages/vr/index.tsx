@@ -1,7 +1,7 @@
-import { Entity, Plane, Scene, Sky, Text } from "@belivvr/aframe-react";
-import { NextPage } from "next";
-import React, { useEffect, useState } from "react";
-import Piano from "../../components/AFrame/Piano";
+import { Entity, Plane, Scene, Sky, Text } from '@belivvr/aframe-react';
+import { NextPage } from 'next';
+import React, { useEffect, useState } from 'react';
+import Piano from '../../components/AFrame/Piano';
 
 const VRPage: NextPage = () => {
   const [rendered, setRendered] = useState<boolean>(false);
@@ -9,8 +9,8 @@ const VRPage: NextPage = () => {
   useEffect(() => {
     setRendered(true);
 
-    if (typeof window !== "undefined") {
-      require("aframe"); // eslint-disable-line global-require
+    if (typeof window !== 'undefined') {
+      require('aframe'); // eslint-disable-line global-require
     }
   }, [setRendered]);
 
@@ -41,13 +41,7 @@ const VRPage: NextPage = () => {
           z: -0.4,
         }}
       />
-      <Plane
-        position={{ x: 0, y: 0, z: 0 }}
-        rotation={{ x: -90, y: 0, z: 0 }}
-        width={1}
-        height={1}
-        color="#7BC8A4"
-      />
+      <Plane position={{ x: 0, y: 0, z: 0 }} rotation={{ x: -90, y: 0, z: 0 }} width={1} height={1} color="#7BC8A4" />
       {/* <Entity
         cursor={{
           rayOrigin: "mouse",
@@ -58,8 +52,8 @@ const VRPage: NextPage = () => {
       <Sky color="#ECECEC" />
       <Entity
         handTrackingControls={{
-          hand: "left",
-          modelColor: "#fbceb1",
+          hand: 'left',
+          modelColor: '#fbceb1',
         }}
         // laserControls={{
         //   hand: "left",
@@ -70,8 +64,8 @@ const VRPage: NextPage = () => {
       />
       <Entity
         handTrackingControls={{
-          hand: "right",
-          modelColor: "#fbceb1",
+          hand: 'right',
+          modelColor: '#fbceb1',
         }}
         // laserControls={{
         //   hand: "right",

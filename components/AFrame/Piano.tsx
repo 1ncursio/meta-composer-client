@@ -59,6 +59,7 @@ const Piano: FC<PianoProps> = ({ position }) => {
       topPositionX,
       wholePositionX,
       type,
+      note,
     } = props;
     if (type === "white") {
       return (
@@ -73,6 +74,7 @@ const Piano: FC<PianoProps> = ({ position }) => {
             mouseCursorStylesEnabled: true,
             fuse: false,
           }}
+          key={`${register}-${note}`}
         >
           <Box
             width={bottomWidth}
@@ -101,6 +103,7 @@ const Piano: FC<PianoProps> = ({ position }) => {
             z: -0.0475,
           }}
           color="#000000"
+          key={`${register}-${note}`}
         />
       );
     }
