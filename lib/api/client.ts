@@ -18,7 +18,7 @@ const client = axios.create({
 
 client.defaults.baseURL =
   process.env.NODE_ENV === "development"
-    ? `${process.env.NEXT_PUBLIC_HOST}/api`
+    ? `${process.env.NEXT_PUBLIC_HOST}`
     : "https://api.nestwordbook.com";
 
 export const refreshInterceptor = client.interceptors.request.use(

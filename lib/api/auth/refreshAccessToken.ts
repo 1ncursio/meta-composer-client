@@ -16,7 +16,12 @@ export default async function refreshAccessToken(): Promise<string> {
     if (!mutex.isLocked()) {
       await mutex.runExclusive(async () => {
         try {
-          const { headers } = await refreshClient.get("/auth/refresh");
+          // await refreshClient.get("/test", {
+          //   withCredentials: true,
+          // });
+          const { headers } = await refreshClient.get("/refresh", {
+            withCredentials: true,
+          });
           accessToken = headers.authorization;
         } catch (error) {
           if ((error as any).response.status === 401) {

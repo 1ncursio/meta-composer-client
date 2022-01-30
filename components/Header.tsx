@@ -1,8 +1,14 @@
 import Link from "next/link";
-import React from "react";
+import React, { useCallback } from "react";
+import client from "../lib/api/client";
 import Avatar from "./Avatar";
-
 const Header = () => {
+  const auth = useCallback(
+    (name: string) => () => {
+      window.location.href = "https://jungse.loca.lt/auth/facebook";
+    },
+    []
+  );
   return (
     <header className="h-12">
       <div className="container mx-auto flex items-center justify-between px-4">
@@ -32,6 +38,7 @@ const Header = () => {
           >
             login
           </a>
+          <button onClick={auth("1")}>가자</button>
           <Avatar />
         </div>
       </div>
