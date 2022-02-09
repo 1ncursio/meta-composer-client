@@ -1,4 +1,4 @@
-import { Entity, Plane, Scene, Sky, Text } from '@belivvr/aframe-react';
+import { Box, Cursor, Entity, Mixin, Plane, Scene, Sky, Text } from '@belivvr/aframe-react';
 import { NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
 import Piano from '../../components/AFrame/Piano';
@@ -31,9 +31,20 @@ const VRPage: NextPage = () => {
         lookControls={{
           enabled: true,
         }}
-      >
-        <Cursor fuse={false} fuseTimeout={500} />
-      </Camera> */}
+      > */}
+      <Cursor
+        cursor={{
+          rayOrigin: 'mouse',
+          mouseCursorStylesEnabled: true,
+          fuse: false,
+          fuseTimeout: 500,
+        }}
+        raycaster={{
+          objects: '.raycastable',
+        }}
+      />
+
+      {/* </Camera> */}
       <Piano
         position={{
           x: 0,
@@ -41,13 +52,42 @@ const VRPage: NextPage = () => {
           z: -0.4,
         }}
       />
+
+      {/* <Raycaster /> */}
+      <Mixin
+        id="frame"
+        geometry={{
+          primitive: 'plane',
+          width: 1,
+          height: 1,
+        }}
+        material={{
+          color: '#ffffff',
+          shader: 'flat',
+        }}
+      />
       <Plane position={{ x: 0, y: 0, z: 0 }} rotation={{ x: -90, y: 0, z: 0 }} width={1} height={1} color="#7BC8A4" />
+      <Box
+        position={{ x: 0, y: 0.5, z: -0.4 }}
+        width={1}
+        height={1}
+        depth={1}
+        color="#4CC3D9"
+        animation={{
+          property: 'scale',
+          to: '2.4 2.4 2.4',
+          dur: 200,
+          startEvents: ['mouseenter'],
+          pauseEvents: ['mouseleave'],
+        }}
+      />
       {/* <Entity
         cursor={{
           rayOrigin: "mouse",
           downEvents: ["click"],
         }}
       /> */}
+
       <Text value="Hello World" position={{ x: 0, y: 1.5, z: -4 }} />
       <Sky color="#ECECEC" />
       <Entity

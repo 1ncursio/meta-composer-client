@@ -79,6 +79,7 @@ const Piano: FC<PianoProps> = ({ position }) => {
             type: 'color',
             property: 'material.color',
           }}
+          className="raycastable"
         >
           <Box width={bottomWidth} height={0.015} depth={0.045} color="#ffffff" />
           <Box
