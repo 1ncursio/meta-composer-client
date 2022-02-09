@@ -1,22 +1,16 @@
-import React, { useCallback } from 'react';
-import SoundFont from 'soundfont-player';
+import React, { useEffect } from 'react';
+import Select from 'react-select';
 import useMIDI from '../../hooks/useMIDI';
+import { instrumentName } from '../../lib/piano/instrumentName';
 
 const PianoPage = () => {
-  const { midi, midiInput, midiOutput, loading, pressedKeys, error, activateInstrument } = useMIDI();
+  const { midi, midiInput, midiOutput, loading, pressedKeys, error, onChangeInstrument } = useMIDI();
 
-  //   const onClickButton = useCallback(
-  //     (e: React.MouseEvent<HTMLButtonElement>) => {
-  //       if (!midi) return;
-  //       SoundFont.instrument(new AudioContext(), 'acoustic_grand_piano').then((instrument) => {
-  //         instrument.play('C4');
-  //         midiInput.forEach((input) => {
-  //           instrument.listenToMidi(input);
-  //         });
-  //       });
-  //     },
-  //     [midi, midiInput],
-  //   );
+  // useEffect(() => {
+  //   if (player) {
+  //     console.log({ player });
+  //   }
+  // }, [player]);
 
   return (
     <div>
@@ -28,7 +22,14 @@ const PianoPage = () => {
         ))}
         {error && <div>{error}</div>}
       </div>
-      <button onClick={activateInstrument}>click me</button>
+      <Select options={instrumentName} onChange={onChangeInstrument} />
+      {/* <select onChange={onChangeInstrument} value={selectedValue}>
+        {Object.keys(instrumentName).map((key) => (
+          <option key={key} value={key}>
+            {key}
+          </option>
+        ))}
+      </select> */}
     </div>
   );
 };

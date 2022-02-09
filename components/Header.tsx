@@ -1,6 +1,6 @@
-import Link from "next/link";
-import React from "react";
-import Avatar from "./Avatar";
+import Link from 'next/link';
+import React from 'react';
+import Avatar from './Avatar';
 
 const Header = () => {
   return (
@@ -27,6 +27,11 @@ const Header = () => {
           <Link href="/chat">
             <a className="px-4 py-2 text-gray-900 border-b-2 border-gray-900 hover:border-gray-700 hover:text-gray-700">
               Chat
+            </a>
+          </Link>
+          <Link href="/channel">
+            <a className="px-4 py-2 text-gray-900 border-b-2 border-gray-900 hover:border-gray-700 hover:text-gray-700">
+              채널
             </a>
           </Link>
           <Avatar />

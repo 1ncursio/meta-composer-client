@@ -1,7 +1,7 @@
-import { Entity, Box } from "@belivvr/aframe-react";
-import type { PositionProps } from "@belivvr/aframe-react/types/components/position";
-import React, { FC, useEffect, useState } from "react";
-import { keyParams } from "../../lib/piano/keyParams";
+import { Entity, Box } from '@belivvr/aframe-react';
+import type { PositionProps } from '@belivvr/aframe-react/types/components/position';
+import React, { FC, useEffect, useState } from 'react';
+import { keyParams } from '../../lib/piano/keyParams';
 
 export type PianoProps = {
   position: PositionProps;
@@ -12,8 +12,8 @@ const Piano: FC<PianoProps> = ({ position }) => {
 
   const keyParamsFor88Key = [];
   keyParamsFor88Key.push({
-    type: "white",
-    note: "A",
+    type: 'white',
+    note: 'A',
     topWidth: 0.019,
     bottomWidth: 0.023,
     topPositionX: -0.002,
@@ -26,7 +26,7 @@ const Piano: FC<PianoProps> = ({ position }) => {
       ...key,
       register: 0,
       referencePositionX: -0.024 * 21,
-    }))
+    })),
   );
   let referencePositionX = -0.024 * 14;
   for (let register = 1; register <= 7; register++) {
@@ -35,13 +35,13 @@ const Piano: FC<PianoProps> = ({ position }) => {
         ...key,
         register,
         referencePositionX,
-      }))
+      })),
     );
     referencePositionX += 0.024 * 7;
   }
   keyParamsFor88Key.push({
-    type: "white",
-    note: "C",
+    type: 'white',
+    note: 'C',
     topWidth: 0.023,
     bottomWidth: 0.023,
     topPositionX: 0,
@@ -51,17 +51,8 @@ const Piano: FC<PianoProps> = ({ position }) => {
   });
 
   const buildKey = (props) => {
-    const {
-      register,
-      referencePositionX,
-      topWidth,
-      bottomWidth,
-      topPositionX,
-      wholePositionX,
-      type,
-      note,
-    } = props;
-    if (type === "white") {
+    const { register, referencePositionX, topWidth, bottomWidth, topPositionX, wholePositionX, type, note } = props;
+    if (type === 'white') {
       return (
         <Entity
           position={{
@@ -69,19 +60,27 @@ const Piano: FC<PianoProps> = ({ position }) => {
             y: 0,
             z: 0,
           }}
-          cursor={{
-            downEvents: ["click"],
-            mouseCursorStylesEnabled: true,
-            fuse: false,
-          }}
+          // cursor={{
+          //   downEvents: ['click'],
+          //   mouseCursorStylesEnabled: true,
+          //   fuse: false,
+          // }}
           key={`${register}-${note}`}
+          animation={{
+            dur: 1000,
+            from: 'white',
+            to: 'blue',
+            // easing: 'easeInOutSine',
+            loop: true,
+            startEvents: ['mouseenter'],
+            pauseEvents: ['mouseleave'],
+            resumeEvents: ['mouseenter'],
+            enabled: true,
+            type: 'color',
+            property: 'material.color',
+          }}
         >
-          <Box
-            width={bottomWidth}
-            height={0.015}
-            depth={0.045}
-            color="#ffffff"
-          />
+          <Box width={bottomWidth} height={0.015} depth={0.045} color="#ffffff" />
           <Box
             width={topWidth}
             height={0.015}
@@ -112,8 +111,8 @@ const Piano: FC<PianoProps> = ({ position }) => {
   useEffect(() => {
     setRendered(true);
 
-    if (typeof window !== "undefined") {
-      require("aframe"); // eslint-disable-line global-require
+    if (typeof window !== 'undefined') {
+      require('aframe'); // eslint-disable-line global-require
     }
   }, [setRendered]);
 
@@ -121,11 +120,7 @@ const Piano: FC<PianoProps> = ({ position }) => {
     return <>loading</>;
   }
 
-  return (
-    <Entity position={position}>
-      {keyParamsFor88Key.map((key) => buildKey(key))}
-    </Entity>
-  );
+  return <Entity position={position}>{keyParamsFor88Key.map((key) => buildKey(key))}</Entity>;
 };
 
 export default Piano;
