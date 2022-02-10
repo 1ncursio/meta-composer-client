@@ -5,7 +5,7 @@ import Avatar from "./Avatar";
 const Header = () => {
   const auth = useCallback(
     (name: string) => () => {
-      window.location.href = "https://jungse.loca.lt/auth/facebook";
+      window.location.href = process.env.NEXT_PUBLIC_HOST + "/auth/test";
     },
     []
   );
@@ -33,7 +33,7 @@ const Header = () => {
             Chat
           </a>
           <a
-            href={`${process.env.NEXT_PUBLIC_OAUTH}`}
+            href={`${process.env.NEXT_PUBLIC_HOST}'/auth/test'`}
             className="px-4 py-2 text-gray-900 border-b-2 border-gray-900 hover:border-gray-700 hover:text-gray-700"
           >
             login

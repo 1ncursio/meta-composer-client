@@ -22,6 +22,7 @@ export default async function refreshAccessToken(): Promise<string> {
           const { headers } = await refreshClient.get("/refresh", {
             withCredentials: true,
           });
+          console.log(headers);
           accessToken = headers.authorization;
         } catch (error) {
           if ((error as any).response.status === 401) {

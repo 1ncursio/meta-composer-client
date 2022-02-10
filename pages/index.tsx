@@ -1,13 +1,16 @@
+import axios from "axios";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useEffect } from "react";
 import useSWR from "swr";
+import client from "../lib/api/client";
 import fetcher from "../lib/api/fetcher";
 import styles from "../styles/Home.module.css";
+import IUser from "../typings/IUser";
 
 const Home: NextPage = () => {
-  const { data: userData } = useSWR("/auth", fetcher);
+  const { data: userData } = useSWR<IUser>("/auth", fetcher);
 
   useEffect(() => {
     if (userData) {
