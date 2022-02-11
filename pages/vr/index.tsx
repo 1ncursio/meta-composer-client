@@ -67,11 +67,11 @@ const VRPage: NextPage = () => {
         }}
       /> */}
       <Plane position={{ x: 0, y: 0, z: 0 }} rotation={{ x: -90, y: 0, z: 0 }} width={1} height={1} color="#7BC8A4" />
-      {/* <Box
+      <Box
         position={{ x: 0, y: 0.5, z: -1 }}
-        width={1}
-        height={1}
-        depth={1}
+        width={0.5}
+        height={0.5}
+        depth={0.5}
         color="#4CC3D9"
         animation__scale={{
           property: 'scale',
@@ -86,7 +86,8 @@ const VRPage: NextPage = () => {
           startEvents: ['mouseleave'],
         }}
         className="raycastable"
-      /> */}
+        // clickable
+      />
       <Text value="Hello World" position={{ x: 0, y: 1.5, z: -4 }} />
       <Sky color="#ECECEC" />
       <Entity
