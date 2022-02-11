@@ -1,4 +1,4 @@
-import { Box, Cursor, Entity, Mixin, Plane, Scene, Sky, Text } from '@belivvr/aframe-react';
+import { Box, Entity, Plane, Scene, Sky, Text } from '@belivvr/aframe-react';
 import { NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
 import Piano from '../../components/AFrame/Piano';
@@ -11,6 +11,7 @@ const VRPage: NextPage = () => {
 
     if (typeof window !== 'undefined') {
       require('aframe'); // eslint-disable-line global-require
+      require('aframe-geometry-merger-component');
     }
   }, [setRendered]);
 
@@ -20,19 +21,21 @@ const VRPage: NextPage = () => {
 
   return (
     <Scene
-    // inspector={{
-    //   url: new URL(
-    //     "https://cdn.jsdelivr.net/gh/aframevr/aframe-inspector@master/dist/aframe-inspector.min.js"
-    //     // "https://aframe.io/aframe-inspector/dist/aframe-inspector.min.js",
-    //   ),
-    // }}
+      inspector={{
+        url: new URL(
+          'https://cdn.jsdelivr.net/gh/aframevr/aframe-inspector@master/dist/aframe-inspector.min.js',
+          // "https://aframe.io/aframe-inspector/dist/aframe-inspector.min.js",
+        ),
+      }}
+      cursor="rayOrigin: mouse; fuse: false"
+      raycaster="objects: .raycastable"
     >
       {/* <Camera
         lookControls={{
           enabled: true,
         }}
       > */}
-      <Cursor
+      {/* <Cursor
         cursor={{
           rayOrigin: 'mouse',
           mouseCursorStylesEnabled: true,
@@ -42,8 +45,7 @@ const VRPage: NextPage = () => {
         raycaster={{
           objects: '.raycastable',
         }}
-      />
-
+      /> */}
       {/* </Camera> */}
       <Piano
         position={{
@@ -52,9 +54,7 @@ const VRPage: NextPage = () => {
           z: -0.4,
         }}
       />
-
-      {/* <Raycaster /> */}
-      <Mixin
+      {/* <Mixin
         id="frame"
         geometry={{
           primitive: 'plane',
@@ -65,29 +65,28 @@ const VRPage: NextPage = () => {
           color: '#ffffff',
           shader: 'flat',
         }}
-      />
+      /> */}
       <Plane position={{ x: 0, y: 0, z: 0 }} rotation={{ x: -90, y: 0, z: 0 }} width={1} height={1} color="#7BC8A4" />
-      <Box
-        position={{ x: 0, y: 0.5, z: -0.4 }}
+      {/* <Box
+        position={{ x: 0, y: 0.5, z: -1 }}
         width={1}
         height={1}
         depth={1}
         color="#4CC3D9"
-        animation={{
+        animation__scale={{
           property: 'scale',
-          to: '2.4 2.4 2.4',
+          to: '1.2 1.2 1.2',
           dur: 200,
           startEvents: ['mouseenter'],
-          pauseEvents: ['mouseleave'],
         }}
-      />
-      {/* <Entity
-        cursor={{
-          rayOrigin: "mouse",
-          downEvents: ["click"],
+        animation__scale__reverse={{
+          property: 'scale',
+          to: '1 1 1',
+          dur: 200,
+          startEvents: ['mouseleave'],
         }}
+        className="raycastable"
       /> */}
-
       <Text value="Hello World" position={{ x: 0, y: 1.5, z: -4 }} />
       <Sky color="#ECECEC" />
       <Entity
@@ -95,24 +94,32 @@ const VRPage: NextPage = () => {
           hand: 'left',
           modelColor: '#fbceb1',
         }}
-        // laserControls={{
-        //   hand: "left",
-        // }}
-        // raycaster={{
-        //   far: 100,
-        // }}
+        laserControls={{
+          hand: 'left',
+        }}
+        oculusTouchControls={{
+          hand: 'left',
+        }}
+        raycaster={{
+          far: 100,
+          objects: '.raycastable',
+        }}
       />
       <Entity
         handTrackingControls={{
           hand: 'right',
           modelColor: '#fbceb1',
         }}
-        // laserControls={{
-        //   hand: "right",
-        // }}
-        // raycaster={{
-        //   far: 100,
-        // }}
+        laserControls={{
+          hand: 'right',
+        }}
+        oculusTouchControls={{
+          hand: 'right',
+        }}
+        raycaster={{
+          far: 100,
+          objects: '.raycastable',
+        }}
       />
     </Scene>
   );

@@ -1,4 +1,4 @@
-import { Entity, Box } from '@belivvr/aframe-react';
+import { Box, Entity } from '@belivvr/aframe-react';
 import type { PositionProps } from '@belivvr/aframe-react/types/components/position';
 import React, { FC, useEffect, useState } from 'react';
 import { keyParams } from '../../lib/piano/keyParams';
@@ -55,39 +55,70 @@ const Piano: FC<PianoProps> = ({ position }) => {
     if (type === 'white') {
       return (
         <Entity
+          // geometry={{
+
+          // }}
           position={{
             x: referencePositionX + wholePositionX,
             y: 0,
             z: 0,
           }}
-          // cursor={{
-          //   downEvents: ['click'],
-          //   mouseCursorStylesEnabled: true,
-          //   fuse: false,
-          // }}
           key={`${register}-${note}`}
-          animation={{
-            dur: 1000,
-            from: 'white',
-            to: 'blue',
-            // easing: 'easeInOutSine',
-            loop: true,
+          animation__position={{
+            property: 'object3D.position.y',
+            to: '-0.02',
+            dur: 100,
             startEvents: ['mouseenter'],
-            pauseEvents: ['mouseleave'],
-            resumeEvents: ['mouseenter'],
-            enabled: true,
-            type: 'color',
-            property: 'material.color',
+            easing: 'easeInOutQuad',
           }}
-          className="raycastable"
+          animation__position__reverse={{
+            property: 'object3D.position.y',
+            to: '0',
+            dur: 100,
+            startEvents: ['mouseleave'],
+            easing: 'easeInOutQuad',
+          }}
         >
-          <Box width={bottomWidth} height={0.015} depth={0.045} color="#ffffff" />
+          <Box
+            width={bottomWidth}
+            height={0.015}
+            depth={0.045}
+            animation__color={{
+              property: 'material.color',
+              to: '#ff0000',
+              dur: 100,
+              startEvents: ['mouseenter'],
+              easing: 'easeInOutQuad',
+            }}
+            animation__color__reverse={{
+              property: 'material.color',
+              to: '#ffffff',
+              dur: 100,
+              startEvents: ['mouseleave'],
+              easing: 'easeInOutQuad',
+            }}
+            className="raycastable"
+          />
           <Box
             width={topWidth}
             height={0.015}
             depth={0.05}
             position={{ x: topPositionX, y: 0, z: -0.0475 }}
-            color="#ffffff"
+            animation__color={{
+              property: 'material.color',
+              to: '#ff0000',
+              dur: 100,
+              startEvents: ['mouseenter'],
+              easing: 'easeInOutQuad',
+            }}
+            animation__color__reverse={{
+              property: 'material.color',
+              to: '#ffffff',
+              dur: 100,
+              startEvents: ['mouseleave'],
+              easing: 'easeInOutQuad',
+            }}
+            className="raycastable"
           />
         </Entity>
       );
@@ -104,6 +135,35 @@ const Piano: FC<PianoProps> = ({ position }) => {
           }}
           color="#000000"
           key={`${register}-${note}`}
+          animation__position={{
+            property: 'object3D.position.y',
+            to: '0',
+            dur: 100,
+            startEvents: ['mouseenter'],
+            easing: 'easeInOutQuad',
+          }}
+          animation__position__reverse={{
+            property: 'object3D.position.y',
+            to: '0.0025',
+            dur: 100,
+            startEvents: ['mouseleave'],
+            easing: 'easeInOutQuad',
+          }}
+          animation__color={{
+            property: 'material.color',
+            to: '#ff0000',
+            dur: 100,
+            startEvents: ['mouseenter'],
+            easing: 'easeInOutQuad',
+          }}
+          animation__color__reverse={{
+            property: 'material.color',
+            to: '#000000',
+            dur: 100,
+            startEvents: ['mouseleave'],
+            easing: 'easeInOutQuad',
+          }}
+          className="raycastable"
         />
       );
     }
