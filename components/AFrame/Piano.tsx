@@ -111,32 +111,30 @@ const Piano: FC<PianoProps> = ({ position }) => {
 
     if (typeof window !== 'undefined') {
       require('aframe'); // eslint-disable-line global-require
-      if (typeof AFRAME !== 'undefined') {
-        console.log('AFRAME 있음');
-        AFRAME.registerComponent('white-key-color-animation', {
-          init: function () {
-            this.el.addEventListener('mouseenter', () => {
-              this.el.setAttribute('color', '#F59E0B');
-              this.el.children[0].setAttribute('color', '#F59E0B');
-              console.log('마우스 오버됨');
-            });
+      console.log('AFRAME 있음');
+      AFRAME.registerComponent('white-key-color-animation', {
+        init: function () {
+          this.el.addEventListener('mouseenter', () => {
+            this.el.setAttribute('color', '#F59E0B');
+            this.el.children[0].setAttribute('color', '#F59E0B');
+            console.log('마우스 오버됨');
+          });
 
-            this.el.addEventListener('mouseleave', () => {
-              this.el.setAttribute('color', '#ffffff');
-              this.el.children[0].setAttribute('color', '#ffffff');
-              console.log('마우스 떠남');
-            });
-          },
-        });
+          this.el.addEventListener('mouseleave', () => {
+            this.el.setAttribute('color', '#ffffff');
+            this.el.children[0].setAttribute('color', '#ffffff');
+            console.log('마우스 떠남');
+          });
+        },
+      });
 
-        AFRAME.registerComponent('key-click', {
-          init: function () {
-            this.el.addEventListener('click', (e) => {
-              console.log(e.target.id);
-            });
-          },
-        });
-      }
+      AFRAME.registerComponent('key-click', {
+        init: function () {
+          this.el.addEventListener('click', (e) => {
+            console.log(e.target.id);
+          });
+        },
+      });
     }
   }, [setRendered]);
 
