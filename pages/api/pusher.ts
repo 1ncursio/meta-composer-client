@@ -7,7 +7,6 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<ServerData>
 ) {
-  //   const Pusher = require("pusher");
   console.log(req.body);
   const pusher = new Pusher({
     appId: "1344600",

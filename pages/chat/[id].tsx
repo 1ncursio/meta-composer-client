@@ -1,97 +1,60 @@
-import Pusher from "pusher-js";
-import React, { useCallback, useEffect, useState } from "react";
-import useSWR from "swr";
-import client from "../../lib/api/client";
-import fetcher from "../../lib/api/fetcher";
-import IUser from "../../typings/IUser";
-import Peer from "simple-peer";
+import { IOType } from "child_process";
+// import { Socket } from "dgram";
 import { useRouter } from "next/router";
-import { channel } from "diagnostics_channel";
-import Rtc from "../../typings/Rtc";
-import PusherParse from "../../typings/PuherPaser";
-import Peers from "../../typings/Peers";
-const index = () => {
+import { useEffect, useState } from "react";
+import { io, Socket } from "socket.io-client";
+import Message from "../../typings/Message";
+
+const chat = () => {
   const router = useRouter();
   const { id } = router.query;
-  const { data: userData } = useSWR<IUser>("/auth", fetcher);
-  // const peers: Peers = {};
-  const [peers, setPeers] = useState<Peers>({});
+  const [soket, setSoket] = useState<Socket>();
+  const [messages, setMessages] = useState<Array<Message>>([]);
 
   useEffect(() => {
-    if (userData) {
-    }
-  }, [userData]);
-
+    console.log(messages);
+  }, [messages]);
   useEffect(() => {
-    const pusher = new Pusher("eef5f3bc1c485b22d058", {
-      cluster: "ap3",
-    });
+    const soket = io("localhost:4444");
 
-    const channel = pusher.subscribe("chat");
-
-    channel.bind("event", function (event: PusherParse) {
-      const offerData: Rtc = event.data;
-      if (offerData.userId == id) {
-        const peer = gett(false, id == "1" ? "2" : "1");
-        peer.signal(offerData.data);
-      }
-    });
-
-    return () => {
-      pusher.unsubscribe("chat");
-    };
-  }, [id, peers]);
-
-  function gett(initiator: boolean, id: string) {
-    console.log(peers);
-    if (!peers[id]) {
-      console.log("만드는중");
-      let peer = new Peer({
-        initiator: initiator,
-        trickle: false,
-      });
-      peer
-        .on("signal", (data: Peer.SignalData) => {
-          client.post("/pusher", {
-            userId: id,
-            data,
-          });
-        })
-        .on("connect", (stream: any) => {
-          console.log("heelow");
+    soket
+      .on("connect", () => {
+        console.log("soket on");
+        soket.emit("setInit", {
+          nickname: id,
         });
-      // peers[id] = peer;
-      // setPeers((before) => ({ ...before, id: peer }));
+      })
+      .on("getMessage", (msg: Message) => {
+        setMessages((before) => [...before, msg]);
+      });
 
-      setPeers({ ...peers, id: peer });
-      console.log(peers);
+    setSoket(soket);
+    return () => {
+      soket.disconnect();
+    };
+  }, [id]);
+
+  const sendMessage = () => {
+    if (soket) {
+      soket.emit("sendMessage", {
+        name: "jung",
+        text: "test",
+      });
     }
-    return peers[id];
-  }
-  const peerget = (initiator: boolean) => (e: React.MouseEvent) => {
-    const userId = id == "1" ? "2" : "1";
-    return gett(true, userId);
   };
-
-  // function a(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-  //   return ()=>{
-
-  //   }
-  // }
-
   return (
     <div>
-      <div>Chat Page</div>
-      <button className="bg-yellow-300" onClick={peerget(true)}>
-        start webRtc connect
+      <div>heelow chat</div>
+      <button onClick={sendMessage} className="bg-yellow-400">
+        send meesage go
       </button>
-      <div></div>
-      {/* <button className="bg-blue-300" onClick={peerget(true)}>
-        event send
-      </button> */}
-      {/* <button onClick={(e) => a(e)}>start webRtc connect</button> */}
+      {messages.map((msg: Message) => {
+        <div>
+          {msg.name}:{msg.text}
+        </div>;
+      })}
     </div>
   );
 };
 
-export default index;
+export default chat;
