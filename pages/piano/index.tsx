@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Select from 'react-select';
 import useMIDI from '../../hooks/useMIDI';
 import { instrumentName } from '../../lib/piano/instrumentName';
+import useStore from '../../store';
 
 const PianoPage = () => {
-  const { midi, midiInput, midiOutput, loading, pressedKeys, error, onChangeInstrument } = useMIDI();
+  const { midi, midiInput, midiOutput, loading, error, onChangeInstrument } = useMIDI();
+  const { pressedKeys } = useStore((state) => state.piano);
 
   // useEffect(() => {
   //   if (player) {

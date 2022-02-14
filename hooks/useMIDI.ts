@@ -1,9 +1,10 @@
-import { produce, enableMapSet } from 'immer';
-import { useState, useEffect, useCallback, useRef } from 'react';
-import SoundFont from 'soundfont-player';
+import { enableMapSet } from 'immer';
 import MIDImessage from 'midimessage';
-import type { Player } from 'soundfont-player';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ActionMeta, SingleValue } from 'react-select';
+import type { Player } from 'soundfont-player';
+import SoundFont from 'soundfont-player';
+import useStore from '../store';
 
 enableMapSet();
 
@@ -13,7 +14,6 @@ const useMIDI = (): {
   midiOutput: Map<string, WebMidi.MIDIOutput>;
   loading: boolean;
   error: Error | null;
-  pressedKeys: Set<number>;
   onChangeInstrument: (
     newValue: SingleValue<{
       value: string;
@@ -24,11 +24,12 @@ const useMIDI = (): {
       label: string;
     }>,
   ) => void;
+  onOK: (e: EventListenerOrEventListenerObject) => Promise<void>;
   // player: Player | null;
 } => {
   // const [selectedInstrument, setSelectedInstrument] = useState<InstrumentName>('acoustic_grand_piano');
-  const [midi, setMidi] = useState<WebMidi.MIDIAccess | null>(null);
-  const [pressedKeys, setPressedKeys] = useState<Set<number>>(new Set());
+  const { midi, initMidi, pressedKeys, addPressedKey, removePressedKey } = useStore((state) => state.piano);
+
   const [midiInput, setMidiInput] = useState<Map<string, WebMidi.MIDIInput>>(new Map<string, WebMidi.MIDIInput>());
   const [midiOutput, setMidiOutput] = useState<Map<string, WebMidi.MIDIOutput>>(new Map<string, WebMidi.MIDIOutput>());
   const [loading, setLoading] = useState(true);
@@ -56,7 +57,7 @@ const useMIDI = (): {
     setLoading(false);
     setMidiInput(inputs);
     setMidiOutput(outputs);
-    setMidi(midiAccess);
+    initMidi(midiAccess);
     console.log('MIDI ready!');
 
     midiAccess.onstatechange = midiConnectionStateChange;
@@ -85,7 +86,7 @@ const useMIDI = (): {
         return;
       }
       const midimessage = MIDImessage(e);
-      console.log({ midimessage });
+      // console.log({ midimessage });
 
       // const cmd = event.data[0] >> 4;
       // const channel = event.data[0] & 0xf;
@@ -105,19 +106,11 @@ const useMIDI = (): {
         case 'noteon':
           // console.log({ player });
           playerRef.current.play(midimessage.key);
-          setPressedKeys(
-            produce(pressedKeys, (draft) => {
-              draft.add(midimessage.key);
-            }),
-          );
+          addPressedKey(midimessage.key);
           break;
         case 'noteoff':
           playerRef.current.stop(midimessage.key);
-          setPressedKeys(
-            produce(pressedKeys, (draft) => {
-              draft.delete(midimessage.key);
-            }),
-          );
+          removePressedKey(midimessage.key);
           break;
         default:
           break;
@@ -184,7 +177,22 @@ const useMIDI = (): {
         console.error(e);
       }
     },
-    [playerRef, midiInput],
+    [playerRef],
+  );
+
+  const onOK = useCallback(
+    async (e: EventListenerOrEventListenerObject) => {
+      try {
+        console.log({ e });
+        console.log('ㅇㅅㅇ');
+        const instrument = await SoundFont.instrument(new AudioContext(), 'acoustic_grand_piano');
+        playerRef.current = instrument;
+        console.log('instrument loaded');
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    [playerRef],
   );
 
   useEffect(() => {
@@ -194,9 +202,12 @@ const useMIDI = (): {
       setError(new Error('MIDI is not supported in your browser.'));
       setLoading(false);
     }
+    return () => {
+      console.log('cleanup MIDI');
+    };
   }, []);
 
-  return { midi, midiInput, midiOutput, loading, error, pressedKeys, onChangeInstrument };
+  return { midi, midiInput, midiOutput, loading, error, onChangeInstrument, onOK };
 };
 
 export default useMIDI;
