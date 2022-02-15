@@ -10,7 +10,7 @@ export default function handler(
     status: 200,
     message: "OK",
     payload: {
-      id: 1,
+      id: "1",
       email: "test@test.com",
       username: "test",
       image: "https://via.placeholder.com/256",
