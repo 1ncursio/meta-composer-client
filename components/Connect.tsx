@@ -9,39 +9,47 @@ import Peer from "simple-peer";
 import Rtc from "../typings/Rtc";
 import RtcData from "../typings/RtcData";
 import client from "../lib/api/client";
-
+import Link from "next/link";
 const Connect = () => {
   const { data: userData } = useSWR<IUser>("/auth", fetcher);
   const [connected, setConnected] = useState<boolean>(false);
   const [myPeer, setMyPeer] = useState<Peer.Instance>();
-  const [soket, setSoket] = useState<any>();
+  const [soket, setSoket] = useState<Socket>();
 
   useEffect(() => {
     if (userData && !connected) {
-      const socket = io("localhost:4400");
-      socket
+      const socket = io("localhost:4400/webRtc");
+      setSoket(socket);
+      setConnected(true);
+    }
+  }, [userData, connected]);
+  useEffect(() => {
+    if (soket) {
+      soket.removeListener();
+      soket
         .on("connect", () => {
           console.log("soket on");
-          socket.emit("setInit", {
+          soket.emit("setInit", {
             userId: userData?.id,
           });
         })
         .on("getOffer", (offerData: RtcData) => {
-          const peer = makePeer(false, socket, myPeer);
+          console.log("offer 받음");
+          const peer = makePeer(false, soket, myPeer);
           peer?.signal(offerData);
           setMyPeer(peer);
         })
         .on("sendOffer", () => {
-          setMyPeer(makePeer(true, socket, myPeer));
+          setMyPeer(makePeer(true, soket, myPeer));
         });
-      setConnected(true);
     }
+
     //     1.dependancy(두번째 인자로 넘기는 배열)가 바뀌어서 effect가 달라져야할 때 (이전 effect 청소)
     //   2. 해당 component가 unmount 될 때
 
     return () => {
-      console.log("실행");
-      if (soket) {
+      if (soket && myPeer) {
+        console.log("실행");
         setTimeout(() => {
           soket.emit("selfDisconnect", {
             userId: userData?.id,
@@ -49,7 +57,7 @@ const Connect = () => {
         });
       }
     };
-  }, [userData, connected]);
+  }, [soket, myPeer]);
 
   // const auth = useCallback(
   //   (initiator: boolean, soket: Socket) => () => {\
@@ -63,7 +71,7 @@ const Connect = () => {
     myPeer: Peer.Instance | undefined
   ) => {
     console.log({ myPeer }, "makepeer");
-    if (!myPeer) {
+    if (myPeer === undefined) {
       console.log("만드는중");
       let peer = new Peer({
         initiator: initiator,
@@ -90,8 +98,6 @@ const Connect = () => {
       });
       peer
         .on("signal", (data: Peer.SignalData) => {
-          // console.log("hee");
-          console.log({ soket });
           if (soket && userData) {
             console.log("heepw");
             soket.emit("getOffer", {
@@ -118,7 +124,16 @@ const Connect = () => {
       return myPeer;
     }
   };
-  return <div> childeren</div>;
+  return (
+    <div>
+      <div> childeren</div>
+      <Link href="/">
+        <a className="text-2xl font-bold text-gray-900">
+          <img src="/logo.png" alt="logo" className="h-8" />
+        </a>
+      </Link>
+    </div>
+  );
 };
 
 export default Connect;
