@@ -1,5 +1,7 @@
 import produce from 'immer';
 import create from 'zustand';
+import Peer from 'simple-peer';
+import { WebRTCState } from './webRTCState';
 
 export interface AppState {
   piano: {
@@ -13,6 +15,7 @@ export interface AppState {
     addPressedKey: (key: number) => void;
     removePressedKey: (key: number) => void;
   };
+  webRTC: WebRTCState;
 }
 
 const useStore = create<AppState>((set) => ({
@@ -37,6 +40,30 @@ const useStore = create<AppState>((set) => ({
       set(
         produce((state: AppState) => {
           state.piano.pressedKeys.delete(key);
+        }),
+      );
+    },
+  },
+  webRTC: {
+    peers: {},
+    resetPeers: () => {
+      set(
+        produce((state: AppState) => {
+          state.webRTC.peers = {};
+        }),
+      );
+    },
+    addPeer: (peer: Peer.Instance) => {
+      set(
+        produce((state: AppState) => {
+          state.webRTC.peers[peer.id] = peer;
+        }),
+      );
+    },
+    removePeer: (peer: Peer.Instance) => {
+      set(
+        produce((state: AppState) => {
+          delete state.webRTC.peers[peer.id];
         }),
       );
     },
