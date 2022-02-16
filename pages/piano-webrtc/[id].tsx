@@ -1,11 +1,11 @@
+import { useMIDI, useMIDIMessage } from '@react-midi/hooks';
+import MIDImessage from 'midimessage';
 import { useRouter } from 'next/router';
 import Pusher from 'pusher-js';
 import React, { useCallback, useEffect, useState } from 'react';
 import Peer, { SignalData } from 'simple-peer';
-import useMIDI from '../../hooks/useMIDI';
 import client from '../../lib/api/client';
 import useStore from '../../store';
-import Peers from '../../typings/Peers';
 import PusherParse from '../../typings/PuherPaser';
 import Rtc from '../../typings/Rtc';
 
@@ -13,11 +13,25 @@ const PianoWebRTCPage = () => {
   const router = useRouter();
   const { id } = router.query;
   // const { data: userData } = useSWR<IUser>('/auth', fetcher);
-  const [peers, setPeers] = useState<Peers>({});
   const [isPeersConnected, setIsPeersConnected] = useState(false);
+  // const { onClickHTMLButton, isMidiConnected } = useMIDI();
+  const { inputs, outputs, hasMIDI } = useMIDI(); // Initially returns [[], []]
+  const message = useMIDIMessage(inputs[0]);
+  const { pressedKeys, addPressedKey, removePressedKey } = useStore((state) => state.piano);
+  const { peers, addPeer, removePeer, resetPeers } = useStore((state) => state.webRTC);
 
-  const { onClickHTMLButton, isMidiConnected } = useMIDI();
-  const { pressedKeys } = useStore((state) => state.piano);
+  // midimessage 발생했을 때 실행
+  useEffect(() => {
+    if (message) {
+      const midiMessage = new MIDImessage(message);
+      // console.log(JSON.stringify(midiMessage));
+      // console.log({ midiMessage });
+      if (id === '2') {
+        // message to ArrayBuffer
+        peers['1']?.send(JSON.stringify(midiMessage));
+      }
+    }
+  }, [message]);
 
   const gett = useCallback(
     (initiator: boolean, id: string) => {
@@ -62,21 +76,33 @@ const PianoWebRTCPage = () => {
         })
         .on('data', (chunk: any) => {
           // Uint8Array 형식의 데이터를 받아서 JSON 형식으로 변환하여 전달한다.
-          const data = JSON.parse(String.fromCharCode.apply(null, chunk));
-          console.log({ data });
+          const midimessage = JSON.parse(String.fromCharCode.apply(null, chunk));
+
+          switch (midimessage.messageType) {
+            case 'noteon':
+              // playerRef.current.play(midimessage.key);
+              addPressedKey(midimessage.key);
+              // peers['1'].send(midimessage.key);
+              break;
+            case 'noteoff':
+              // playerRef.current.stop(midimessage.key);
+              removePressedKey(midimessage.key);
+              break;
+            default:
+              break;
+          }
         })
         .on('end', () => {
           console.log('끊김');
-          setPeers({});
+          resetPeers();
         })
         .on('error', (err: Error) => {
           console.log(err);
         });
-
-      setPeers((before) => ({ ...before, [id]: peer }));
+      addPeer(parseInt(id), peer);
       return peer;
     },
-    [peers],
+    [peers, addPeer, resetPeers],
   );
 
   const getPeer = (initiator: boolean) => (e: React.MouseEvent) => {
@@ -113,6 +139,7 @@ const PianoWebRTCPage = () => {
       pusher.unsubscribe('chat');
       for (const key in peers) {
         peers[key].destroy();
+        // removePeer(parseInt(key));
       }
       setIsPeersConnected(false);
     };
@@ -142,14 +169,20 @@ const PianoWebRTCPage = () => {
         {Array.from(pressedKeys).map((key) => (
           <div key={key}>{key}</div>
         ))}
-        {isMidiConnected ? (
+        {/* {isMidiConnected ? (
           <button className="bg-green-500 text-white font-bold p-2 rounded-lg">미디 피아노 연결 완료</button>
         ) : (
           <button className="bg-green-500 text-white font-bold p-2 rounded-lg" onClick={onClickHTMLButton}>
             미디 피아노 연결하기
           </button>
-        )}
+        )} */}
       </div>
+      <div>
+        {Object.keys(peers).map((key) => (
+          <div key={key}>{key}</div>
+        ))}
+      </div>
+      {/* <div>Message Data: {message.data ? message.data.join(', ') : ''}</div> */}
     </div>
   );
 };
