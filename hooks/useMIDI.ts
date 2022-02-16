@@ -12,6 +12,7 @@ const useMIDI = (): {
   midiInput: Map<string, WebMidi.MIDIInput>;
   midiOutput: Map<string, WebMidi.MIDIOutput>;
   loading: boolean;
+  isMidiConnected: boolean;
   error: Error | null;
   onChangeInstrument: (
     newValue: SingleValue<{
@@ -24,6 +25,7 @@ const useMIDI = (): {
     }>,
   ) => void;
   onOK: (e: EventListenerOrEventListenerObject) => Promise<void>;
+  onClickHTMLButton: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => Promise<void>;
   // player: Player | null;
 } => {
   // const [selectedInstrument, setSelectedInstrument] = useState<InstrumentName>('acoustic_grand_piano');
@@ -31,6 +33,7 @@ const useMIDI = (): {
 
   const [midiInput, setMidiInput] = useState<Map<string, WebMidi.MIDIInput>>(new Map<string, WebMidi.MIDIInput>());
   const [midiOutput, setMidiOutput] = useState<Map<string, WebMidi.MIDIOutput>>(new Map<string, WebMidi.MIDIOutput>());
+  const [isMidiConnected, setIsMidiConnected] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const playerRef = useRef<Player | null>(null);
@@ -60,6 +63,7 @@ const useMIDI = (): {
 
     midiAccess.onstatechange = midiConnectionStateChange;
     startLoggingMIDIInput(midiAccess);
+    1;
   }
 
   /* MIDI DEVICE 연결 때마다 호출되는 함수 */
@@ -102,7 +106,6 @@ const useMIDI = (): {
 
       switch (midimessage.messageType) {
         case 'noteon':
-          // console.log({ player });
           playerRef.current.play(midimessage.key);
           addPressedKey(midimessage.key);
           break;
@@ -184,6 +187,21 @@ const useMIDI = (): {
         const instrument = await SoundFont.instrument(new AudioContext(), 'acoustic_grand_piano');
         playerRef.current = instrument;
         console.log('instrument loaded');
+        setIsMidiConnected(true);
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    [playerRef],
+  );
+
+  const onClickHTMLButton = useCallback(
+    async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      try {
+        const instrument = await SoundFont.instrument(new AudioContext(), 'acoustic_grand_piano');
+        playerRef.current = instrument;
+        console.log('instrument loaded');
+        setIsMidiConnected(true);
       } catch (e) {
         console.error(e);
       }
@@ -197,13 +215,15 @@ const useMIDI = (): {
     } else {
       setError(new Error('MIDI is not supported in your browser.'));
       setLoading(false);
+      1;
     }
     return () => {
-      console.log('cleanup MIDI');
+      setIsMidiConnected(false);
+      setError(null);
     };
   }, []);
 
-  return { midiInput, midiOutput, loading, error, onChangeInstrument, onOK };
+  return { midiInput, midiOutput, loading, isMidiConnected, error, onChangeInstrument, onOK, onClickHTMLButton };
 };
 
 export default useMIDI;

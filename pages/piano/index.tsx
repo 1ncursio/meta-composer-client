@@ -5,8 +5,8 @@ import { instrumentName } from '../../lib/piano/instrumentName';
 import useStore from '../../store';
 
 const PianoPage = () => {
-  const { midi, midiInput, midiOutput, loading, error, onChangeInstrument } = useMIDI();
-  const { pressedKeys } = useStore((state) => state.piano);
+  const { midiInput, midiOutput, loading, error, onChangeInstrument } = useMIDI();
+  const { pressedKeys, midi } = useStore((state) => state.piano);
 
   // useEffect(() => {
   //   if (player) {

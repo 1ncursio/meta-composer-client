@@ -1,0 +1,157 @@
+import { useRouter } from 'next/router';
+import Pusher from 'pusher-js';
+import React, { useCallback, useEffect, useState } from 'react';
+import Peer, { SignalData } from 'simple-peer';
+import useMIDI from '../../hooks/useMIDI';
+import client from '../../lib/api/client';
+import useStore from '../../store';
+import Peers from '../../typings/Peers';
+import PusherParse from '../../typings/PuherPaser';
+import Rtc from '../../typings/Rtc';
+
+const PianoWebRTCPage = () => {
+  const router = useRouter();
+  const { id } = router.query;
+  // const { data: userData } = useSWR<IUser>('/auth', fetcher);
+  const [peers, setPeers] = useState<Peers>({});
+  const [isPeersConnected, setIsPeersConnected] = useState(false);
+
+  const { onClickHTMLButton, isMidiConnected } = useMIDI();
+  const { pressedKeys } = useStore((state) => state.piano);
+
+  const gett = useCallback(
+    (initiator: boolean, id: string) => {
+      if (peers[id]) {
+        return peers[id];
+      }
+
+      console.log('Peer 생성 중...');
+      const peer = new Peer({
+        initiator: initiator,
+        trickle: false,
+        config: {
+          iceServers: [
+            {
+              urls: 'turn:numb.viagenie.ca',
+              credential: 'muazkh',
+              username: 'webrtc@live.com',
+            },
+            {
+              urls: 'turn:numb.viagenie.ca:3478?transport=udp',
+              credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+              username: '28224511:1379330808',
+            },
+            {
+              urls: 'turn:numb.viagenie.ca?transport=tcp',
+              credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+              username: '28224511:1379330808',
+            },
+          ],
+        },
+      });
+      peer
+        .on('signal', (data: SignalData) => {
+          client.post('/pusher', {
+            userId: id,
+            data,
+          });
+        })
+        .on('connect', () => {
+          console.log('connect complete');
+          setIsPeersConnected(true);
+        })
+        .on('data', (chunk: any) => {
+          // Uint8Array 형식의 데이터를 받아서 JSON 형식으로 변환하여 전달한다.
+          const data = JSON.parse(String.fromCharCode.apply(null, chunk));
+          console.log({ data });
+        })
+        .on('end', () => {
+          console.log('끊김');
+          setPeers({});
+        })
+        .on('error', (err: Error) => {
+          console.log(err);
+        });
+
+      setPeers((before) => ({ ...before, [id]: peer }));
+      return peer;
+    },
+    [peers],
+  );
+
+  const getPeer = (initiator: boolean) => (e: React.MouseEvent) => {
+    const userId = id === '1' ? '2' : '1';
+    return gett(true, userId);
+  };
+
+  function testSend() {
+    peers['1'].send(
+      JSON.stringify({
+        key: 30,
+      }),
+    );
+  }
+
+  useEffect(() => {
+    const pusher = new Pusher('eef5f3bc1c485b22d058', {
+      cluster: 'ap3',
+    });
+
+    const channel = pusher.subscribe('chat');
+
+    channel.bind('event', function (event: PusherParse) {
+      const offerData: Rtc = event.data;
+      if (offerData.userId === id) {
+        const peer = gett(false, id === '1' ? '2' : '1');
+        console.log('check', peer);
+        peer.signal(offerData.data);
+      }
+    });
+    channel.bind('close', function (event: any) {});
+
+    return () => {
+      pusher.unsubscribe('chat');
+      for (const key in peers) {
+        peers[key].destroy();
+      }
+      setIsPeersConnected(false);
+    };
+  }, [id, peers, gett]);
+
+  useEffect(() => {
+    if (peers) {
+      console.log({ peers });
+    }
+  }, [peers]);
+
+  return (
+    <div>
+      <div>Chat Page</div>
+      <div className="flex gap-2">
+        {isPeersConnected ? (
+          <button className="bg-yellow-500 text-white font-bold p-2 rounded-lg">WebRTC 연결됨</button>
+        ) : (
+          <button className="bg-yellow-500 text-white font-bold p-2 rounded-lg" onClick={getPeer(true)}>
+            WebRTC 연결하기
+          </button>
+        )}
+
+        <button className="bg-blue-500 text-white font-bold p-2 rounded-lg" onClick={testSend}>
+          이벤트 보내기
+        </button>
+        {Array.from(pressedKeys).map((key) => (
+          <div key={key}>{key}</div>
+        ))}
+        {isMidiConnected ? (
+          <button className="bg-green-500 text-white font-bold p-2 rounded-lg">미디 피아노 연결 완료</button>
+        ) : (
+          <button className="bg-green-500 text-white font-bold p-2 rounded-lg" onClick={onClickHTMLButton}>
+            미디 피아노 연결하기
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default PianoWebRTCPage;
