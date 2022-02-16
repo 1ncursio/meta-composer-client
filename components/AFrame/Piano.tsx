@@ -93,11 +93,11 @@ const Piano: FC<PianoProps> = ({ position }) => {
             // 키 포지션 애니메이션
             this.el.setAttribute(
               'animation__white-key-down-position',
-              'property: object3D.position.y; to: -0.02; dur: 100; startEvents: key-down; easing: easeInOutQuad;',
+              'property: object3D.position.y; to: -0.02; dur: 100; startEvents: key-down-position; easing: easeInOutQuad;',
             );
             this.el.setAttribute(
               'animation__white-key-up-position',
-              'property: object3D.position.y; to: 0; dur: 100; startEvents: key-up; easing: easeInOutQuad;',
+              'property: object3D.position.y; to: 0; dur: 100; startEvents: key-up-position; easing: easeInOutQuad;',
             );
 
             // 키 컬러 애니메이션
@@ -122,11 +122,11 @@ const Piano: FC<PianoProps> = ({ position }) => {
             //   console.log('마우스 떠남');
             // });
 
-            this.el.addEventListener('key-down', () => {
+            this.el.addEventListener('key-down-color', () => {
               this.el.setAttribute('color', '#F59E0B');
             });
 
-            this.el.addEventListener('key-up', () => {
+            this.el.addEventListener('key-up-color', () => {
               this.el.setAttribute('color', '#ffffff');
             });
           },
@@ -141,11 +141,11 @@ const Piano: FC<PianoProps> = ({ position }) => {
             // 키 포지션 애니메이션
             this.el.setAttribute(
               'animation__black-key-down',
-              'property: object3D.position.y; to: 0; dur: 100; startEvents: key-down; easing: easeInOutQuad;',
+              'property: object3D.position.y; to: 0; dur: 100; startEvents: key-down-position; easing: easeInOutQuad;',
             );
             this.el.setAttribute(
               'animation__black-key-up',
-              'property: object3D.position.y; to: 0.0025; dur: 100; startEvents: key-up; easing: easeInOutQuad;',
+              'property: object3D.position.y; to: 0.0025; dur: 100; startEvents: key-up-position; easing: easeInOutQuad;',
             );
 
             // 키 컬러 애니메이션
@@ -173,11 +173,11 @@ const Piano: FC<PianoProps> = ({ position }) => {
             // this.el.addEventListener('key-down', () => {
             //   console.log('emit test triggered');
             // });
-            this.el.addEventListener('key-down', () => {
+            this.el.addEventListener('key-down-color', () => {
               this.el.setAttribute('color', '#F59E0B');
             });
 
-            this.el.addEventListener('key-up', () => {
+            this.el.addEventListener('key-up-color', () => {
               this.el.setAttribute('color', '#000000');
             });
           },
@@ -199,13 +199,27 @@ const Piano: FC<PianoProps> = ({ position }) => {
 
         if (pressedKeys.has(parseInt(key))) {
           // @ts-ignore
-          el.emit('key-down');
+          el.emit('key-down-position');
+          // @ts-ignore
+          el.emit('key-down-color');
         } else {
           // @ts-ignore
-          el.emit('key-up');
+          el.emit('key-up-position');
+          // @ts-ignore
+          el.emit('key-up-color');
         }
       });
     }
+
+    return () => {
+      const keys = document.querySelectorAll('.piano-key');
+      keys.forEach((el) => {
+        // @ts-ignore
+        el.emit('key-up-position');
+        // @ts-ignore
+        el.emit('key-up-color');
+      });
+    };
   }, [rendered, pressedKeys]);
 
   if (!rendered) {

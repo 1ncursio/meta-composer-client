@@ -110,7 +110,7 @@ const VRPage: NextPage = () => {
       //   },
       // });s;
     }
-  }, [setRendered, onOK]);
+  }, [setRendered]);
 
   if (!rendered) {
     return <>loading</>;
@@ -129,15 +129,10 @@ const VRPage: NextPage = () => {
       background={{
         transparent: true,
       }}
+      stats
     >
-      {/* <Entity environment="preset: threetowers; active: true;" visible /> */}
-      {/* <a-entity visible="true" environment="preset: threetowers; active: true;">
-        <a-entity class="environment" position="" light="" visible=""></a-entity>
-        <a-entity class="environment" position="" light="" visible=""></a-entity>
-        <a-entity rotation="" class="environmentGround environment" visible="" scale="" shadow=""></a-entity>
-        <a-entity class="environmentDressing environment" visible=""></a-entity>
-        <a-sky radius="200" theta-length="110" class="environment" material="" visible="" geometry="" scale=""></a-sky>
-      </a-entity> */}
+      {/* <Entity environment /> */}
+      <Entity environment="preset: threetowers; active: true;" visible />
       <Assets>
         <img id="button" src="/assets/hud/button.9.png" alt="button" />
       </Assets>
@@ -182,6 +177,7 @@ const VRPage: NextPage = () => {
         src="https://unpkg.com/aframe-environment-component@1.3.1/dist/aframe-environment-component.min.js"
         strategy="lazyOnload"
       />
+      .
       {/* <a-gui-button
         width="2.5"
         height="0.7"
@@ -287,6 +283,11 @@ const VRPage: NextPage = () => {
       /> */}
       <Text value="Hello World" position={{ x: 0, y: 1.5, z: -4 }} />
       <Sky color="#ECECEC" />
+      {/* <a-entity geometry-merger="preserveOriginal: false" material="color: #AAA">
+        <a-entity geometry="primitive: box; buffer: false" position="-1 0.5 -2"></a-entity>
+        <a-entity geometry="primitive: sphere; buffer: false" position="0 0.5 -2"></a-entity>
+        <a-entity geometry="primitive: cylinder; buffer: false" position="1 0.5 -2" scale="0.5 0.5 05"></a-entity>
+      </a-entity> */}
       <Entity
         handTrackingControls={{
           hand: 'left',

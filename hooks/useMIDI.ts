@@ -9,7 +9,6 @@ import useStore from '../store';
 enableMapSet();
 
 const useMIDI = (): {
-  midi: WebMidi.MIDIAccess | null;
   midiInput: Map<string, WebMidi.MIDIInput>;
   midiOutput: Map<string, WebMidi.MIDIOutput>;
   loading: boolean;
@@ -28,13 +27,12 @@ const useMIDI = (): {
   // player: Player | null;
 } => {
   // const [selectedInstrument, setSelectedInstrument] = useState<InstrumentName>('acoustic_grand_piano');
-  const { midi, initMidi, pressedKeys, addPressedKey, removePressedKey } = useStore((state) => state.piano);
+  const { midi, initMidi, addPressedKey, removePressedKey } = useStore((state) => state.piano);
 
   const [midiInput, setMidiInput] = useState<Map<string, WebMidi.MIDIInput>>(new Map<string, WebMidi.MIDIInput>());
   const [midiOutput, setMidiOutput] = useState<Map<string, WebMidi.MIDIOutput>>(new Map<string, WebMidi.MIDIOutput>());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  // const [player, setPlayer] = useState<Player | null>(null);
   const playerRef = useRef<Player | null>(null);
 
   function onMIDIStarted(midiAccess: WebMidi.MIDIAccess) {
@@ -154,7 +152,7 @@ const useMIDI = (): {
       //   //   );
       // }
     },
-    [pressedKeys, playerRef],
+    [playerRef, addPressedKey, removePressedKey],
   );
 
   const onChangeInstrument = useCallback(
@@ -183,8 +181,6 @@ const useMIDI = (): {
   const onOK = useCallback(
     async (e: EventListenerOrEventListenerObject) => {
       try {
-        console.log({ e });
-        console.log('ㅇㅅㅇ');
         const instrument = await SoundFont.instrument(new AudioContext(), 'acoustic_grand_piano');
         playerRef.current = instrument;
         console.log('instrument loaded');
@@ -207,7 +203,7 @@ const useMIDI = (): {
     };
   }, []);
 
-  return { midi, midiInput, midiOutput, loading, error, onChangeInstrument, onOK };
+  return { midiInput, midiOutput, loading, error, onChangeInstrument, onOK };
 };
 
 export default useMIDI;
