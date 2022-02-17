@@ -406,7 +406,7 @@ const useMIDI = (): {
   }, [initMidi]);
 
   useEffect(() => {
-    if (navigator.requestMIDIAccess) {
+    if (typeof navigator.requestMIDIAccess === 'function') {
       // navigator.requestMIDIAccess().then(onMIDIStarted, onMIDISystemError);
       onRequestMIDIAccess();
     } else {
