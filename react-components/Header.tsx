@@ -13,7 +13,7 @@ const Header = () => {
 
   return (
     <header className="container">
-      <div className="navbar bg-base-100">
+      <div className="navbar py-0 bg-base-100">
         <div className="navbar-start">
           <Link href="/">
             <a>
@@ -54,7 +54,7 @@ const Header = () => {
           </ul>
         </div>
         <div className="navbar-end gap-2">
-          <input className="input bg-base-200 input-sm w-full max-w-xs" />
+          <input className="input bg-base-200 input-sm input-primary w-full max-w-[12rem] rounded-sm" />
           <AiOutlinePieChart size={24} />
           <FiBell size={24} />
           <Avatar size="small" user={userData} hasDropdown />
