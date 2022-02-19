@@ -50,6 +50,7 @@ const LinkPage = () => {
               required: true,
               maxLength: 4,
               onChange: onChangeCode,
+              pattern: /^[0-9A-J]*$/,
             })}
             className="font-bold text-5xl text-center w-full text-gray-800 focus:outline-none"
             autoComplete="off"
