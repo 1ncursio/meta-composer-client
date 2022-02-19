@@ -1,7 +1,10 @@
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
 const LinkPage = () => {
+  const { t } = useTranslation('common');
   const { register, handleSubmit, reset, getValues } = useForm();
   const [isNumberButton, setIsNumberButton] = React.useState(true);
 
@@ -69,5 +72,11 @@ const LinkPage = () => {
     </div>
   );
 };
+
+export const getStaticProps = async ({ locale }) => ({
+  props: {
+    ...(await serverSideTranslations(locale, ['common'])),
+  },
+});
 
 export default LinkPage;

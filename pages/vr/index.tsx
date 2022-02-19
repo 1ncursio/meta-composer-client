@@ -2,7 +2,7 @@ import { Assets, Entity, Mixin, Plane, Scene, Sky, Text } from '@belivvr/aframe-
 import { NextPage } from 'next';
 import Script from 'next/script';
 import React, { useEffect, useState } from 'react';
-import Piano from '../../components/AFrame/Piano';
+import Piano from '../../components/Piano';
 import useMIDI from '../../hooks/useMIDI';
 
 const VRPage: NextPage = () => {

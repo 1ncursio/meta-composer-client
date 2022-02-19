@@ -1,8 +1,8 @@
 import { Box, Entity } from '@belivvr/aframe-react';
 import type { PositionProps } from '@belivvr/aframe-react/types/components/position';
 import React, { FC, useEffect, useState } from 'react';
-import useKeyParams, { IKey } from '../../hooks/useKeyParams';
-import useStore from '../../store';
+import useKeyParams, { IKey } from '../hooks/useKeyParams';
+import useStore from '../store';
 
 export type PianoProps = {
   position: PositionProps;
