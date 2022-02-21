@@ -17,7 +17,7 @@ const client = axios.create({
 });
 
 client.defaults.baseURL =
-  process.env.NODE_ENV === 'development' ? `${process.env.NEXT_PUBLIC_HOST}/api` : 'http://jungse.shop';
+  process.env.NODE_ENV === 'development' ? `${process.env.NEXT_PUBLIC_HOST}/api` : 'https://jungse.shop';
 
 export const refreshInterceptor = client.interceptors.request.use(
   async (config) => {
