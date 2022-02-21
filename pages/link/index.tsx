@@ -1,3 +1,4 @@
+import { GetStaticProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import React from 'react';
@@ -74,9 +75,9 @@ const LinkPage = () => {
   );
 };
 
-export const getStaticProps = async ({ locale }) => ({
+export const getStaticProps: GetStaticProps = async ({ locale }) => ({
   props: {
-    ...(await serverSideTranslations(locale, ['common'])),
+    ...(await serverSideTranslations(locale || 'ko', ['common'])),
   },
 });
 
