@@ -1,7 +1,6 @@
-import type { NextPage } from 'next';
+import type { GetStaticProps, NextPage } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
-import Image from 'next/image';
-import Button from '../react-components/common/Button';
 import ToggleThemeButton from '../react-components/ToggleThemeButton';
 import styles from '../styles/Home.module.css';
 
@@ -20,5 +19,11 @@ const Home: NextPage = () => {
     </div>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => ({
+  props: {
+    ...(await serverSideTranslations(locale || 'ko', ['common'])),
+  },
+});
 
 export default Home;

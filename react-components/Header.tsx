@@ -49,7 +49,9 @@ const Header = () => {
               </ul>
             </li>
             <li>
-              <a>테스트</a>
+              <Link href="/tests">
+                <a>테스트</a>
+              </Link>
             </li>
           </ul>
         </div>

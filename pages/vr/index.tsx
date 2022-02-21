@@ -1,5 +1,6 @@
 import { Assets, Entity, Mixin, Plane, Scene, Sky, Text } from '@belivvr/aframe-react';
-import { NextPage } from 'next';
+import { GetStaticProps, NextPage } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Script from 'next/script';
 import React, { useEffect, useState } from 'react';
 import Piano from '../../components/Piano';
@@ -25,15 +26,13 @@ const VRPage: NextPage = () => {
             //   console.log({ e });
             //   console.log('test');
             // };
-
-            this.el.addEventListener('click', onOK);
-
+            // TODO: 타입 정의
+            // this.el.addEventListener('click', onOK);
             // this.el.addEventListener('mouseenter', () => {
             //   this.el.setAttribute('color', '#F59E0B');
             //   this.el.children[0].setAttribute('color', '#F59E0B');
             //   console.log('마우스 오버됨');
             // });
-
             // this.el.addEventListener('mouseleave', () => {
             //   this.el.setAttribute('color', '#ffffff');
             //   this.el.children[0].setAttribute('color', '#ffffff');
@@ -49,56 +48,91 @@ const VRPage: NextPage = () => {
        * @component text-button
        */
       if (!AFRAME.components['text-button']) {
-        AFRAME.registerComponent('text-button', {
+        AFRAME.registerComponent<{
+          schema: {
+            textHoverColor: {
+              type: string;
+            };
+            textColor: {
+              type: string;
+            };
+            backgroundHoverColor: {
+              type: string;
+            };
+            backgroundColor: {
+              type: string;
+            };
+          };
+          init(): void;
+          play(): void;
+          pause(): void;
+          update(): void;
+          // updateButtonState(): void;
+          onHover(): void;
+          // onHoverOut(): void;
+          hovering: boolean;
+          // textEl: Element | null;
+        }>('text-button', {
           schema: {
             textHoverColor: { type: 'string' },
             textColor: { type: 'string' },
             backgroundHoverColor: { type: 'string' },
             backgroundColor: { type: 'string' },
           },
-
           init() {
             // TODO: This is a bit of a hack to deal with position "component" not setting matrixNeedsUpdate. Come up with a better solution.
             // this.el.object3D.matrixNeedsUpdate = true;
             this.el.object3D.matrixWorldNeedsUpdate = true;
-            this.onHover = () => {
-              this.hovering = true;
-              this.updateButtonState();
-            };
-            this.onHoverOut = () => {
-              this.hovering = false;
-              this.updateButtonState();
-            };
-            this.textEl = this.el.querySelector('[text]');
+            // this.onHover = () => {
+            // this.hovering = true;
+            //   this.updateButtonState();
+            // };
+            // this.onHoverOut = () => {
+            //   this.hovering = false;
+            //   this.updateButtonState();
+            // };
+            // this.textEl = this.el.querySelector('[text]');
           },
 
           play() {
-            this.updateButtonState();
-            this.el.object3D.addEventListener('hovered', this.onHover);
-            this.el.object3D.addEventListener('unhovered', this.onHoverOut);
+            // this.updateButtonState();
+            // this.el.object3D.addEventListener('hovered', this.onHover);
+            // this.el.object3D.addEventListener('unhovered', this.onHoverOut);
           },
 
           pause() {
-            this.el.object3D.removeEventListener('hovered', this.onHover);
-            this.el.object3D.removeEventListener('unhovered', this.onHoverOut);
+            // this.el.object3D.removeEventListener('hovered', this.onHover);
+            // this.el.object3D.removeEventListener('unhovered', this.onHoverOut);
           },
 
           update() {
-            this.updateButtonState();
+            // this.updateButtonState();
           },
 
-          updateButtonState() {
-            const hovering = this.hovering;
-            this.el.setAttribute(
-              'slice9',
-              'color',
-              hovering ? this.data.backgroundHoverColor : this.data.backgroundColor,
-            );
+          // updateButtonState() {
+          //   const hovering = this.hovering;
+          //   this.el.setAttribute(
+          //     'slice9',
+          //     'color',
+          //     hovering ? this.data.backgroundHoverColor : this.data.backgroundColor,
+          //   );
 
-            if (this.textEl) {
-              this.textEl.setAttribute('text', 'color', hovering ? this.data.textHoverColor : this.data.textColor);
-            }
+          //   if (this.textEl) {
+          //     // TODO: 이 부분 체크해야 함
+          //     this.textEl.setAttribute('text', 'color', hovering ? this.data.textHoverColor : this.data.textColor);
+          //   }
+          // },
+
+          onHover() {
+            this.hovering = true;
+            // this.updateButtonState();
           },
+          hovering: true,
+
+          // onHoverOut() {
+          //   this.hovering = false;
+          //   this.updateButtonState();
+          // },
         });
       }
       // const noop = function () {};
@@ -337,5 +371,11 @@ const VRPage: NextPage = () => {
     </Scene>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => ({
+  props: {
+    ...(await serverSideTranslations(locale || 'ko', ['common'])),
+  },
+});
 
 export default VRPage;
