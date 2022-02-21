@@ -17,12 +17,14 @@ const Connect = () => {
   const [soket, setSoket] = useState<Socket>();
 
   useEffect(() => {
+    //useSocket 찾아 보기
     if (userData && !connected) {
-      const socket = io("localhost:4400/webRtc");
+      const socket = io("http://jungse.shop:4400/webRtc");
       setSoket(socket);
       setConnected(true);
     }
   }, [userData, connected]);
+
   useEffect(() => {
     if (soket) {
       soket.removeListener();
@@ -114,7 +116,7 @@ const Connect = () => {
         })
         .on("end", () => {
           console.log("끊김");
-          // setMyPeer(undefined);
+          setMyPeer(undefined);
         })
         .on("error", (err: Error) => {
           console.log(err);

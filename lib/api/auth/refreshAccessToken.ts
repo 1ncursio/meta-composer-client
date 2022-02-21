@@ -19,6 +19,7 @@ export default async function refreshAccessToken(): Promise<string> {
           // await refreshClient.get("/test", {
           //   withCredentials: true,
           // });
+          
           const { headers } = await refreshClient.get("/refresh", {
             withCredentials: true,
           });

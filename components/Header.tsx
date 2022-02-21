@@ -1,14 +1,22 @@
+import axios from "axios";
 import Link from "next/link";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
+import useSWR from "swr";
 import client from "../lib/api/client";
+import fetcher from "../lib/api/fetcher";
+import IUser from "../typings/IUser";
 import Avatar from "./Avatar";
 const Header = () => {
-  const auth = useCallback(
-    (name: string) => () => {
-      window.location.href = process.env.NEXT_PUBLIC_HOST + "/auth/test";
-    },
-    []
-  );
+  // const { data: userData } = useSWR<IUser>("/auth", fetcher);
+  // useEffect(() => {
+  //   console.log(userData);
+  // }, [userData]);
+
+  function test() {
+    axios.get("http://localhost:4000/auth/login", {
+      withCredentials: true,
+    });
+  }
   return (
     <header className="h-12">
       <div className="container mx-auto flex items-center justify-between px-4">
@@ -33,12 +41,12 @@ const Header = () => {
             Chat
           </a>
           <a
-            href={`${process.env.NEXT_PUBLIC_HOST}'/auth/test'`}
+            href={`${process.env.NEXT_PUBLIC_HOST}/auth/login`}
             className="px-4 py-2 text-gray-900 border-b-2 border-gray-900 hover:border-gray-700 hover:text-gray-700"
           >
-            login
+            {/* {userData ? userData.username : "login"} */}
           </a>
-          <button onClick={auth("1")}>가자</button>
+          <button onClick={test}>가자</button>
           <Avatar />
         </div>
       </div>

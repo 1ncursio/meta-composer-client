@@ -14,7 +14,6 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     if (userData) {
-      console.log(userData);
     }
   }, [userData]);
 
