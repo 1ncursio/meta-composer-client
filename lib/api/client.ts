@@ -1,6 +1,6 @@
-import axios from "axios";
-import jwtDecode, { JwtPayload } from "jwt-decode";
-import refreshAccessToken from "./auth/refreshAccessToken";
+import axios from 'axios';
+import jwtDecode, { JwtPayload } from 'jwt-decode';
+import refreshAccessToken from './auth/refreshAccessToken';
 
 export interface TokenPayload extends JwtPayload {
   userId: string;
@@ -17,9 +17,7 @@ const client = axios.create({
 });
 
 client.defaults.baseURL =
-  process.env.NODE_ENV === "development"
-    ? `${process.env.NEXT_PUBLIC_HOST}/api`
-    : "https://api.nestwordbook.com";
+  process.env.NODE_ENV === 'development' ? `${process.env.NEXT_PUBLIC_HOST}/api` : 'http://jungse.shop';
 
 export const refreshInterceptor = client.interceptors.request.use(
   async (config) => {
@@ -48,7 +46,7 @@ export const refreshInterceptor = client.interceptors.request.use(
   },
   (err) => {
     return Promise.reject(err);
-  }
+  },
 );
 
 export default client;
