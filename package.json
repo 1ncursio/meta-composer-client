@@ -32,6 +32,7 @@
     "react-icons": "^4.3.1",
     "react-select": "^5.2.2",
     "simple-peer": "^9.11.0",
+    "socket.io-client": "^4.4.1",
     "soundfont-player": "^0.12.0",
     "swr": "^1.1.2",
     "tailwindcss-classnames": "^3.0.2",

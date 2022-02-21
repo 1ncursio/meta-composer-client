@@ -9,6 +9,7 @@ const languages = [
 export default function YourComponent() {
   const router = useRouter();
 
+  // @ts-ignore
   const handleLocaleChange = (data) => {
     router.replace(router.pathname, router.pathname, { locale: data });
   };
