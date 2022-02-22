@@ -20,7 +20,7 @@ const Connect = () => {
     //useSocket 찾아 보기
     if (userData && !connected) {
       navigator.mediaDevices.getUserMedia({ audio: true }).then((res) => {
-        const socket = io('localhost:4000/webRtc');
+        const socket = io('https://jungse.shop/webRtc');
         setAudio(res);
         setSoket(socket);
         setConnected(true);
