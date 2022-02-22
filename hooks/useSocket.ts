@@ -4,6 +4,7 @@ import { useCallback } from 'react';
 const backUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:4000' : 'https://jungse.shop';
 
 const sockets: { [key: string]: Socket } = {};
+
 const useSocket = (workspace?: string): [Socket | undefined, () => void] => {
   console.log('rerender', workspace);
   const disconnect = useCallback(() => {
