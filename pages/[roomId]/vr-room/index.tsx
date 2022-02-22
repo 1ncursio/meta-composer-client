@@ -2,9 +2,7 @@ import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { isMobile } from 'react-device-detect';
-import { AiOutlineDesktop } from 'react-icons/ai';
-import { BsBadgeVr } from 'react-icons/bs';
-import * as styles from './styles';
+import RoomEntryContainer from '../../../react-components/RoomEntryContainer';
 
 export interface VRRoomPageProps {
   isOculus: boolean;
@@ -30,9 +28,7 @@ const VRRoomPage: NextPage<VRRoomPageProps> = ({ isOculus }) => {
   return (
     <div>
       <div>룸 아이디 {roomId}</div>
-      VRRoomPage
-      <AiOutlineDesktop size={128} className={styles.icon(isOculus)} />
-      <BsBadgeVr size={128} className={styles.icon(!isOculus)} />
+      <RoomEntryContainer isOculus={isOculus} />
     </div>
   );
 };
