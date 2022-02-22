@@ -16,7 +16,7 @@ const Connect = () => {
   useEffect(() => {
     //useSocket 찾아 보기
     if (userData && !connected) {
-      const socket = io('http://jungse.shop:4400/webRtc');
+      const socket = io('https://jungse.shop:4400/webRtc');
       setSoket(socket);
       setConnected(true);
     }
