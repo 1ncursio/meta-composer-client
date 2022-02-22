@@ -4,5 +4,7 @@
   "teacher": "Teacher",
   "my-courses": "My Courses",
   "my-profile": "My Profile",
-  "create-room": "Create Room"
+  "create-room": "Create Room",
+  "do-not-support-mobile-device": "Do not support mobile device",
+  "please-use-pc-or-oculus-browser": "Please use PC or Oculus browser"
 }

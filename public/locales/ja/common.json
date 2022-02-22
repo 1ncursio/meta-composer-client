@@ -4,5 +4,7 @@
   "teacher": "講師",
   "my-courses": "私の学習",
   "my-profile": "私のプロフィール",
-  "create-room": "ルームを作成"
+  "create-room": "ルームを作成",
+  "do-not-support-mobile-device": "モバイルデバイスではサポートしていません",
+  "please-use-pc-or-oculus-browser": "PCまたはOculusブラウザを使用してください"
 }

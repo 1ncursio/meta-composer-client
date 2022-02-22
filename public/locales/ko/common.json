@@ -4,5 +4,7 @@
   "teacher": "강사",
   "my-courses": "내 학습",
   "my-profile": "내 프로필",
-  "create-room": "방 만들기"
+  "create-room": "방 만들기",
+  "do-not-support-mobile-device": "모바일 기기를 지원하지 않습니다.",
+  "please-use-pc-or-oculus-browser": "PC 또는 Oculus Browser를 사용해주세요."
 }

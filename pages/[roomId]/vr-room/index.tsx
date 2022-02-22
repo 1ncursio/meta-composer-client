@@ -1,4 +1,4 @@
-import { GetServerSideProps, GetStaticProps, NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
@@ -18,8 +18,8 @@ const VRRoomPage: NextPage<VRRoomPageProps> = ({ isOculus }) => {
   if (isMobile) {
     return (
       <>
-        <p>{t('모바일에서는 지원하지 않습니다.')}</p>
-        <p>{t('PC 혹은 Oculus Browser로 접속해주세요.')}</p>
+        <p>{t('do-not-support-mobile-device')}</p>
+        <p>{t('please-use-pc-or-oculus-browser')}</p>
       </>
     );
   }
@@ -48,11 +48,5 @@ export const getServerSideProps: GetServerSideProps = async ({ req, locale }) =>
     },
   };
 };
-
-// export const getStaticProps: GetStaticProps = async ({ locale }) => ({
-//   props: {
-//     ...(await serverSideTranslations(locale || 'ko', ['common'])),
-//   },
-// });
 
 export default VRRoomPage;

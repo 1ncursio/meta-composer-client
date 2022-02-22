@@ -1,21 +1,22 @@
+import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useCallback } from 'react';
+import { FiBell } from 'react-icons/fi';
 import useSWR from 'swr';
+import client from '../lib/api/client';
 import fetcher from '../lib/api/fetcher';
 import IUser from '../typings/IUser';
 import Avatar from './Avatar';
-import { FiBell } from 'react-icons/fi';
-import { AiOutlinePieChart } from 'react-icons/ai';
-import { useTranslation } from 'next-i18next';
 
 const Header = () => {
   const { t } = useTranslation('common');
   const { data: userData } = useSWR<IUser>('/auth', fetcher);
 
-  const onCreateRoom = useCallback((e) => {
+  const onCreateRoom = useCallback(async (e) => {
     e.preventDefault();
-    console.log('onCreateRoom');
+    const { data: createdRoomData } = await client.get('/room/create');
+    console.log({ createdRoomData });
   }, []);
 
   return (
