@@ -87,34 +87,9 @@ const Connect = () => {
         config: {
           iceServers: [
             {
-              urls: 'turn:13.250.13.83:3478?transport=udp',
-              username: 'YzYNCouZM1mhqhmseWk6',
-              credential: 'YzYNCouZM1mhqhmseWk6',
-            },
-            {
-              urls: 'turn:turn.anyfirewall.com:443?transport=tcp',
-              credential: 'webrtc',
-              username: 'webrtc',
-            },
-            {
-              urls: 'turn:turn.bistri.com:80',
-              credential: 'homeo',
-              username: 'homeo',
-            },
-            {
-              urls: 'turn:numb.viagenie.ca',
-              credential: 'muazkh',
-              username: 'webrtc@live.com',
-            },
-            {
-              urls: 'turn:numb.viagenie.ca:3478?transport=udp',
-              credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
-              username: '28224511:1379330808',
-            },
-            {
-              urls: 'turn:numb.viagenie.ca?transport=tcp',
-              credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
-              username: '28224511:1379330808',
+              urls: 'turn:3.35.52.96',
+              username: 'jungse',
+              credential: 'jungse',
             },
           ],
         },
