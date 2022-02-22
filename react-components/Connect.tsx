@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Peer from 'simple-peer';
 import { io, Socket } from 'socket.io-client';
 import useSWR from 'swr';
@@ -12,13 +12,20 @@ const Connect = () => {
   const [connected, setConnected] = useState<boolean>(false);
   const [myPeer, setMyPeer] = useState<Peer.Instance>();
   const [soket, setSoket] = useState<Socket>();
+  const [audio, setAudio] = useState<MediaStream>();
+
+  const audioTag = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     //useSocket 찾아 보기
     if (userData && !connected) {
-      const socket = io('https://jungse.shop/webRtc');
-      setSoket(socket);
-      setConnected(true);
+      navigator.mediaDevices.getUserMedia({ audio: true }).then((res) => {
+        const socket = io('https://jungse.shop/webRtc');
+        setAudio(res);
+        setSoket(socket);
+        setConnected(true);
+        console.log(userData.id);
+      });
     }
   }, [userData, connected]);
 
@@ -34,12 +41,17 @@ const Connect = () => {
         })
         .on('getOffer', (offerData: RtcData) => {
           console.log('offer 받음');
-          const peer = makePeer(false, soket, myPeer);
-          peer?.signal(offerData);
-          setMyPeer(peer);
+          if (audio) {
+            const peer = makePeer(false, soket, myPeer, audio);
+            peer?.signal(offerData);
+            setMyPeer(peer);
+          }
         })
         .on('sendOffer', () => {
-          setMyPeer(makePeer(true, soket, myPeer));
+          console.log({ audio });
+          if (audio) {
+            setMyPeer(makePeer(true, soket, myPeer, audio));
+          }
         });
     }
 
@@ -64,13 +76,14 @@ const Connect = () => {
   //   []
   // );
 
-  const makePeer = (initiator: boolean, soket: Socket, myPeer: Peer.Instance | undefined) => {
+  const makePeer = (initiator: boolean, soket: Socket, myPeer: Peer.Instance | undefined, media: MediaStream) => {
     console.log({ myPeer }, 'makepeer');
     if (myPeer === undefined) {
       console.log('만드는중');
       let peer = new Peer({
         initiator: initiator,
         trickle: false,
+        stream: media,
         config: {
           iceServers: [
             {
@@ -107,9 +120,15 @@ const Connect = () => {
         .on('data', () => {
           console.log('ddd');
         })
+        .on('stream', (stream) => {
+          if (audioTag.current) {
+            audioTag.current.srcObject = stream;
+          }
+        })
         .on('end', () => {
           console.log('끊김');
           setMyPeer(undefined);
+          setAudio(undefined);
         })
         .on('error', (err: Error) => {
           console.log(err);
@@ -127,6 +146,7 @@ const Connect = () => {
           <img src="/logo.png" alt="logo" className="h-8" />
         </a>
       </Link>
+      <audio ref={audioTag} controls autoPlay />
     </div>
   );
 };
