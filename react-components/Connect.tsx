@@ -87,9 +87,9 @@ const Connect = () => {
         config: {
           iceServers: [
             {
-              urls: 'turn:3.35.52.96',
-              username: 'jungse',
-              credential: 'jungse',
+              urls: 'turn:jungse.shop',
+              username: process.env.NEXT_PUBLIC_TURN_USERNAME,
+              credential: process.env.NEXT_PUBLIC_TURN_CREDENTIAL,
             },
           ],
         },
