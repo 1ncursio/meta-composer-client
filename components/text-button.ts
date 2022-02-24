@@ -1,4 +1,4 @@
-AFRAME.registerComponent<{
+export default AFRAME.registerComponent<{
   schema: {
     textHoverColor: {
       type: string;
