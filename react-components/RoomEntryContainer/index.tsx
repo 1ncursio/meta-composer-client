@@ -2,10 +2,11 @@ import { css } from '@emotion/react';
 import { useMIDI, useMIDIMessage } from '@react-midi/hooks';
 import MIDImessage from 'midimessage';
 import { FC, useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { AiOutlineDesktop } from 'react-icons/ai';
+import { AiOutlineDesktop, AiOutlineSync } from 'react-icons/ai';
 import { BsBadgeVr } from 'react-icons/bs';
 import { ControlledPiano, MidiNumbers } from 'react-piano';
 import 'react-piano/dist/styles.css';
+import useSocket from '../../hooks/useSocket';
 import useStore from '../../store';
 import * as styles from './styles';
 
@@ -14,8 +15,10 @@ export interface RoomEntryContainerProps {
 }
 
 const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
+  const [socket, disconnect] = useSocket('setup');
   const [selected, setSelected] = useState(0);
   const [rendered, setRendered] = useState(false);
+  const [isLinkLoading, setIsLinkLoading] = useState(false);
   const { hasMIDI, inputs } = useMIDI();
   const message = useMIDIMessage(inputs[selected]);
   const { pressedKeys, addPressedKey, removePressedKey } = useStore((state) => state.piano);
@@ -31,7 +34,17 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
     [selected],
   );
 
-  // midimessage 발생했을 때 실행
+  /* Link 버튼 눌렀을 때 이벤트 핸들러 */
+  const onClickLink = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
+    setIsLinkLoading(true);
+    console.log('onClickLink');
+    setTimeout(() => {
+      setIsLinkLoading(false);
+    }, 3000);
+  };
+
+  /* midimessage 발생했을 때 실행 */
   useEffect(() => {
     if (message) {
       const midiMessage = new MIDImessage(message);
@@ -58,10 +71,10 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
   }
 
   return (
-    <div className="flex flex-col items-center gap-8 h-96">
+    <div className="flex flex-col items-center h-full gap-8">
       <div className="inline-flex justify-center">
-        <AiOutlineDesktop size={128} className={styles.icon(isOculus)} />
-        <BsBadgeVr size={128} className={styles.icon(!isOculus)} />
+        <AiOutlineDesktop size={128} className={styles.icon(!isOculus)} />
+        <BsBadgeVr size={128} className={styles.icon(isOculus)} />
       </div>
       <select
         onChange={handleChangeSelect}
@@ -78,21 +91,33 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
           <option>No MIDI devices found</option>
         )}
       </select>
+      <button type="button" onClick={onClickLink} className={styles.linkButton(isLinkLoading)}>
+        {isLinkLoading ? (
+          <>링크 대기 중</>
+        ) : (
+          <>
+            <AiOutlineSync size={24} />
+            VR과 링크하기
+          </>
+        )}
+      </button>
       {inputs.length > 0 ? (
         <h3>MIDI 키보드가 연결되었습니다! 오큘러스에 접속하기 전에 미리 테스트해 보세요.</h3>
       ) : (
         <h3>감지된 MIDI 키보드가 없습니다. MIDI 키보드를 연결해 주세요.</h3>
       )}
-
-      <ControlledPiano
-        noteRange={{ first: firstNote, last: lastNote }}
-        activeNotes={Array.from(pressedKeys)}
-        playNote={() => {}}
-        stopNote={() => {}}
-        onPlayNoteInput={() => {}}
-        onStopNoteInput={() => {}}
-        css={pianoStyle}
-      />
+      <div className="w-full 2xl:h-36 xl:h-32 lg:h-28 md:h-24 h-20">
+        <ControlledPiano
+          noteRange={{ first: firstNote, last: lastNote }}
+          activeNotes={Array.from(pressedKeys)}
+          playNote={() => {}}
+          stopNote={() => {}}
+          onPlayNoteInput={() => {}}
+          onStopNoteInput={() => {}}
+          keyWidthToHeight={0.5}
+          css={pianoStyle}
+        />
+      </div>
     </div>
   );
 };

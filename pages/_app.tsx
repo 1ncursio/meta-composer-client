@@ -20,7 +20,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       }}
     >
       <Header />
-      <main className="container mx-auto">
+      <main className="container mx-auto flex-1">
         <Component {...pageProps} />
       </main>
     </SWRConfig>

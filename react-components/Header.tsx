@@ -1,11 +1,10 @@
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useCallback } from 'react';
+import React from 'react';
 import { FaFacebookF } from 'react-icons/fa';
 import { FiBell } from 'react-icons/fi';
 import useSWR from 'swr';
-import client from '../lib/api/client';
 import fetcher from '../lib/api/fetcher';
 import IUser from '../typings/IUser';
 import Avatar from './Avatar';
@@ -13,12 +12,6 @@ import Avatar from './Avatar';
 const Header = () => {
   const { t } = useTranslation('common');
   const { data: userData } = useSWR<IUser>('/auth', fetcher);
-
-  const onCreateRoom = useCallback(async (e) => {
-    e.preventDefault();
-    const { data: createdRoomData } = await client.get('/room/create');
-    console.log({ createdRoomData });
-  }, []);
 
   return (
     <header className="container">
@@ -67,9 +60,9 @@ const Header = () => {
         <div className="navbar-end gap-2">
           {userData ? (
             <>
-              <button type="button" onClick={onCreateRoom} className="btn btn-primary btn-sm rounded-sm">
-                {t('create-room')}
-              </button>
+              <Link href="/link">
+                <a className="btn btn-primary btn-sm rounded-sm">{t('create-room')}</a>
+              </Link>
               <input className="input bg-base-200 input-sm input-primary w-full max-w-[12rem] rounded-sm" />
               <FiBell size={24} />
               <Avatar size="small" user={userData} hasDropdown />
@@ -90,11 +83,11 @@ const Header = () => {
                   >
                     <FaFacebookF size={24} />
                   </a>
-                  {/* <div className="modal-action">
+                  <div className="modal-action">
                     <label htmlFor="my-modal" className="btn">
-                      Yay!
+                      닫기
                     </label>
-                  </div> */}
+                  </div>
                 </div>
               </div>
             </>
