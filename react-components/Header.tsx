@@ -2,6 +2,7 @@ import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useCallback } from 'react';
+import { FaFacebookF } from 'react-icons/fa';
 import { FiBell } from 'react-icons/fi';
 import useSWR from 'swr';
 import client from '../lib/api/client';
@@ -64,12 +65,40 @@ const Header = () => {
           </ul>
         </div>
         <div className="navbar-end gap-2">
-          <button type="button" onClick={onCreateRoom} className="btn btn-primary btn-sm rounded-sm">
-            {t('create-room')}
-          </button>
-          <input className="input bg-base-200 input-sm input-primary w-full max-w-[12rem] rounded-sm" />
-          <FiBell size={24} />
-          <Avatar size="small" user={userData} hasDropdown />
+          {userData ? (
+            <>
+              <button type="button" onClick={onCreateRoom} className="btn btn-primary btn-sm rounded-sm">
+                {t('create-room')}
+              </button>
+              <input className="input bg-base-200 input-sm input-primary w-full max-w-[12rem] rounded-sm" />
+              <FiBell size={24} />
+              <Avatar size="small" user={userData} hasDropdown />
+            </>
+          ) : (
+            <>
+              <label htmlFor="my-modal" className="btn btn-primary btn-sm rounded-sm modal-btn">
+                로그인
+              </label>
+              <input type="checkbox" id="my-modal" className="modal-toggle" />
+              <div className="modal">
+                <div className="modal-box max-w-md">
+                  <h3 className="font-bold text-lg">간편 로그인</h3>
+                  <p className="py-4">로그인 모달</p>
+                  <a
+                    href="https://jungse.shop/auth/facebook"
+                    className="btn btn-circle bg-[#2374e1] border-none hover:bg-[#2374e1]"
+                  >
+                    <FaFacebookF size={24} />
+                  </a>
+                  {/* <div className="modal-action">
+                    <label htmlFor="my-modal" className="btn">
+                      Yay!
+                    </label>
+                  </div> */}
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </header>
