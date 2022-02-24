@@ -71,6 +71,7 @@ const VRPage: NextPage = () => {
           updateButtonState(): void;
           onHover(e: Event | MouseEvent): void;
           onHoverOut(e: Event | MouseEvent): void;
+          onClick(e: Event | MouseEvent): void;
           hovering: boolean;
           textEl: AEntity | null;
         }>('text-button', {
@@ -105,13 +106,14 @@ const VRPage: NextPage = () => {
           hovering: false,
           play() {
             this.updateButtonState();
-            this.el.addEventListener('mouseenter', (e) => this.onHover(e));
-            this.el.addEventListener('mouseleave', (e) => this.onHoverOut(e));
+            this.el.addEventListener('mouseenter', this.onHover.bind(this));
+            this.el.addEventListener('click', this.onClick.bind(this));
+            this.el.addEventListener('mouseleave', this.onHoverOut.bind(this));
           },
 
           pause() {
-            this.el.removeEventListener('mouseenter', (e) => this.onHover(e));
-            this.el.removeEventListener('mouseleave', (e) => this.onHoverOut(e));
+            this.el.removeEventListener('mouseenter', this.onHover.bind(this));
+            this.el.removeEventListener('mouseleave', this.onHoverOut.bind(this));
           },
 
           update() {
@@ -142,6 +144,9 @@ const VRPage: NextPage = () => {
             this.hovering = false;
             console.log('호버나감');
             this.updateButtonState();
+          },
+          onClick(e) {
+            console.log('클릭');
           },
         });
       }
@@ -176,9 +181,10 @@ const VRPage: NextPage = () => {
       stats
     >
       {/* <Entity environment /> */}
-      <Entity environment="preset: threetowers; active: true;" visible />
+      <Entity environment="preset: threetowers; active: true;" />
       <Assets>
         <img id="button" src="/assets/hud/button.9.png" alt="button" />
+        <img id="mute_on" src="/assets/hud/mute_on.png" alt="button" />
       </Assets>
       {/* <Camera
         lookControls={{
@@ -216,10 +222,11 @@ const VRPage: NextPage = () => {
           shader: 'flat',
         }}
       /> */}
-      <Script src="https://rawgit.com/rdub80/aframe-gui/master/dist/aframe-gui.min.js" strategy="lazyOnload" />
+      {/* AFRAME GUI 스크립트 */}
+      {/* <Script src="https://rawgit.com/rdub80/aframe-gui/master/dist/aframe-gui.min.js" strategy="lazyOnload" /> */}
       <Script
         src="https://unpkg.com/aframe-environment-component@1.3.1/dist/aframe-environment-component.min.js"
-        strategy="lazyOnload"
+        strategy="beforeInteractive"
       />
       .
       {/* <a-gui-button
@@ -257,25 +264,30 @@ const VRPage: NextPage = () => {
         handle-color="#00838F"
       ></a-gui-radio> */}
       <Text value="뮤야효" position={{ x: 0, y: 1.5, z: -4 }} />
-      <Entity
+      {/* <Entity
         position={{
           x: 0,
-          y: 0,
-          z: 0.1,
+          y: 1,
+          z: 0,
         }}
         mixin="rounded-text-button"
-      >
-        <Text
-          position={{
-            x: 0,
-            y: 0,
-            z: 0.02,
-          }}
-          align="center"
-          value="unmute"
-          width={2}
-        />
-      </Entity>
+        className="raycastable"
+      > */}
+      <Text
+        position={{
+          x: 0,
+          y: 1,
+          z: 0,
+        }}
+        align="center"
+        value="unmute 니얼굴 실험"
+        mixin="rounded-text-button"
+        shader="msdf"
+        // font="https://raw.githubusercontent.com/myso-kr/aframe-fonts-korean/master/fonts/ofl/nanumgothic/NanumGothic-Regular.json"
+        className="raycastable"
+        width={2}
+      />
+      {/* </Entity> */}
       <Plane position={{ x: 0, y: 0, z: 0 }} rotation={{ x: -90, y: 0, z: 0 }} width={1} height={1} color="#7BC8A4" />
       {/* <a-text
         value="Hello, 안녕!"
@@ -284,32 +296,25 @@ const VRPage: NextPage = () => {
         font="https://raw.githubusercontent.com/myso-kr/aframe-fonts-korean/master/fonts/ofl/nanumgothic/NanumGothic-Regular.json"
         position="6.7 1 -2"
       ></a-text> */}
-      <Plane width={1} height={1} color="#FF3F02" position={{ x: 0, y: 2, z: -1 }} button-test className="raycastable">
-        <Text
-          // textHoverColor: { type: 'string' },
-          // textColor: { type: 'string' },
-          // backgroundHoverColor: { type: 'string' },
-          // backgroundColor: { type: 'string' },
-          text-button="textHoverColor: #ffffff; textColor: #fff000; backgroundHoverColor: #ffffff; backgroundColor: #00ff00;"
-          value="테스트 버튼"
-          color="#000000"
-          shader="msdf"
-          font="https://raw.githubusercontent.com/myso-kr/aframe-fonts-korean/master/fonts/ofl/nanumgothic/NanumGothic-Regular.json"
-          width={1}
-          height={1}
-          position={{
-            x: 0,
-            y: 0,
-            z: 0,
-          }}
-          // scale={{
-          //   x: 0.2,
-          //   y: 0.2,
-          //   z: 0.2,
-          // }}
-          className="raycastable"
-        />
-      </Plane>
+      {/* <a-mixin
+        id="rounded-twitter-text-action-button"
+        text-button="
+                    textHoverColor: #fff;
+                    textColor: #fff;
+                    backgroundColor: #1da1f2;
+                    backgroundHoverColor: #2db1ff;
+                    "
+        slice9="
+                    width: 0.45;
+                    height: 0.2;
+                    left: 64;
+                    top: 64;
+                    right: 66;
+                    bottom: 66;
+                    transparent: false;
+                    alphaTest: 0.1;
+                    src: #button"
+      ></a-mixin> */}
       {/* <Box
         position={{ x: 0, y: 0.5, z: -1 }}
         width={0.5}
@@ -332,7 +337,7 @@ const VRPage: NextPage = () => {
         // clickable
       /> */}
       <Text value="Hello World" position={{ x: 0, y: 1.5, z: -4 }} />
-      <Sky color="#ECECEC" />
+      {/* <Sky color="#ECECEC" /> */}
       {/* <a-entity geometry-merger="preserveOriginal: false" material="color: #AAA">
         <a-entity geometry="primitive: box; buffer: false" position="-1 0.5 -2"></a-entity>
         <a-entity geometry="primitive: sphere; buffer: false" position="0 0.5 -2"></a-entity>
@@ -374,17 +379,21 @@ const VRPage: NextPage = () => {
       />
       <Mixin
         id="rounded-text-button"
+        text-button="
+                    textHoverColor: #fff;
+                    textColor: #fff;
+                    backgroundColor: #1da1f2;
+                    backgroundHoverColor: #2db1ff;
+                    "
         slice9="
-          width: 0.45;
-          height: 0.2;
-          left: 64;
-          top: 64;
-          right: 66;
-          bottom: 66;
-          transparent: false;
-          alphaTest: 0.1;
-          src: #button;
-        "
+                    color: #0F40A9;
+                    width: 0.8;
+                    height: 0.2;
+                    left: 64;
+                    top: 64;
+                    right: 66;
+                    bottom: 66;
+                    src: #button"
       />
     </Scene>
   );
