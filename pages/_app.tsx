@@ -14,7 +14,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <SWRConfig>
+    <SWRConfig
+      value={{
+        errorRetryCount: 3,
+      }}
+    >
       <Header />
       <main className="container mx-auto">
         <Component {...pageProps} />

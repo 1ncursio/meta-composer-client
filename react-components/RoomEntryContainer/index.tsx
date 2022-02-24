@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import { useMIDI, useMIDIMessage } from '@react-midi/hooks';
 import MIDImessage from 'midimessage';
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { AiOutlineDesktop } from 'react-icons/ai';
 import { BsBadgeVr } from 'react-icons/bs';
 import { ControlledPiano, MidiNumbers } from 'react-piano';
@@ -15,6 +15,7 @@ export interface RoomEntryContainerProps {
 
 const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
   const [selected, setSelected] = useState(0);
+  const [rendered, setRendered] = useState(false);
   const { hasMIDI, inputs } = useMIDI();
   const message = useMIDIMessage(inputs[selected]);
   const { pressedKeys, addPressedKey, removePressedKey } = useStore((state) => state.piano);
@@ -48,11 +49,13 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
     }
   }, [message]);
 
-  useEffect(() => {
-    if (hasMIDI) {
-      console.log({ inputs });
-    }
-  }, [hasMIDI, inputs]);
+  useLayoutEffect(() => {
+    setRendered(true);
+  }, []);
+
+  if (rendered && !isOculus && !hasMIDI) {
+    return <div className="text-sm">Web MIDI API를 지원하지 않는 브라우저입니다. 다른 브라우저를 사용해 보세요.</div>;
+  }
 
   return (
     <div className="flex flex-col items-center gap-8 h-96">
@@ -67,35 +70,18 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
       >
         {inputs.length > 0 ? (
           inputs.map((input, index) => (
-            <option key={index} value={index} selected={index === 0}>
+            <option key={index} value={index}>
               {`🎹 ${input.name}`}
             </option>
           ))
         ) : (
-          <option disabled selected>
-            No MIDI devices found
-          </option>
+          <option>No MIDI devices found</option>
         )}
       </select>
       {inputs.length > 0 ? (
         <h3>MIDI 키보드가 연결되었습니다! 오큘러스에 접속하기 전에 미리 테스트해 보세요.</h3>
       ) : (
         <h3>감지된 MIDI 키보드가 없습니다. MIDI 키보드를 연결해 주세요.</h3>
-      )}
-      {hasMIDI ? (
-        <p>
-          <span className="text-sm">
-            <span className="text-gray-600">🎹</span>
-            ㅇㅅㅇ
-          </span>
-        </p>
-      ) : (
-        <p>
-          <span className="text-sm">
-            <span className="text-gray-600">🎹</span>
-            No MIDI devices found
-          </span>
-        </p>
       )}
 
       <ControlledPiano
