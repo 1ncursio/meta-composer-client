@@ -80,16 +80,21 @@ const Connect = () => {
     console.log({ myPeer }, 'makepeer');
     if (myPeer === undefined) {
       console.log('만드는중');
-      let peer = new Peer({
+
+      if (!process.env.NEXT_PUBLIC_SOCKET_URL) {
+        throw new Error('process.env.NEXT_PUBLIC_SOCKET_URL is not defined');
+      }
+
+      const peer = new Peer({
         initiator: initiator,
         trickle: false,
         stream: media,
         config: {
           iceServers: [
             {
-              urls: 'turn:3.35.52.96',
-              username: 'jungse',
-              credential: 'jungse',
+              urls: process.env.NEXT_PUBLIC_SOCKET_URL,
+              username: process.env.NEXT_PUBLIC_TURN_USERNAME,
+              credential: process.env.NEXT_PUBLIC_TURN_CREDENTIAL,
             },
           ],
         },
