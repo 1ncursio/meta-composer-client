@@ -6,8 +6,11 @@ import { AiOutlineDesktop, AiOutlineSync } from 'react-icons/ai';
 import { BsBadgeVr } from 'react-icons/bs';
 import { ControlledPiano, MidiNumbers } from 'react-piano';
 import 'react-piano/dist/styles.css';
+import useSWR from 'swr';
 import useSocket from '../../hooks/useSocket';
+import fetcher from '../../lib/api/fetcher';
 import useStore from '../../store';
+import IUser from '../../typings/IUser';
 import * as styles from './styles';
 
 export interface RoomEntryContainerProps {
@@ -15,13 +18,14 @@ export interface RoomEntryContainerProps {
 }
 
 const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
-  const [socket, disconnect] = useSocket('setup');
+  const [socket, disconnect] = useSocket('selfSetup');
   const [selected, setSelected] = useState(0);
   const [rendered, setRendered] = useState(false);
   const [isLinkLoading, setIsLinkLoading] = useState(false);
   const { hasMIDI, inputs } = useMIDI();
   const message = useMIDIMessage(inputs[selected]);
   const { pressedKeys, addPressedKey, removePressedKey } = useStore((state) => state.piano);
+  const { data: userData } = useSWR<IUser>('/auth', fetcher);
 
   const firstNote = MidiNumbers.fromNote('a0');
   const lastNote = MidiNumbers.fromNote('c8');
@@ -61,6 +65,22 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
       }
     }
   }, [message]);
+
+  useEffect(() => {
+    if (userData && socket) {
+      socket.on('connect', () => {
+        console.log('self setup socket connected');
+
+        socket.emit('setInit', {
+          userId: userData.id.toString(),
+        });
+      });
+    }
+
+    return () => {
+      disconnect();
+    };
+  }, [socket, userData]);
 
   useLayoutEffect(() => {
     setRendered(true);
