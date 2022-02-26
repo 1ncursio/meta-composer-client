@@ -1,13 +1,13 @@
-import { Mutex } from "async-mutex";
-// import { AxiosError } from "axios";
-import { source } from "../client";
-import refreshClient from "../refreshClient";
+import { Mutex } from 'async-mutex';
+import useStore from '../../../store';
+import { source } from '../client';
+import refreshClient from '../refreshClient';
 
 const mutex = new Mutex();
 
-let accessToken = "";
+export default async function refreshAccessToken(): Promise<void> {
+  const { setAccessToken } = useStore.getState().user;
 
-export default async function refreshAccessToken(): Promise<string> {
   try {
     /* 
       뮤텍스가 Lock 상태가 아니면(첫 번째 리퀘스트) 뮤텍스를 acquire 하고 Lock을 걺.
@@ -16,12 +16,12 @@ export default async function refreshAccessToken(): Promise<string> {
     if (!mutex.isLocked()) {
       await mutex.runExclusive(async () => {
         try {
-          const { headers } = await refreshClient.get("/auth/refresh");
-          accessToken = headers.authorization;
+          const { headers } = await refreshClient.get('/auth/refresh');
+          setAccessToken(headers.authorization);
         } catch (error) {
           if ((error as any).response.status === 401) {
             /* cancel all the requests if status code 401 returned */
-            accessToken = "";
+            setAccessToken();
             source.cancel();
           }
         }
@@ -32,6 +32,4 @@ export default async function refreshAccessToken(): Promise<string> {
   } catch (e) {
     console.error(e);
   }
-
-  return accessToken;
 }

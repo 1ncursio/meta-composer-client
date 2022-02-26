@@ -4,6 +4,7 @@ import Peer from 'simple-peer';
 import { io, Socket } from 'socket.io-client';
 import useSWR from 'swr';
 import fetcher from '../lib/api/fetcher';
+import useStore from '../store';
 import IUser from '../typings/IUser';
 import RtcData from '../typings/RtcData';
 
@@ -13,16 +14,20 @@ const Connect = () => {
   const [myPeer, setMyPeer] = useState<Peer.Instance>();
   const [soket, setSoket] = useState<Socket>();
   const [audio, setAudio] = useState<MediaStream>();
+  const { accessToken } = useStore((state) => state.user);
 
   const audioTag = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     //useSocket 찾아 보기
-    if (userData && !connected) {
+    if (userData && !connected && accessToken) {
       navigator.mediaDevices.getUserMedia({ audio: true }).then((res) => {
         const socket = io('https://jungse.shop/webRtc', {
           transports: ['websocket'],
           withCredentials: true,
+          extraHeaders: {
+            authorization: accessToken ?? '',
+          },
         });
         setAudio(res);
         setSoket(socket);
@@ -30,7 +35,7 @@ const Connect = () => {
         console.log(userData.id);
       });
     }
-  }, [userData, connected]);
+  }, [userData, connected, accessToken]);
 
   useEffect(() => {
     if (soket) {
