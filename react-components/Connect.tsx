@@ -22,6 +22,7 @@ const Connect = () => {
       navigator.mediaDevices.getUserMedia({ audio: true }).then((res) => {
         const socket = io('https://jungse.shop/webRtc', {
           transports: ['websocket'],
+          withCredentials: true,
         });
         setAudio(res);
         setSoket(socket);
