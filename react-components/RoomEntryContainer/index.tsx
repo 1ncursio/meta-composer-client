@@ -18,7 +18,7 @@ export interface RoomEntryContainerProps {
 }
 
 const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
-  const [socket, disconnect] = useSocket('selfSetup');
+  const [socket] = useSocket('selfSetup');
   const [selected, setSelected] = useState(0);
   const [rendered, setRendered] = useState(false);
   const [isLinkLoading, setIsLinkLoading] = useState(false);
@@ -71,14 +71,12 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
       socket.on('connect', () => {
         console.log('self setup socket connected');
 
-        socket.emit('setInit', {
-          userId: userData.id.toString(),
-        });
+        socket.emit('setInit');
       });
     }
 
     return () => {
-      disconnect();
+      socket?.off('connect');
     };
   }, [socket, userData]);
 
