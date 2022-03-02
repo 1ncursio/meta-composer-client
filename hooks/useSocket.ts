@@ -28,6 +28,9 @@ const useSocket = (workspace?: string): [Socket | undefined, () => void] => {
       extraHeaders: {
         authorization: accessToken ?? '',
       },
+      auth: {
+        token: accessToken ?? '',
+      },
     });
   }
 

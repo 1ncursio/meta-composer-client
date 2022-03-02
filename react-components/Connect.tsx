@@ -28,6 +28,9 @@ const Connect = () => {
           extraHeaders: {
             authorization: accessToken ?? '',
           },
+          auth: {
+            token: accessToken ?? '',
+          },
         });
         setAudio(res);
         setSoket(socket);
