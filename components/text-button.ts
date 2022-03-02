@@ -32,7 +32,6 @@ export interface ATextButton {
   textEl: Entity | null;
 }
 
-// if (!AFRAME.components['text-button']) {
 export default AFRAME.registerComponent<ATextButton>('text-button', {
   schema: {
     textHoverColor: { type: 'string' },
@@ -46,7 +45,7 @@ export default AFRAME.registerComponent<ATextButton>('text-button', {
     // TODO: This is a bit of a hack to deal with position "component" not setting matrixNeedsUpdate. Come up with a better solution.
     // this.el.object3D.matrixNeedsUpdate = true;
     this.el.object3D.matrixWorldNeedsUpdate = true;
-    console.log('registerComponent');
+    // 엔티티 안에 a-text 엔티티가 존재할 경우에만 작동함.
     this.textEl = this.el.querySelector('[text]');
 
     if (this.el.getObject3D('mesh')) {
@@ -86,9 +85,11 @@ export default AFRAME.registerComponent<ATextButton>('text-button', {
   updateButtonState() {
     const hovering = this.hovering;
     this.el.setAttribute('slice9', 'color', hovering ? this.data.backgroundHoverColor : this.data.backgroundColor);
+    console.log('updateButtonState');
 
     if (this.textEl) {
       // TODO: 이 부분 체크해야 함
+      console.log({ textEl: this.textEl });
       this.textEl.setAttribute('text', 'color', hovering ? this.data.textHoverColor : this.data.textColor);
     }
   },
@@ -107,4 +108,3 @@ export default AFRAME.registerComponent<ATextButton>('text-button', {
     console.log('클릭');
   },
 });
-// }

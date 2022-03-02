@@ -1,89 +1,23 @@
-import produce, { enableMapSet } from 'immer';
+import { enableMapSet } from 'immer';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
-import create from 'zustand';
-import client from '../lib/api/client';
-import { UserState } from './userState';
-import { WebRTCState } from './webRTCState';
+import create, { GetState, SetState } from 'zustand';
+import createPianoSlice, { PianoSlice } from './pianoSlice';
+import createUserSlice, { UserSlice } from './userSlice';
+import createWebRTCSlice, { WebRTCSlice } from './webRTCSlice';
 
 enableMapSet();
 
-export interface AppState {
-  user: UserState;
-  piano: {
-    midi: WebMidi.MIDIAccess | null;
-    initMidi: (midiAccess: WebMidi.MIDIAccess) => void;
-    // midiInput: Map<string, WebMidi.MIDIInput>;
-    // midiOutput: Map<string, WebMidi.MIDIOutput>;
-    // loading: boolean;
-    // error: Error | null;
-    pressedKeys: Set<number>;
-    addPressedKey: (key: number) => void;
-    removePressedKey: (key: number) => void;
-  };
-  webRTC: WebRTCState;
-}
+export type AppState = UserSlice & PianoSlice & WebRTCSlice;
 
+export type AppSlice<T> = (set: SetState<AppState>, get: GetState<AppState>) => T;
+
+/**
+ * 슬라이스를 각각 생성하여 모두 합친 스토어를 만듦.
+ */
 const useStore = create<AppState>((set, get) => ({
-  user: {
-    accessToken: '',
-    setAccessToken: (accessToken) => {
-      set((state) =>
-        produce(state, (draft) => {
-          draft.user.accessToken = accessToken ?? '';
-          client.defaults.headers.common.authorization = accessToken ?? '';
-        }),
-      );
-    },
-  },
-  piano: {
-    midi: null,
-    initMidi: (midiAccess: WebMidi.MIDIAccess) => {
-      set(
-        produce((state: AppState) => {
-          state.piano.midi = midiAccess;
-        }),
-      );
-    },
-    pressedKeys: new Set(),
-    addPressedKey: (key) => {
-      set(
-        produce((state: AppState) => {
-          state.piano.pressedKeys.add(key);
-        }),
-      );
-    },
-    removePressedKey: (key) => {
-      set(
-        produce((state: AppState) => {
-          state.piano.pressedKeys.delete(key);
-        }),
-      );
-    },
-  },
-  webRTC: {
-    peers: {},
-    resetPeers: () => {
-      set(
-        produce((state: AppState) => {
-          state.webRTC.peers = {};
-        }),
-      );
-    },
-    addPeer: (userId, peer) => {
-      set(
-        produce((state: AppState) => {
-          state.webRTC.peers[userId] = peer;
-        }),
-      );
-    },
-    removePeer: (userId) => {
-      set(
-        produce((state: AppState) => {
-          delete state.webRTC.peers[userId];
-        }),
-      );
-    },
-  },
+  ...createUserSlice(set, get),
+  ...createPianoSlice(set, get),
+  ...createWebRTCSlice(set, get),
 }));
 
 if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {

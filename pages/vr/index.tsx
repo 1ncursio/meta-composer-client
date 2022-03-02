@@ -1,10 +1,10 @@
 import { Assets, Entity, Mixin, Plane, Scene, Sky, Text } from '@belivvr/aframe-react';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import Image from 'next/image';
 import Script from 'next/script';
 import React, { useEffect, useState } from 'react';
 import Piano from '../../components/Piano';
+import s from '../../utils/s';
 
 const VRPage: NextPage = () => {
   const [rendered, setRendered] = useState<boolean>(false);
@@ -30,8 +30,8 @@ const VRPage: NextPage = () => {
       inspector={{
         url: new URL('https://cdn.jsdelivr.net/gh/aframevr/aframe-inspector@master/dist/aframe-inspector.min.js'),
       }}
-      cursor="rayOrigin: mouse; fuse: false"
-      raycaster="objects: .raycastable"
+      cursor={s({ rayOrigin: 'mouse', fuse: false })}
+      raycaster={s({ objects: '.raycastable' })}
       // background={{
       //   transparent: true,
       // }}
@@ -121,7 +121,19 @@ const VRPage: NextPage = () => {
         active-color="#FFEB3B"
         handle-color="#00838F"
       ></a-gui-radio> */}
-      <Text value="뮤야효" position={{ x: 0, y: 1.5, z: -4 }} />
+      <Text
+        position={{
+          x: 0,
+          y: 1,
+          z: 0,
+        }}
+        className="raycastable"
+        align="center"
+        value="unmute"
+        mixin="rounded-text-button"
+        shader="msdf"
+        width={2}
+      />
       {/* <Entity
         position={{
           x: 0,
@@ -129,22 +141,11 @@ const VRPage: NextPage = () => {
           z: 0,
         }}
         mixin="rounded-text-button"
-        className="raycastable"
-      > */}
-      <Text
-        position={{
-          x: 0,
-          y: 1,
-          z: 0,
-        }}
-        align="center"
-        value="unmute"
-        mixin="rounded-text-button"
-        shader="msdf"
         // font="https://raw.githubusercontent.com/myso-kr/aframe-fonts-korean/master/fonts/ofl/nanumgothic/NanumGothic-Regular.json"
         className="raycastable"
-        width={2}
-      />
+      >
+        <Text align="center" value="unmute" shader="msdf" width={2} />
+      </Entity> */}
       <Entity
         position={{
           x: 0,
@@ -165,26 +166,19 @@ const VRPage: NextPage = () => {
       </Entity>
       <Mixin
         id="rounded-action-button"
-        slice9="
-                    width: 0.2;
-                    height: 0.2;
-                    left: 64;
-                    top: 64;
-                    right: 66;
-                    bottom: 66;
-                    transparent: false;
-                    alphaTest: 0.1;
-                    src: #action-button"
+        slice9={s({
+          width: 0.2,
+          height: 0.2,
+          left: 64,
+          top: 64,
+          right: 66,
+          bottom: 66,
+          transparent: false,
+          alphaTest: 0.1,
+          src: '#action-button',
+        })}
       />
-      {/* </Entity> */}
       <Plane position={{ x: 0, y: 0, z: 0 }} rotation={{ x: -90, y: 0, z: 0 }} width={1} height={1} color="#7BC8A4" />
-      {/* <a-text
-        value="Hello, 안녕!"
-        color="#FFFFFF"
-        shader="msdf"
-        font="https://raw.githubusercontent.com/myso-kr/aframe-fonts-korean/master/fonts/ofl/nanumgothic/NanumGothic-Regular.json"
-        position="6.7 1 -2"
-      ></a-text> */}
       {/* <a-mixin
         id="rounded-twitter-text-action-button"
         text-button="
@@ -204,27 +198,6 @@ const VRPage: NextPage = () => {
                     alphaTest: 0.1;
                     src: #button"
       ></a-mixin> */}
-      {/* <Box
-        position={{ x: 0, y: 0.5, z: -1 }}
-        width={0.5}
-        height={0.5}
-        depth={0.5}
-        color="#4CC3D9"
-        animation__scale={{
-          property: 'scale',
-          to: '1.2 1.2 1.2',
-          dur: 200,
-          startEvents: ['mouseenter'],
-        }}
-        animation__scale__reverse={{
-          property: 'scale',
-          to: '1 1 1',
-          dur: 200,
-          startEvents: ['mouseleave'],
-        }}
-        className="raycastable"
-        // clickable
-      /> */}
       <Text value="Hello World" position={{ x: 0, y: 1.5, z: -4 }} />
       <Sky color="#ECECEC" />
       {/* <a-entity geometry-merger="preserveOriginal: false" material="color: #AAA">
@@ -268,21 +241,22 @@ const VRPage: NextPage = () => {
       />
       <Mixin
         id="rounded-text-button"
-        text-button="
-                    textHoverColor: #f0f;
-                    textColor: #000;
-                    backgroundColor: #1da1f2;
-                    backgroundHoverColor: #2db1ff;
-                    "
-        slice9="
-                    color: #0F40A9;
-                    width: 0.8;
-                    height: 0.2;
-                    left: 64;
-                    top: 64;
-                    right: 66;
-                    bottom: 66;
-                    src: #button"
+        text-button={s({
+          textHoverColor: '#fff',
+          textColor: '#fff',
+          backgroundColor: '#1da1f2',
+          backgroundHoverColor: '#2db1ff',
+        })}
+        slice9={s({
+          color: '#0F40A9',
+          width: 0.8,
+          height: 0.2,
+          left: 64,
+          top: 64,
+          right: 66,
+          bottom: 66,
+          src: '#button',
+        })}
       />
     </Scene>
   );
