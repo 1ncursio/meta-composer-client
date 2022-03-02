@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import React from 'react';
 import RoomEntryContainer from '../../react-components/RoomEntryContainer';
+import isOculusBrowser from '../../utils/isOculusBrowser';
 
 export interface LinkPageProps {
   isOculus: boolean;
@@ -21,7 +22,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, locale }) =>
     return { props: { isOculus: false, ...(await serverSideTranslations(locale || 'ko', ['common'])) } };
   }
 
-  const isOculus = userAgent.indexOf('OculusBrowser') > -1;
+  const isOculus = isOculusBrowser(userAgent);
 
   return {
     props: {

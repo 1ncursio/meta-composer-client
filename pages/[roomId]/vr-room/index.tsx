@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { isMobile } from 'react-device-detect';
 import RoomEntryContainer from '../../../react-components/RoomEntryContainer';
+import isOculusBrowser from '../../../utils/isOculusBrowser';
 
 export interface VRRoomPageProps {
   isOculus: boolean;
@@ -39,7 +40,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, locale }) =>
     return { props: { isOculus: false, ...(await serverSideTranslations(locale || 'ko', ['common'])) } };
   }
 
-  const isOculus = userAgent.indexOf('OculusBrowser') > -1;
+  const isOculus = isOculusBrowser(userAgent);
 
   return {
     props: {
