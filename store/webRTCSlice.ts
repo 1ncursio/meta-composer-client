@@ -1,7 +1,7 @@
 import Peers from '../typings/Peers';
 import Peer from 'simple-peer';
 import IUser from '../typings/IUser';
-import { AppSlice } from '.';
+import { AppSlice } from './useStore';
 import produce from 'immer';
 
 export interface WebRTCSlice {

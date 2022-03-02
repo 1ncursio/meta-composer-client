@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { ActionMeta, SingleValue } from 'react-select';
 import type { Player } from 'soundfont-player';
 import SoundFont from 'soundfont-player';
-import useStore from '../store';
+import useStore from '../store/useStore';
 
 enableMapSet();
 

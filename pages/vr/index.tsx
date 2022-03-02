@@ -3,8 +3,8 @@ import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Script from 'next/script';
 import React, { useEffect, useState } from 'react';
-import Piano from '../../components/Piano';
-import s from '../../utils/s';
+import Piano from '@components/Piano';
+import s from '@utils/s';
 
 const VRPage: NextPage = () => {
   const [rendered, setRendered] = useState<boolean>(false);

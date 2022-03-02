@@ -1,5 +1,18 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["*"],
+      "@components/*": ["components/*"],
+      "@react-components/*": ["react-components/*"],
+      "@utils/*": ["utils/*"],
+      "@store/*": ["store/*"],
+      "@public/*": ["public/*"],
+      "@pages/*": ["pages/*"],
+      "@lib/*": ["lib/*"],
+      "@hooks/*": ["hooks/*"],
+      "@typings/*": ["typings/*"]
+    },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,

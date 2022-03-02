@@ -1,6 +1,6 @@
 import io, { Socket } from 'socket.io-client';
 import { useCallback } from 'react';
-import useStore from '../store';
+import useStore from '../store/useStore';
 
 const backUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:4000' : 'https://jungse.shop';
 

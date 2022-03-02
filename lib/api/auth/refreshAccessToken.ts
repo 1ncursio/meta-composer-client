@@ -1,5 +1,5 @@
 import { Mutex } from 'async-mutex';
-import useStore from '../../../store';
+import useStore from '../../../store/useStore';
 import { source } from '../client';
 import refreshClient from '../refreshClient';
 

@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { AppSlice } from '.';
+import { AppSlice } from './useStore';
 import client from '../lib/api/client';
 
 export interface UserSlice {

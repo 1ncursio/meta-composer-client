@@ -9,7 +9,7 @@ import 'react-piano/dist/styles.css';
 import useSWR from 'swr';
 import useSocket from '../../hooks/useSocket';
 import fetcher from '../../lib/api/fetcher';
-import useStore from '../../store';
+import useStore from '../../store/useStore';
 import IUser from '../../typings/IUser';
 import * as styles from './styles';
 

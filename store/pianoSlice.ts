@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { AppSlice, AppState } from '.';
+import { AppSlice, AppState } from './useStore';
 
 export interface PianoSlice {
   piano: {
