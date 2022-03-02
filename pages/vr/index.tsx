@@ -1,163 +1,22 @@
 import { Assets, Entity, Mixin, Plane, Scene, Sky, Text } from '@belivvr/aframe-react';
-import { Entity as AEntity } from 'aframe';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import Image from 'next/image';
 import Script from 'next/script';
 import React, { useEffect, useState } from 'react';
 import Piano from '../../components/Piano';
-import useMIDI from '../../hooks/useMIDI';
 
 const VRPage: NextPage = () => {
   const [rendered, setRendered] = useState<boolean>(false);
-  // const { onOK } = useMIDI();
 
   useEffect(() => {
     setRendered(true);
 
     if (typeof window !== 'undefined') {
-      require('aframe'); // eslint-disable-line global-require
+      require('aframe');
       require('aframe-geometry-merger-component');
       require('aframe-slice9-component');
-
-      if (!AFRAME.components['button-test']) {
-        AFRAME.registerComponent('button-test', {
-          schema: {},
-          init: function () {
-            // const onClickTest = (e) => {
-            //   console.log({ e });
-            //   console.log('test');
-            // };
-            // TODO: 타입 정의
-            // this.el.addEventListener('click', onOK);
-            // this.el.addEventListener('mouseenter', () => {
-            //   this.el.setAttribute('color', '#F59E0B');
-            //   this.el.children[0].setAttribute('color', '#F59E0B');
-            //   console.log('마우스 오버됨');
-            // });
-            // this.el.addEventListener('mouseleave', () => {
-            //   this.el.setAttribute('color', '#ffffff');
-            //   this.el.children[0].setAttribute('color', '#ffffff');
-            //   console.log('마우스 떠남');
-            // });
-          },
-        });
-      }
-
-      /**
-       * A button with text
-       * @namespace ui
-       * @component text-button
-       */
-      if (!AFRAME.components['text-button']) {
-        AFRAME.registerComponent<{
-          schema: {
-            textHoverColor: {
-              type: string;
-            };
-            textColor: {
-              type: string;
-            };
-            backgroundHoverColor: {
-              type: string;
-            };
-            backgroundColor: {
-              type: string;
-            };
-          };
-          init(): void;
-          play(): void;
-          pause(): void;
-          update(): void;
-          updateButtonState(): void;
-          onHover(e: Event | MouseEvent): void;
-          onHoverOut(e: Event | MouseEvent): void;
-          onClick(e: Event | MouseEvent): void;
-          hovering: boolean;
-          textEl: AEntity | null;
-        }>('text-button', {
-          schema: {
-            textHoverColor: { type: 'string' },
-            textColor: { type: 'string' },
-            backgroundHoverColor: { type: 'string' },
-            backgroundColor: { type: 'string' },
-          },
-          init() {
-            // TODO: This is a bit of a hack to deal with position "component" not setting matrixNeedsUpdate. Come up with a better solution.
-            // this.el.object3D.matrixNeedsUpdate = true;
-            this.el.object3D.matrixWorldNeedsUpdate = true;
-            console.log('registerComponent');
-            // this.onHover = () => {
-            // this.hovering = true;
-            //   this.updateButtonState();
-            // };
-            // this.onHoverOut = () => {
-            //   this.hovering = false;
-            //   this.updateButtonState();
-            // };
-            // this.el.addEventListener('mouseenter', () => {
-            //   console.log('mouseenter');
-            // });
-            // this.el.addEventListener('mouseleave', () => {
-            //   console.log('mouseleave');
-            // });
-            this.textEl = this.el.querySelector('[text]');
-          },
-          textEl: null,
-          hovering: false,
-          play() {
-            this.updateButtonState();
-            this.el.addEventListener('mouseenter', this.onHover.bind(this));
-            this.el.addEventListener('click', this.onClick.bind(this));
-            this.el.addEventListener('mouseleave', this.onHoverOut.bind(this));
-          },
-
-          pause() {
-            this.el.removeEventListener('mouseenter', this.onHover.bind(this));
-            this.el.removeEventListener('mouseleave', this.onHoverOut.bind(this));
-          },
-
-          update() {
-            console.log('니얼굴');
-            this.updateButtonState();
-          },
-
-          updateButtonState() {
-            const hovering = this.hovering;
-            this.el.setAttribute(
-              'slice9',
-              'color',
-              hovering ? this.data.backgroundHoverColor : this.data.backgroundColor,
-            );
-
-            if (this.textEl) {
-              // TODO: 이 부분 체크해야 함
-              this.textEl.setAttribute('text', 'color', hovering ? this.data.textHoverColor : this.data.textColor);
-            }
-          },
-
-          onHover(e) {
-            this.hovering = true;
-            console.log('호버됨');
-            this.updateButtonState();
-          },
-          onHoverOut(e) {
-            this.hovering = false;
-            console.log('호버나감');
-            this.updateButtonState();
-          },
-          onClick(e) {
-            console.log('클릭');
-          },
-        });
-      }
-      // const noop = function () {};
-      // // TODO: this should ideally be fixed upstream somehow but its pretty tricky since text is just a geometry not a different type of Object3D, and Object3D is what handles raycast checks.
-      // AFRAME.registerComponent('text-raycast-hack', {
-      //   dependencies: ['text'],
-      //   init() {
-      //     this.el.getObject3D('text').raycast = noop;
-      //   },
-      // });s;
+      require('../../components/text-button');
     }
   }, [setRendered]);
 
@@ -168,10 +27,7 @@ const VRPage: NextPage = () => {
   return (
     <Scene
       inspector={{
-        url: new URL(
-          'https://cdn.jsdelivr.net/gh/aframevr/aframe-inspector@master/dist/aframe-inspector.min.js',
-          // "https://aframe.io/aframe-inspector/dist/aframe-inspector.min.js",
-        ),
+        url: new URL('https://cdn.jsdelivr.net/gh/aframevr/aframe-inspector@master/dist/aframe-inspector.min.js'),
       }}
       cursor="rayOrigin: mouse; fuse: false"
       raycaster="objects: .raycastable"
@@ -280,7 +136,7 @@ const VRPage: NextPage = () => {
           z: 0,
         }}
         align="center"
-        value="unmute 니얼굴 실험"
+        value="unmute"
         mixin="rounded-text-button"
         shader="msdf"
         // font="https://raw.githubusercontent.com/myso-kr/aframe-fonts-korean/master/fonts/ofl/nanumgothic/NanumGothic-Regular.json"
@@ -380,8 +236,8 @@ const VRPage: NextPage = () => {
       <Mixin
         id="rounded-text-button"
         text-button="
-                    textHoverColor: #fff;
-                    textColor: #fff;
+                    textHoverColor: #f0f;
+                    textColor: #000;
                     backgroundColor: #1da1f2;
                     backgroundHoverColor: #2db1ff;
                     "

@@ -1,4 +1,11 @@
-export default AFRAME.registerComponent<{
+import { Entity } from 'aframe';
+
+/**
+ * A button with text
+ * @namespace ui
+ * @component text-button
+ */
+export interface ATextButton {
   schema: {
     textHoverColor: {
       type: string;
@@ -17,12 +24,16 @@ export default AFRAME.registerComponent<{
   play(): void;
   pause(): void;
   update(): void;
-  // updateButtonState(): void;
-  onHover(): void;
-  // onHoverOut(): void;
+  updateButtonState(): void;
+  onHover(e: Event | MouseEvent): void;
+  onHoverOut(e: Event | MouseEvent): void;
+  onClick(e: Event | MouseEvent): void;
   hovering: boolean;
-  // textEl: Element | null;
-}>('text-button', {
+  textEl: Entity | null;
+}
+
+// if (!AFRAME.components['text-button']) {
+export default AFRAME.registerComponent<ATextButton>('text-button', {
   schema: {
     textHoverColor: { type: 'string' },
     textColor: { type: 'string' },
@@ -33,54 +44,67 @@ export default AFRAME.registerComponent<{
     // TODO: This is a bit of a hack to deal with position "component" not setting matrixNeedsUpdate. Come up with a better solution.
     // this.el.object3D.matrixNeedsUpdate = true;
     this.el.object3D.matrixWorldNeedsUpdate = true;
-    // this.onHover = () => {
-    // this.hovering = true;
-    //   this.updateButtonState();
-    // };
-    // this.onHoverOut = () => {
-    //   this.hovering = false;
-    //   this.updateButtonState();
-    // };
-    // this.textEl = this.el.querySelector('[text]');
-  },
+    console.log('registerComponent');
+    this.textEl = this.el.querySelector('[text]');
 
+    if (this.el.getObject3D('mesh')) {
+      // @ts-ignore
+      this.el.components.slice9.material.toneMapped = false;
+      console.log('mesh exists');
+    } else {
+      // @ts-ignore
+      this.el.addEventListener(
+        'object3dset',
+        () => {
+          // @ts-ignore
+          this.el.components.slice9.material.toneMapped = false;
+          console.log('object3dset');
+        },
+        { once: true },
+      );
+      console.log('mesh does not exist');
+    }
+  },
+  textEl: null,
+  hovering: false,
   play() {
-    // this.updateButtonState();
-    // this.el.object3D.addEventListener('hovered', this.onHover);
-    // this.el.object3D.addEventListener('unhovered', this.onHoverOut);
+    this.updateButtonState();
+    this.el.addEventListener('mouseenter', this.onHover.bind(this));
+    this.el.addEventListener('click', this.onClick.bind(this));
+    this.el.addEventListener('mouseleave', this.onHoverOut.bind(this));
   },
 
   pause() {
-    // this.el.object3D.removeEventListener('hovered', this.onHover);
-    // this.el.object3D.removeEventListener('unhovered', this.onHoverOut);
+    this.el.removeEventListener('mouseenter', this.onHover.bind(this));
+    this.el.removeEventListener('mouseleave', this.onHoverOut.bind(this));
   },
 
   update() {
-    // this.updateButtonState();
+    this.updateButtonState();
   },
 
-  // updateButtonState() {
-  //   const hovering = this.hovering;
-  //   this.el.setAttribute(
-  //     'slice9',
-  //     'color',
-  //     hovering ? this.data.backgroundHoverColor : this.data.backgroundColor,
-  //   );
+  updateButtonState() {
+    const hovering = this.hovering;
+    this.el.setAttribute('slice9', 'color', hovering ? this.data.backgroundHoverColor : this.data.backgroundColor);
 
-  //   if (this.textEl) {
-  //     // TODO: 이 부분 체크해야 함
-  //     this.textEl.setAttribute('text', 'color', hovering ? this.data.textHoverColor : this.data.textColor);
-  //   }
-  // },
+    if (this.textEl) {
+      // TODO: 이 부분 체크해야 함
+      this.textEl.setAttribute('text', 'color', hovering ? this.data.textHoverColor : this.data.textColor);
+    }
+  },
 
-  onHover() {
+  onHover(e) {
     this.hovering = true;
-    // this.updateButtonState();
+    console.log('호버됨');
+    this.updateButtonState();
   },
-  hovering: true,
-
-  // onHoverOut() {
-  //   this.hovering = false;
-  //   this.updateButtonState();
-  // },
+  onHoverOut(e) {
+    this.hovering = false;
+    console.log('호버나감');
+    this.updateButtonState();
+  },
+  onClick(e) {
+    console.log('클릭');
+  },
 });
+// }
