@@ -17,6 +17,7 @@ const VRPage: NextPage = () => {
       require('aframe-geometry-merger-component');
       require('aframe-slice9-component');
       require('../../components/text-button');
+      require('../../components/icon-button');
     }
   }, [setRendered]);
 
@@ -31,16 +32,17 @@ const VRPage: NextPage = () => {
       }}
       cursor="rayOrigin: mouse; fuse: false"
       raycaster="objects: .raycastable"
-      background={{
-        transparent: true,
-      }}
-      stats
+      // background={{
+      //   transparent: true,
+      // }}
+      // stats
     >
       {/* <Entity environment /> */}
       <Entity environment="preset: threetowers; active: true;" />
       <Assets>
         <img id="button" src="/assets/hud/button.9.png" alt="button" />
         <img id="mute_on" src="/assets/hud/mute_on.png" alt="button" />
+        <img id="action-button" src="/assets/hud/action_button.9.png" alt="action-button" />
       </Assets>
       {/* <Camera
         lookControls={{
@@ -143,6 +145,37 @@ const VRPage: NextPage = () => {
         className="raycastable"
         width={2}
       />
+      <Entity
+        position={{
+          x: 0,
+          y: 1,
+          z: -1,
+        }}
+        className="raycastable capture-audio"
+        mixin="rounded-action-button"
+      >
+        <Entity
+          icon-button="image: unmute-action.png; hoverImage: unmute-action.png; activeImage: mute-action.png; activeHoverImage: mute-action.png"
+          scale={{
+            x: 0.5,
+            y: 0.5,
+            z: 0.5,
+          }}
+        />
+      </Entity>
+      <Mixin
+        id="rounded-action-button"
+        slice9="
+                    width: 0.2;
+                    height: 0.2;
+                    left: 64;
+                    top: 64;
+                    right: 66;
+                    bottom: 66;
+                    transparent: false;
+                    alphaTest: 0.1;
+                    src: #action-button"
+      />
       {/* </Entity> */}
       <Plane position={{ x: 0, y: 0, z: 0 }} rotation={{ x: -90, y: 0, z: 0 }} width={1} height={1} color="#7BC8A4" />
       {/* <a-text
@@ -193,7 +226,7 @@ const VRPage: NextPage = () => {
         // clickable
       /> */}
       <Text value="Hello World" position={{ x: 0, y: 1.5, z: -4 }} />
-      {/* <Sky color="#ECECEC" /> */}
+      <Sky color="#ECECEC" />
       {/* <a-entity geometry-merger="preserveOriginal: false" material="color: #AAA">
         <a-entity geometry="primitive: box; buffer: false" position="-1 0.5 -2"></a-entity>
         <a-entity geometry="primitive: sphere; buffer: false" position="0 0.5 -2"></a-entity>

@@ -7,7 +7,10 @@
     "start": "next start",
     "lint": "next lint",
     "adb:reverse": "adb reverse tcp:3000 tcp:3000",
-    "generate-css-types": "tailwindcss-classnames"
+    "generate-css-types": "tailwindcss-classnames",
+    "spritesheet": "npm run spritesheet:system-action && npm run spritesheet:system-notice",
+    "spritesheet:system-action": "spritesheet-js -f json -p public/assets/images/spritesheets/ --padding 8 --divisibleByTwo -n sprite-system-action-spritesheet --powerOfTwo public/assets/images/sprites/action/*",
+    "spritesheet:system-notice": "spritesheet-js -f json -p public/assets/images/spritesheets/ --padding 8 --divisibleByTwo -n sprite-system-notice-spritesheet --powerOfTwo public/assets/images/sprites/notice/*"
   },
   "dependencies": {
     "@belivvr/aframe-react": "^0.3.3",
@@ -37,6 +40,7 @@
     "simple-peer": "^9.11.0",
     "socket.io-client": "^4.4.1",
     "soundfont-player": "^0.12.0",
+    "spritesheet-js": "github:mozillareality/spritesheet.js#hubs/master",
     "swr": "^1.1.2",
     "tailwindcss-classnames": "^3.0.2",
     "theme-change": "^2.0.2",

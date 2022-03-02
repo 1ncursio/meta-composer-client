@@ -40,6 +40,8 @@ export default AFRAME.registerComponent<ATextButton>('text-button', {
     backgroundHoverColor: { type: 'string' },
     backgroundColor: { type: 'string' },
   },
+  textEl: null,
+  hovering: false,
   init() {
     // TODO: This is a bit of a hack to deal with position "component" not setting matrixNeedsUpdate. Come up with a better solution.
     // this.el.object3D.matrixNeedsUpdate = true;
@@ -65,8 +67,6 @@ export default AFRAME.registerComponent<ATextButton>('text-button', {
       console.log('mesh does not exist');
     }
   },
-  textEl: null,
-  hovering: false,
   play() {
     this.updateButtonState();
     this.el.addEventListener('mouseenter', this.onHover.bind(this));
