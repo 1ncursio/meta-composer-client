@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import React from 'react';
-import useTabs from '../../hooks/useTabs';
+import useTabs from '@hooks/useTabs';
 import * as styles from './styles';
 import { AiOutlinePieChart } from 'react-icons/ai';
 import { RiBookLine } from 'react-icons/ri';

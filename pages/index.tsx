@@ -1,7 +1,7 @@
 import type { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
-import ToggleThemeButton from '../react-components/ToggleThemeButton';
+import ToggleThemeButton from '@react-components/ToggleThemeButton';
 import styles from '../styles/Home.module.css';
 
 const Home: NextPage = () => {

@@ -5,8 +5,8 @@ import React from 'react';
 import { FaFacebookF } from 'react-icons/fa';
 import { FiBell } from 'react-icons/fi';
 import useSWR from 'swr';
-import fetcher from '../lib/api/fetcher';
-import IUser from '../typings/IUser';
+import fetcher from '@lib/api/fetcher';
+import IUser from '@typings/IUser';
 import Avatar from './Avatar';
 
 const Header = () => {

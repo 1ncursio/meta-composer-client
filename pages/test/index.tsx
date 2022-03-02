@@ -1,4 +1,4 @@
-import Connect from '../../react-components/Connect';
+import Connect from '@react-components/Connect';
 
 const index = () => {
   return (

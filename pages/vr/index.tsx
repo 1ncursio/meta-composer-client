@@ -16,8 +16,8 @@ const VRPage: NextPage = () => {
       require('aframe');
       require('aframe-geometry-merger-component');
       require('aframe-slice9-component');
-      require('../../components/text-button');
-      require('../../components/icon-button');
+      require('@components/text-button');
+      require('@components/icon-button');
     }
   }, [setRendered]);
 

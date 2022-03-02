@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { ServerData } from '../../../typings/ServerData';
+import { ServerData } from '@typings/ServerData';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<ServerData>) {
   // extract the token from the request header

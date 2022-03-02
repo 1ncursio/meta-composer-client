@@ -4,8 +4,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { isMobile } from 'react-device-detect';
-import RoomEntryContainer from '../../../react-components/RoomEntryContainer';
-import isOculusBrowser from '../../../utils/isOculusBrowser';
+import RoomEntryContainer from '@react-components/RoomEntryContainer';
+import isOculusBrowser from '@utils/isOculusBrowser';
 
 export interface VRRoomPageProps {
   isOculus: boolean;
