@@ -1,4 +1,4 @@
-import { Assets, Entity, Mixin, Plane, Scene, Sky, Text } from '@belivvr/aframe-react';
+import { Assets, Box, Entity, Mixin, Plane, Scene, Sky, Text } from '@belivvr/aframe-react';
 import { GetStaticProps, NextPage } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Script from 'next/script';
@@ -18,6 +18,7 @@ const VRPage: NextPage = () => {
       require('aframe-slice9-component');
       require('../../components/text-button');
       require('../../components/icon-button');
+      require('aframe-html-shader');
     }
   }, [setRendered]);
 
@@ -258,6 +259,28 @@ const VRPage: NextPage = () => {
           src: '#button',
         })}
       />
+      {/* <a-entity geometry="primitive: box" material="shader: html; target: #htmlElement"></a-entity> */}
+      <Box
+        material={{
+          shader: 'html',
+          target: '#htmlElement',
+        }}
+      />
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          position: 'fixed',
+          left: 0,
+          top: 0,
+          zIndex: -1,
+          overflow: 'hidden',
+        }}
+      >
+        <div id="htmlElement" style={{ background: '#F8F8F8', color: '#333', fontSize: '48px' }}>
+          Hello, HTML!
+        </div>
+      </div>
     </Scene>
   );
 };
