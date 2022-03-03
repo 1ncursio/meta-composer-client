@@ -1,6 +1,6 @@
 import axios from 'axios';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
-import useStore from '../../store/useStore';
+import useStore from '@store/useStore';
 import refreshAccessToken from './auth/refreshAccessToken';
 
 export interface TokenPayload extends JwtPayload {

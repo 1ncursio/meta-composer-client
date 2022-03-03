@@ -1,6 +1,6 @@
 import produce from 'immer';
 import { AppSlice } from './useStore';
-import client from '../lib/api/client';
+import client from '@lib/api/client';
 
 export interface UserSlice {
   user: {

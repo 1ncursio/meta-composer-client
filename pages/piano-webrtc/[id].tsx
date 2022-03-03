@@ -4,10 +4,10 @@ import { useRouter } from 'next/router';
 import Pusher from 'pusher-js';
 import React, { useCallback, useEffect, useState } from 'react';
 import Peer, { SignalData } from 'simple-peer';
-import client from '../../lib/api/client';
-import useStore from '../../store/useStore';
-import PusherParse from '../../typings/PuherPaser';
-import Rtc from '../../typings/Rtc';
+import client from '@lib/api/client';
+import useStore from '@store/useStore';
+import PusherParse from '@typings/PuherPaser';
+import Rtc from '@typings/Rtc';
 
 const PianoWebRTCPage = () => {
   const router = useRouter();

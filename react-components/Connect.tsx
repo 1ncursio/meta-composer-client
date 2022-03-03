@@ -3,10 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 import Peer from 'simple-peer';
 import { io, Socket } from 'socket.io-client';
 import useSWR from 'swr';
-import fetcher from '../lib/api/fetcher';
-import useStore from '../store/useStore';
-import IUser from '../typings/IUser';
-import RtcData from '../typings/RtcData';
+import fetcher from '@lib/api/fetcher';
+import useStore from '@store/useStore';
+import IUser from '@typings/IUser';
+import RtcData from '@typings/RtcData';
 
 const Connect = () => {
   const { data: userData } = useSWR<IUser>('/auth', fetcher);

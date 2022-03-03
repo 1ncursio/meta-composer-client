@@ -1,6 +1,6 @@
-import Peers from '../typings/Peers';
+import Peers from '@typings/Peers';
 import Peer from 'simple-peer';
-import IUser from '../typings/IUser';
+import IUser from '@typings/IUser';
 import { AppSlice } from './useStore';
 import produce from 'immer';
 

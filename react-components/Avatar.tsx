@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { FC } from 'react';
-import IUser from '../typings/IUser';
+import IUser from '@typings/IUser';
 import AvatarDropdown from './AvatarDropdown/AvatarDropdown';
 
 export interface AvatarProps {

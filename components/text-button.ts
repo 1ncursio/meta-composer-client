@@ -1,10 +1,5 @@
 import { Entity } from 'aframe';
 
-/**
- * A button with text
- * @namespace ui
- * @component text-button
- */
 export interface ATextButton {
   schema: {
     textHoverColor: {
@@ -32,6 +27,11 @@ export interface ATextButton {
   textEl: Entity | null;
 }
 
+/**
+ * A button with text
+ * @namespace ui
+ * @component text-button
+ */
 export default AFRAME.registerComponent<ATextButton>('text-button', {
   schema: {
     textHoverColor: { type: 'string' },
