@@ -1,4 +1,8 @@
-class Player {
+import { AudioPlayer } from './AudioPlayer';
+import Song from './Song';
+
+export default class Player {
+  private static instance: Player;
   newSongCallbacks: never[];
   inputActiveNotes: {};
   audioPlayer: any;
@@ -19,12 +23,13 @@ class Player {
   lastMicNote: number;
   inputPlayedNotes: never[];
   playbackSpeed: number;
-  song: any;
-  constructor() {
+  song: Song;
+  private constructor() {
     this.audioPlayer = new AudioPlayer();
 
-    getMidiHandler().setNoteOnCallback(this.addInputNoteOn.bind(this));
-    getMidiHandler().setNoteOffCallback(this.addInputNoteOff.bind(this));
+    // TODO: MidiHandler 에서 이벤트 받아서 처리하도록 변경
+    // getMidiHandler().setNoteOnCallback(this.addInputNoteOn.bind(this));
+    // getMidiHandler().setNoteOffCallback(this.addInputNoteOff.bind(this));
 
     this.lastTime = this.audioPlayer.getContextTime();
     this.progress = 0;
@@ -35,8 +40,13 @@ class Player {
     this.muted = false;
     this.volume = 100;
     this.mutedAtVolume = 100;
-    this.soundfontName = getSetting('soundfontName');
-    this.useHqPiano = getSetting('useHQPianoSoundfont');
+
+    // TODO: setting 설정 추가하면 주석 삭제
+    // this.soundfontName = getSetting('soundfontName');
+    // this.useHqPiano = getSetting('useHQPianoSoundfont');
+    this.soundfontName = 'MusyngKite';
+    this.useHqPiano = false;
+
     this.inputInstrument = 'acoustic_grand_piano';
     this.lastMicNote = -1;
 
@@ -49,19 +59,21 @@ class Player {
     console.log('Player created.');
     this.playTick();
 
-    setSettingCallback('hideRestsBelow', () => {
-      if (this.song && getSetting('enableSheet')) {
-        this.song.generateSheet();
-      }
-    });
+    // TODO: setting 설정 추가하면 주석 삭제
+    // setSettingCallback('hideRestsBelow', () => {
+    //   if (this.song && getSetting('enableSheet')) {
+    //     this.song.generateSheet();
+    //   }
+    // });
+
+    this.song.generateSheet();
   }
+
+  public static getInstance() {
+    return this.instance || (this.instance = new this());
+  }
+
   playTick() {
     throw new Error('Method not implemented.');
   }
 }
-
-let player = null;
-
-export const initPlayer = () => {
-  player = new Player();
-};

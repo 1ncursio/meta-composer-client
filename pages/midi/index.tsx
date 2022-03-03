@@ -11,6 +11,7 @@ const MIDIPage = () => {
 
     reader.onload = (theFile) => {
       console.log({ result: reader.result, fileName });
+      // getPlayer();
       console.log('loaded midiFile');
     };
     reader.readAsDataURL(file);
