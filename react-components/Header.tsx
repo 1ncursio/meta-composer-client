@@ -1,18 +1,34 @@
+import fetcher from '@lib/api/fetcher';
+import IUser from '@typings/IUser';
+import { getBackEndUrl } from '@utils/getEnv';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import { FaFacebookF } from 'react-icons/fa';
+import { FcGoogle } from 'react-icons/fc';
 import { FiBell } from 'react-icons/fi';
 import useSWR from 'swr';
-import fetcher from '@lib/api/fetcher';
-import IUser from '@typings/IUser';
 import Avatar from './Avatar';
-import getEnv from '@utils/getEnv';
 
 const Header = () => {
   const { t } = useTranslation('common');
   const { data: userData } = useSWR<IUser>('/auth', fetcher);
+
+  const onClickLogin = (provider: string) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const BACKEND_URL = getBackEndUrl();
+
+    switch (provider) {
+      case 'facebook':
+        window.location.href = `${BACKEND_URL}/auth/facebook`;
+        break;
+      case 'google':
+        window.location.href = `${BACKEND_URL}/auth/google`;
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <header className="container">
@@ -78,18 +94,20 @@ const Header = () => {
                 <div className="modal-box max-w-md">
                   <h3 className="font-bold text-lg">간편 로그인</h3>
                   <p className="py-4">로그인 모달</p>
-                  <a
-                    href={`${getEnv('BACKEND_URL')}/auth/facebook`}
-                    className="btn btn-circle bg-[#2374e1] border-none hover:bg-[#2374e1]"
-                  >
-                    <FaFacebookF size={24} />
-                  </a>
-                  <a
-                    href={`${getEnv('BACKEND_URL')}/auth/facebook`}
-                    className="btn btn-circle bg-[#2374e1] border-none hover:bg-[#2374e1]"
-                  >
-                    <FaFacebookF size={24} />
-                  </a>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={onClickLogin('facebook')}
+                      className="btn btn-circle bg-[#2374e1] border-none hover:bg-[#2374e1]"
+                    >
+                      <FaFacebookF size={24} />
+                    </button>
+                    <button
+                      onClick={onClickLogin('google')}
+                      className="btn btn-circle bg-[#F8F8F8] border-none hover:bg-[#F8F8F8]"
+                    >
+                      <FcGoogle size={24} />
+                    </button>
+                  </div>
                   <div className="modal-action">
                     <label htmlFor="my-modal" className="btn">
                       닫기

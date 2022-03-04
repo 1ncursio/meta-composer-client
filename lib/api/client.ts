@@ -1,8 +1,8 @@
+import useStore from '@store/useStore';
+import { getBackEndUrl } from '@utils/getEnv';
 import axios from 'axios';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
-import useStore from '@store/useStore';
 import refreshAccessToken from './auth/refreshAccessToken';
-import getEnv from '@utils/getEnv';
 
 export interface TokenPayload extends JwtPayload {
   userId: string;
@@ -18,7 +18,7 @@ const client = axios.create({
   cancelToken: source.token,
 });
 
-client.defaults.baseURL = getEnv('BACKEND_URL');
+client.defaults.baseURL = getBackEndUrl();
 
 export const refreshInterceptor = client.interceptors.request.use(
   async (config) => {

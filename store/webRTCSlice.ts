@@ -1,10 +1,10 @@
-import Peers from '@typings/Peers';
-import Peer from 'simple-peer';
 import IUser from '@typings/IUser';
-import { AppSlice, AppState } from './useStore';
+import Peers from '@typings/Peers';
+import { getTurnCredential, getTurnUrl, getTurnUsername } from '@utils/getEnv';
 import produce from 'immer';
+import Peer from 'simple-peer';
 import { Socket } from 'socket.io-client';
-import getEnv from '@utils/getEnv';
+import { AppSlice, AppState } from './useStore';
 
 export interface WebRTCSlice {
   webRTC: {
@@ -34,9 +34,9 @@ const createWebRTCSlice: AppSlice<WebRTCSlice> = (set, get) => ({
     },
     // TODO: media 스트림이 필요하면(Oculus 2 Oculus 연결) 미디어 스트림용 makePeer 만들어야 함
     addAfterMakePeer: (userId, initiator, socket, isOculus) => {
-      const TURN_URL = getEnv('TURN_URL');
-      const TURN_USERNAME = getEnv('TURN_USERNAME');
-      const TURN_CREDENTIAL = getEnv('TURN_CREDENTIAL');
+      const TURN_URL = getTurnUrl();
+      const TURN_USERNAME = getTurnUsername();
+      const TURN_CREDENTIAL = getTurnCredential();
 
       if (!TURN_URL) {
         throw new Error('TURN_URL is not defined');
