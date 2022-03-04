@@ -12,6 +12,7 @@ import fetcher from '@lib/api/fetcher';
 import useStore from '@store/useStore';
 import IUser from '@typings/IUser';
 import * as styles from './styles';
+import RtcData from '@typings/RtcData';
 
 export interface RoomEntryContainerProps {
   isOculus: boolean;
@@ -25,6 +26,7 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
   const { hasMIDI, inputs } = useMIDI();
   const message = useMIDIMessage(inputs[selected]);
   const { pressedKeys, addPressedKey, removePressedKey } = useStore((state) => state.piano);
+  const { peers, removePeer, resetPeers, addAfterMakePeer } = useStore((state) => state.webRTC);
   const { data: userData } = useSWR<IUser>('/auth', fetcher);
 
   const firstNote = MidiNumbers.fromNote('a0');
@@ -68,15 +70,27 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
 
   useEffect(() => {
     if (userData && socket) {
-      socket.on('connect', () => {
-        console.log('self setup socket connected');
+      socket
+        .on('connect', () => {
+          console.log('self setup socket connected');
 
-        socket.emit('setInit');
-      });
+          socket.emit('setInit');
+        })
+        .on('getOffer', (offerData: RtcData) => {
+          console.log('offer 받음');
+
+          const peer = addAfterMakePeer(userData.id, false, socket, isOculus);
+          peer.signal(offerData);
+        })
+        .on('sendOffer', () => {
+          console.log('offer 보냄');
+
+          addAfterMakePeer(userData.id, true, socket, isOculus);
+        });
     }
 
     return () => {
-      socket?.off('connect');
+      socket?.off('connect').off('getOffer').off('sendOffer');
     };
   }, [socket, userData]);
 
@@ -124,6 +138,9 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
       ) : (
         <h3>감지된 MIDI 키보드가 없습니다. MIDI 키보드를 연결해 주세요.</h3>
       )}
+      {Object.keys(peers).map((peerId, i) => (
+        <div key={peerId}>{`${i + 1}번째 피어 : ${peerId}`}</div>
+      ))}
       <div className="w-full 2xl:h-36 xl:h-32 lg:h-28 md:h-24 h-20">
         <ControlledPiano
           noteRange={{ first: firstNote, last: lastNote }}

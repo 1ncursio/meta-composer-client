@@ -2,6 +2,7 @@ import axios from 'axios';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
 import useStore from '@store/useStore';
 import refreshAccessToken from './auth/refreshAccessToken';
+import getEnv from '@utils/getEnv';
 
 export interface TokenPayload extends JwtPayload {
   userId: string;
@@ -17,8 +18,7 @@ const client = axios.create({
   cancelToken: source.token,
 });
 
-client.defaults.baseURL =
-  process.env.NODE_ENV === 'development' ? process.env.NEXT_PUBLIC_BACKEND_URL : 'https://jungse.shop';
+client.defaults.baseURL = getEnv('BACKEND_URL');
 
 export const refreshInterceptor = client.interceptors.request.use(
   async (config) => {

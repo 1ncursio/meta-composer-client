@@ -1,13 +1,12 @@
 import io, { Socket } from 'socket.io-client';
 import { useCallback } from 'react';
 import useStore from '@store/useStore';
-
-const backUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:4000' : 'https://jungse.shop';
+import getEnv from '@utils/getEnv';
 
 const sockets: { [key: string]: Socket } = {};
 
 const useSocket = (workspace?: string): [Socket | undefined, () => void] => {
-  const { accessToken } = useStore((state) => state.user);
+  const { getAccessToken } = useStore((state) => state.user);
   console.log('rerender', workspace);
 
   const disconnect = useCallback(() => {
@@ -22,14 +21,11 @@ const useSocket = (workspace?: string): [Socket | undefined, () => void] => {
   }
 
   if (!sockets[workspace]) {
-    sockets[workspace] = io(`${backUrl}/${workspace}`, {
+    sockets[workspace] = io(`${getEnv('SOCKET_URL')}/${workspace}`, {
       transports: ['websocket'],
       withCredentials: true,
-      extraHeaders: {
-        authorization: accessToken ?? '',
-      },
       auth: {
-        token: accessToken ?? '',
+        token: getAccessToken(),
       },
     });
   }

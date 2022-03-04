@@ -1,5 +1,6 @@
 import Peer from 'simple-peer';
+import IUser from './IUser';
 
 export default interface Peers {
-  [key: string]: Peer.Instance;
+  [userId: IUser['id']]: Peer.Instance;
 }

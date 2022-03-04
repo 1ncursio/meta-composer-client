@@ -1,8 +1,8 @@
+import getEnv from '@utils/getEnv';
 import axios from 'axios';
 
 const refreshClient = axios.create({ withCredentials: true });
 
-refreshClient.defaults.baseURL =
-  process.env.NODE_ENV === 'development' ? process.env.NEXT_PUBLIC_BACKEND_URL : 'https://jungse.shop';
+refreshClient.defaults.baseURL = getEnv('BACKEND_URL');
 
 export default refreshClient;

@@ -1,3 +1,4 @@
+import { isDev } from '@utils/getEnv';
 import { enableMapSet } from 'immer';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 import create, { GetState, SetState } from 'zustand';
@@ -20,7 +21,7 @@ const useStore = create<AppState>((set, get) => ({
   ...createWebRTCSlice(set, get),
 }));
 
-if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
+if (isDev() && typeof window !== 'undefined') {
   /**
    * simple-zustand-devtool 의 타입과 store의 타입이 다르지만, 동작에는 문제가 없으므로 이렇게 해둠.
    * 그리고 Next.js 서버에서 먼저 한 번 실행되는데, 서버에는 window가 없으므로 이렇게 해둠.

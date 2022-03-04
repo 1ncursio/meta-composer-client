@@ -2,7 +2,6 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "~/*": ["*"],
       "@components/*": ["components/*"],
       "@react-components/*": ["react-components/*"],
       "@utils/*": ["utils/*"],
@@ -11,7 +10,8 @@
       "@pages/*": ["pages/*"],
       "@lib/*": ["lib/*"],
       "@hooks/*": ["hooks/*"],
-      "@typings/*": ["typings/*"]
+      "@typings/*": ["typings/*"],
+      "~/*": ["*"]
     },
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],

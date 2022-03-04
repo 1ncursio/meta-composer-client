@@ -8,6 +8,7 @@ import useSWR from 'swr';
 import fetcher from '@lib/api/fetcher';
 import IUser from '@typings/IUser';
 import Avatar from './Avatar';
+import getEnv from '@utils/getEnv';
 
 const Header = () => {
   const { t } = useTranslation('common');
@@ -78,7 +79,13 @@ const Header = () => {
                   <h3 className="font-bold text-lg">간편 로그인</h3>
                   <p className="py-4">로그인 모달</p>
                   <a
-                    href="https://jungse.shop/auth/facebook"
+                    href={`${getEnv('BACKEND_URL')}/auth/facebook`}
+                    className="btn btn-circle bg-[#2374e1] border-none hover:bg-[#2374e1]"
+                  >
+                    <FaFacebookF size={24} />
+                  </a>
+                  <a
+                    href={`${getEnv('BACKEND_URL')}/auth/facebook`}
                     className="btn btn-circle bg-[#2374e1] border-none hover:bg-[#2374e1]"
                   >
                     <FaFacebookF size={24} />

@@ -87,7 +87,7 @@ const Connect = () => {
   //   []
   // );
 
-  const makePeer = (initiator: boolean, soket: Socket, myPeer: Peer.Instance | undefined, media: MediaStream) => {
+  const makePeer = (initiator: boolean, socket: Socket, myPeer: Peer.Instance | undefined, media: MediaStream) => {
     console.log({ myPeer }, 'makepeer');
     if (myPeer === undefined) {
       console.log('만드는중');
@@ -112,9 +112,9 @@ const Connect = () => {
       });
       peer
         .on('signal', (data: Peer.SignalData) => {
-          if (soket && userData) {
+          if (socket && userData) {
             console.log('heepw');
-            soket.emit('getOffer', {
+            socket.emit('getOffer', {
               userId: userData.id,
               data,
             });

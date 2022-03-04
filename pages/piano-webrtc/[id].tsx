@@ -18,7 +18,7 @@ const PianoWebRTCPage = () => {
   const { inputs, outputs, hasMIDI } = useMIDI(); // Initially returns [[], []]
   const message = useMIDIMessage(inputs[0]);
   const { pressedKeys, addPressedKey, removePressedKey } = useStore((state) => state.piano);
-  const { peers, addPeer, removePeer, resetPeers } = useStore((state) => state.webRTC);
+  const { peers, removePeer, resetPeers } = useStore((state) => state.webRTC);
 
   // midimessage 발생했을 때 실행
   useEffect(() => {
@@ -34,7 +34,7 @@ const PianoWebRTCPage = () => {
   }, [message]);
 
   const gett = useCallback(
-    (initiator: boolean, id: string) => {
+    (initiator: boolean, id: number) => {
       if (peers[id]) {
         return peers[id];
       }
@@ -99,14 +99,13 @@ const PianoWebRTCPage = () => {
         .on('error', (err: Error) => {
           console.log(err);
         });
-      addPeer(parseInt(id), peer);
       return peer;
     },
-    [peers, addPeer, resetPeers],
+    [peers, resetPeers],
   );
 
   const getPeer = (initiator: boolean) => (e: React.MouseEvent) => {
-    const userId = id === '1' ? '2' : '1';
+    const userId = id === '1' ? 2 : 1;
     return gett(true, userId);
   };
 
@@ -128,7 +127,7 @@ const PianoWebRTCPage = () => {
     channel.bind('event', function (event: PusherParse) {
       const offerData: Rtc = event.data;
       if (offerData.userId === id) {
-        const peer = gett(false, id === '1' ? '2' : '1');
+        const peer = gett(false, id === '1' ? 2 : 1);
         console.log('check', peer);
         peer.signal(offerData.data);
       }

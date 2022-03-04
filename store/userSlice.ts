@@ -5,6 +5,7 @@ import client from '@lib/api/client';
 export interface UserSlice {
   user: {
     accessToken: string;
+    getAccessToken: () => string;
     setAccessToken: (accessToken?: string) => void;
   };
 }
@@ -12,6 +13,9 @@ export interface UserSlice {
 const createUserSlice: AppSlice<UserSlice> = (set, get) => ({
   user: {
     accessToken: '',
+    getAccessToken: () => {
+      return get().user.accessToken;
+    },
     setAccessToken: (accessToken) => {
       set(
         produce((state) => {
