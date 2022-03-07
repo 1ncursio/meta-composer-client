@@ -1,5 +1,6 @@
 // import { CONST } from './data/CONST.js';
 // import { getSetting } from './settings/Settings.js';
+import { MidiEvent } from '@typings/MidiEvent.js';
 import CONST from './CONST.js';
 import { SheetGenerator } from './sheet/SheetGenerator.js';
 // import { getLoader } from './ui/Loader.js';
@@ -28,16 +29,17 @@ export interface KeySignature {
 
 export interface SustainPeriod {
   channel: string;
-  end: number;
+  /* 무조건 있지만 한번에 계산되지 않아서 optional 처리 */
+  end?: number;
   start: number;
   value: number;
 }
 
 export interface SustainsByChannelAndSecond {
-  [channel: string]: { [second: number]: SustainPeriod[] };
+  [channel: string]: { [second: string]: Sustain[] };
 }
 
-export interface SustainByChannelAndSecond {
+export interface Sustain {
   timestamp: number;
   isOn: boolean;
   value: number;
@@ -73,9 +75,10 @@ export interface MidiNote {
   noteNumber: number;
   offTime: number;
   offVelocity: number;
-  sustainDuration: number;
-  sustainOffTime: number;
-  sustainOnTime: number;
+  /* setNoteSustainTimestamps 메서드로 지정하지 않으면 기본값이 null임. */
+  sustainDuration: number | null;
+  sustainOffTime: number | null;
+  sustainOnTime: number | null;
   temporalDelta: number;
   timestamp: number;
   track: number;
@@ -89,31 +92,24 @@ export interface BPM {
 }
 
 export interface BeatsBySecond {
-  [key: number]: number[][];
+  [key: string]: number[][];
 }
 
 export interface TemporalData {
   bpms: BPM[];
   beatsBySecond: BeatsBySecond;
-  sustainsByChannelAndSecond: {
-    // 채널
-    [key: string]: {
-      // 초
-      [key: string]: {
-        timestamp: number;
-        isOn: boolean;
-        value: number;
-      };
-    };
-  };
-  timeSignatures: any[];
-  keySignatures: any[];
+  sustainsByChannelAndSecond: SustainsByChannelAndSecond;
+  timeSignatures: TimeSignature[];
+  keySignatures: KeySignature[];
 }
 
 export interface MidiData {
   header: MidiHeader;
   tracks: MidiEvent[][];
   temporalData: TemporalData;
+  trackInstruments: {
+    [trackIndex: string]: string[];
+  };
 }
 
 export interface MidiHeader {
@@ -124,85 +120,6 @@ export interface MidiHeader {
   /* 비트 당 틱의 수 */
   ticksPerBeat: number;
 }
-export type MidiSystemEvent = 'sysEx' | 'endSysEx';
-export type MidiMetaEvent =
-  | 'sequenceNumber'
-  | 'text'
-  | 'copyrightNotice'
-  | 'trackName'
-  | 'instrumentName'
-  | 'lyrics'
-  | 'marker'
-  | 'cuePoint'
-  | 'channelPrefix'
-  | 'portPrefix'
-  | 'endOfTrack'
-  | 'setTempo'
-  | 'smpteOffset'
-  | 'timeSignature'
-  | 'keySignature'
-  | 'sequencerSpecific'
-  | 'unknownMeta';
-export type MidiSystemAndMetaEvent = MidiSystemEvent | MidiMetaEvent;
-export type MidiChannelEvent =
-  /* 노트 끄기 */
-  | 'noteOff'
-  /* 노트 켜기 */
-  | 'noteOn'
-  /* 눌려진 노트의 압력 변경(특정 음의 추가 표현에 사용되며, 악기의 서스테인 단계 동안 일부 유형의 변조를 적용하거나 증가시킴) */
-  | 'noteAfterTouch'
-  /* MIDI 채널 상태의 변경 이벤트. 채널에는 볼륨, 팬, 변조, 효과 등을 포함한 128개의 컨트롤러가 있음. */
-  | 'controller'
-  /* MIDI 채널에서 재생할 프로그램(악기, patch)를 변경하는 이벤트 */
-  | 'programChange'
-  /**
-   * 채널 애프터터치 이벤트는 특정 MIDI 채널에서 현재 눌러진 모든 키에 영향을 미친다는 점을 제외하고는 note after touch 이벤트와 유사함.
-   * (0 = 압력 없음, 127 = 전체 압력)이라는 매개변수 하나만 사용함.
-   * */
-  | 'channelAfterTouch'
-  /**
-   * 컨트롤러 이벤트와 유사하지만, 값을 표현하기 위한 2바이트를 포함한 고유한 MIDI 이벤트.
-   * 0~16383의 값이 가능하며, 8192 미만의 값은 피치를 낮추고 8192 이상은 피치를 높인다.
-   * 피치 범위는 악기마다 다를 수 있지만 일반적으로 +/-2 가 반음이다.
-   *  */
-  | 'pitchBend';
-export type MidiEventType = MidiSystemAndMetaEvent | MidiChannelEvent;
-// (local var) event: {
-//     deltaTime: any;
-//     meta: boolean;
-//     type: string;
-//     number: any;
-//     text: any;
-//     channel: any;
-//     port: any;
-//     microsecondsPerBeat: any;
-//     frameRate: any;
-//     hour: number;
-//     min: any;
-//     sec: any;
-//     frame: any;
-//     subFrame: any;
-//     numerator: any;
-//     ... 15 more ...;
-//     programNumber: any;
-// }
-export interface MidiEvent {
-  //   data: Uint8Array;
-  //   deltaTime: number;
-  //   meta: boolean;
-  //   metatypeByte: number;
-  //   temporalDelta: number;
-  //   timestamp: number;
-  //   type: MidiEventType;
-  /* 이벤트의 지속시간 */
-  deltaTime: number;
-  /* 메타 이벤트인지 아닌지 */
-  meta: boolean;
-  /* 이벤트의 타입 */
-  type: MidiEventType;
-  /* 이벤트가 발생한 트랙의 일련번호 */
-  number: number;
-}
 
 export interface ActiveTrack {
   // TODO: 악기 이름을 추가해야 함
@@ -211,6 +128,7 @@ export interface ActiveTrack {
   meta: any;
   /* 트랙의 이름 e.g. Piano right */
   name: string;
+  notesBySeconds: { [second: string]: MidiNote[] };
 }
 
 export default class Song {
@@ -226,11 +144,12 @@ export default class Song {
   timeSignatures: TimeSignature[];
   keySignatures: KeySignature[];
   notesBySeconds: {};
-  controlEvents: never[];
-  temporalData: any;
-  sustainsByChannelAndSecond: SustainByChannelAndSecond[];
+  controlEvents: Object;
+  temporalData: TemporalData;
+  sustainsByChannelAndSecond: SustainsByChannelAndSecond;
   header: any;
-  tracks: any;
+  /* 트랙별로 분리된 모든 이벤트인 듯. */
+  tracks: MidiNote[];
   markers: never[];
   otherTracks: never[];
   activeTracks: ActiveTrack[];
@@ -256,7 +175,7 @@ export default class Song {
     this.timeSignatures = [];
     this.keySignatures = [];
     this.notesBySeconds = {};
-    this.controlEvents = [];
+    this.controlEvents = {};
     this.temporalData = midiData.temporalData;
     this.sustainsByChannelAndSecond = midiData.temporalData.sustainsByChannelAndSecond;
 
@@ -377,6 +296,7 @@ export default class Song {
       });
     });
   }
+
   setSustainPeriods() {
     this.sustainPeriods = [];
 
@@ -403,10 +323,12 @@ export default class Song {
       }
     }
   }
+
   getMicrosecondsPerBeat() {
     return this.microSecondsPerBeat;
   }
-  getBPM(time) {
+
+  getBPM(time: number) {
     for (let i = this.temporalData.bpms.length - 1; i >= 0; i--) {
       if (this.temporalData.bpms[i].timestamp < time) {
         return this.temporalData.bpms[i].bpm;
@@ -419,6 +341,7 @@ export default class Song {
     let secondStart = Math.floor(from);
     let secondEnd = Math.floor(to);
     let notes = [];
+
     for (let i = secondStart; i < secondEnd; i++) {
       for (let track in this.activeTracks) {
         if (this.activeTracks[track].notesBySeconds.hasOwnProperty(i)) {
@@ -431,6 +354,7 @@ export default class Song {
         }
       }
     }
+
     return notes;
   }
 
@@ -479,7 +403,7 @@ export default class Song {
     });
     return Object.keys(instruments);
   }
-  processEvents(midiData) {
+  processEvents(midiData: MidiData) {
     midiData.trackInstruments = {};
     midiData.tracks.forEach((track, trackIndex) => {
       midiData.trackInstruments[trackIndex] = this.getAllInstrumentsOfTrack(track);
