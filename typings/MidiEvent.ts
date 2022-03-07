@@ -1,4 +1,4 @@
-export interface MidiEvent {
+export interface BaseMidiEvent {
   /* 이벤트의 타입 */
   type: MidiEventType;
   /* 이벤트의 지속시간 */
@@ -7,7 +7,7 @@ export interface MidiEvent {
 
 /* midi meta events */
 
-export interface MidiMetaEvent extends MidiEvent {
+export interface MidiMetaEvent extends BaseMidiEvent {
   type: MidiMetaEventType;
   /* 메타 이벤트일 경우 무조건 meta 프로퍼티가 true인 상태로 존재함. */
   meta: true;
@@ -112,23 +112,101 @@ export interface MidiMetaUnknownMetaEvent extends MidiMetaEvent {
 
 /* midi system events */
 
-export interface MidiSystemEvent extends MidiEvent {
+export interface MidiSystemEvent extends BaseMidiEvent {
   type: MidiSystemEventType;
   data: Uint8Array;
 }
 
-export interface MidiSystemSysexEvent extends MidiSystemEvent {
+export interface MidiSystemSysExEvent extends MidiSystemEvent {
   type: 'sysEx';
+  data: Uint8Array;
+}
+
+export interface MidiSystemEndSysExEvent extends MidiSystemEvent {
+  type: 'endSysEx';
   data: Uint8Array;
 }
 
 /* midi channel events */
 
-export interface MidiChannelEvent extends MidiEvent {
+export interface MidiChannelEvent extends BaseMidiEvent {
   type: MidiChannelEventType;
   /* 이벤트가 발생한 채널의 일련번호 */
   channel: number;
 }
+
+export interface MidiChannelNoteEvent extends MidiChannelEvent {
+  type: 'noteOn' | 'noteOff' | 'noteAftertouch';
+  /* note number은 midi note number - 21과 같음 */
+  noteNumber: number;
+  midiNoteNumber: number;
+}
+
+export interface MidiChannelNoteOnEvent extends MidiChannelNoteEvent {
+  type: 'noteOn';
+  velocity: number;
+}
+
+export interface MidiChannelNoteOffEvent extends MidiChannelNoteEvent {
+  type: 'noteOff';
+  velocity: number;
+  byte9: true;
+}
+
+export interface MidiChannelNoteAftertouchEvent extends MidiChannelNoteEvent {
+  type: 'noteAftertouch';
+  amount: number;
+}
+
+export interface MidiChannelControllerEvent extends MidiChannelEvent {
+  type: 'controller';
+  controllerType: number;
+  value: number;
+}
+
+export interface MidiChannelProgramChangeEvent extends MidiChannelEvent {
+  type: 'programChange';
+  programNumber: number;
+}
+
+export interface MidiChannelChannelAftertouchEvent extends MidiChannelEvent {
+  type: 'channelAftertouch';
+  amount: number;
+}
+
+export interface MidiChannelPitchBendEvent extends MidiChannelEvent {
+  type: 'pitchBend';
+  value: number;
+}
+
+/* 트랙내에서의 모든 미디 이벤트 */
+export type MidiEvent =
+  | MidiMetaSequenceNumberEvent
+  | MidiMetaTextEvent
+  | MidiMetaCopyrightNoticeEvent
+  | MidiMetaTrackNameEvent
+  | MidiMetaInstrumentNameEvent
+  | MidiMetaLyricsEvent
+  | MidiMetaMarkerEvent
+  | MidiMetaCuePointEvent
+  | MidiMetaChannelPrefixEvent
+  | MidiMetaPortPrefixEvent
+  | MidiMetaEndOfTrackEvent
+  | MidiMetaSetTempoEvent
+  | MidiMetaSMPTEOffsetEvent
+  | MidiMetaTimeSignatureEvent
+  | MidiMetaKeySignatureEvent
+  | MidiMetaSequencerSpecificEvent
+  | MidiMetaUnknownMetaEvent
+  | MidiSystemSysExEvent
+  | MidiSystemEndSysExEvent
+  | MidiChannelNoteOnEvent
+  | MidiChannelNoteOffEvent
+  | MidiChannelNoteAftertouchEvent
+  | MidiChannelControllerEvent
+  | MidiChannelProgramChangeEvent
+  | MidiChannelChannelAftertouchEvent
+  | MidiChannelPitchBendEvent;
 
 export type MidiSystemEventType = 'sysEx' | 'endSysEx';
 export type MidiMetaEventType =
@@ -156,7 +234,7 @@ export type MidiChannelEventType =
   /* 노트 켜기 */
   | 'noteOn'
   /* 눌려진 노트의 압력 변경(특정 음의 추가 표현에 사용되며, 악기의 서스테인 단계 동안 일부 유형의 변조를 적용하거나 증가시킴) */
-  | 'noteAfterTouch'
+  | 'noteAftertouch'
   /* MIDI 채널 상태의 변경 이벤트. 채널에는 볼륨, 팬, 변조, 효과 등을 포함한 128개의 컨트롤러가 있음. */
   | 'controller'
   /* MIDI 채널에서 재생할 프로그램(악기, patch)를 변경하는 이벤트 */
@@ -165,7 +243,7 @@ export type MidiChannelEventType =
    * 채널 애프터터치 이벤트는 특정 MIDI 채널에서 현재 눌러진 모든 키에 영향을 미친다는 점을 제외하고는 note after touch 이벤트와 유사함.
    * (0 = 압력 없음, 127 = 전체 압력)이라는 매개변수 하나만 사용함.
    * */
-  | 'channelAfterTouch'
+  | 'channelAftertouch'
   /**
    * 컨트롤러 이벤트와 유사하지만, 값을 표현하기 위한 2바이트를 포함한 고유한 MIDI 이벤트.
    * 0~16383의 값이 가능하며, 8192 미만의 값은 피치를 낮추고 8192 이상은 피치를 높인다.

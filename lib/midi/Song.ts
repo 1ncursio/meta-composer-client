@@ -1,6 +1,6 @@
 // import { CONST } from './data/CONST.js';
 // import { getSetting } from './settings/Settings.js';
-import { MidiEvent } from '@typings/MidiEvent.js';
+import { BaseMidiEvent, MidiChannelControllerEvent, MidiEvent } from '@typings/MidiEvent';
 import CONST from './CONST.js';
 import { SheetGenerator } from './sheet/SheetGenerator.js';
 // import { getLoader } from './ui/Loader.js';
@@ -144,12 +144,12 @@ export default class Song {
   timeSignatures: TimeSignature[];
   keySignatures: KeySignature[];
   notesBySeconds: {};
-  controlEvents: Object;
+  controlEvents: { [second: string]: MidiChannelControllerEvent[] };
   temporalData: TemporalData;
   sustainsByChannelAndSecond: SustainsByChannelAndSecond;
   header: any;
   /* 트랙별로 분리된 모든 이벤트인 듯. */
-  tracks: MidiNote[];
+  tracks: MidiEvent[][];
   markers: never[];
   otherTracks: never[];
   activeTracks: ActiveTrack[];
