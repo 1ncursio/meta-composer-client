@@ -92,8 +92,8 @@ const Connect = () => {
     if (myPeer === undefined) {
       console.log('만드는중');
 
-      if (!process.env.NEXT_PUBLIC_SOCKET_URL) {
-        throw new Error('process.env.NEXT_PUBLIC_SOCKET_URL is not defined');
+      if (!process.env.NEXT_PUBLIC_DEV_SOCKET_URL) {
+        throw new Error('process.env.NEXT_PUBLIC_DEV_SOCKET_URL is not defined');
       }
 
       const peer = new Peer({
@@ -103,9 +103,9 @@ const Connect = () => {
         config: {
           iceServers: [
             {
-              urls: process.env.NEXT_PUBLIC_SOCKET_URL,
-              username: process.env.NEXT_PUBLIC_TURN_USERNAME,
-              credential: process.env.NEXT_PUBLIC_TURN_CREDENTIAL,
+              urls: process.env.NEXT_PUBLIC_DEV_SOCKET_URL,
+              username: process.env.NEXT_PUBLIC_DEV_TURN_USERNAME,
+              credential: process.env.NEXT_PUBLIC_DEV_TURN_CREDENTIAL,
             },
           ],
         },

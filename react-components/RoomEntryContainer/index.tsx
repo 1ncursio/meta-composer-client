@@ -1,32 +1,33 @@
 import { css } from '@emotion/react';
+import useSocket from '@hooks/useSocket';
+import fetcher from '@lib/api/fetcher';
+import VRLinkButton from '@react-components/VRLinkButton';
 import { useMIDI, useMIDIMessage } from '@react-midi/hooks';
+import useStore from '@store/useStore';
+import IUser from '@typings/IUser';
+import RtcData from '@typings/RtcData';
 import MIDImessage from 'midimessage';
 import { FC, useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { AiOutlineDesktop, AiOutlineSync } from 'react-icons/ai';
+import { AiOutlineDesktop } from 'react-icons/ai';
 import { BsBadgeVr } from 'react-icons/bs';
 import { ControlledPiano, MidiNumbers } from 'react-piano';
 import 'react-piano/dist/styles.css';
 import useSWR from 'swr';
-import useSocket from '@hooks/useSocket';
-import fetcher from '@lib/api/fetcher';
-import useStore from '@store/useStore';
-import IUser from '@typings/IUser';
 import * as styles from './styles';
-import RtcData from '@typings/RtcData';
 
 export interface RoomEntryContainerProps {
   isOculus: boolean;
 }
 
 const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
-  const [socket] = useSocket('selfSetup');
+  const [workspaceName, setWorkspaceName] = useState('');
+  const [socket] = useSocket(workspaceName);
   const [selected, setSelected] = useState(0);
   const [rendered, setRendered] = useState(false);
-  const [isLinkLoading, setIsLinkLoading] = useState(false);
   const { hasMIDI, inputs } = useMIDI();
   const message = useMIDIMessage(inputs[selected]);
   const { pressedKeys, addPressedKey, removePressedKey } = useStore((state) => state.piano);
-  const { peers, removePeer, resetPeers, addAfterMakePeer } = useStore((state) => state.webRTC);
+  const { peers, addAfterMakePeer, linkState, setLinkState } = useStore((state) => state.webRTC);
   const { data: userData } = useSWR<IUser>('/auth', fetcher);
 
   const firstNote = MidiNumbers.fromNote('a0');
@@ -41,14 +42,16 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
   );
 
   /* Link 버튼 눌렀을 때 이벤트 핸들러 */
-  const onClickLink = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
-    setIsLinkLoading(true);
-    console.log('onClickLink');
-    setTimeout(() => {
-      setIsLinkLoading(false);
-    }, 3000);
-  };
+  const onClickLink = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      e.preventDefault();
+      setLinkState('connecting');
+
+      // 웹소켓 연결
+      setWorkspaceName('selfSetup');
+    },
+    [setLinkState, setWorkspaceName],
+  );
 
   /* midimessage 발생했을 때 실행 */
   useEffect(() => {
@@ -72,25 +75,29 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
     if (userData && socket) {
       socket
         .on('connect', () => {
-          console.log('self setup socket connected');
-
+          console.log('self setup 소켓이 연결됨');
           socket.emit('setInit');
         })
         .on('getOffer', (offerData: RtcData) => {
           console.log('offer 받음');
 
           const peer = addAfterMakePeer(userData.id, false, socket, isOculus);
-          peer.signal(offerData);
+
+          peer.signal(offerData.data);
         })
         .on('sendOffer', () => {
           console.log('offer 보냄');
 
           addAfterMakePeer(userData.id, true, socket, isOculus);
+        })
+        .on('disconnect', () => {
+          console.log('self setup 소켓 연결 끊김');
+          setLinkState('disconnected');
         });
     }
 
     return () => {
-      socket?.off('connect').off('getOffer').off('sendOffer');
+      socket?.off('connect').off('getOffer').off('sendOffer').off('disconnect');
     };
   }, [socket, userData]);
 
@@ -123,16 +130,7 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
           <option>No MIDI devices found</option>
         )}
       </select>
-      <button type="button" onClick={onClickLink} className={styles.linkButton(isLinkLoading)}>
-        {isLinkLoading ? (
-          <>링크 대기 중</>
-        ) : (
-          <>
-            <AiOutlineSync size={24} />
-            VR과 링크하기
-          </>
-        )}
-      </button>
+      <VRLinkButton state={linkState} onClick={onClickLink} />
       {inputs.length > 0 ? (
         <h3>MIDI 키보드가 연결되었습니다! 오큘러스에 접속하기 전에 미리 테스트해 보세요.</h3>
       ) : (

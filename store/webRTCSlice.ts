@@ -12,6 +12,8 @@ export interface WebRTCSlice {
     resetPeers: () => void;
     removePeer: (userId: IUser['id']) => void;
     addAfterMakePeer: (userId: IUser['id'], initiator: boolean, socket: Socket, isOculus: boolean) => Peer.Instance;
+    linkState: 'idle' | 'connecting' | 'connected' | 'disconnected';
+    setLinkState: (state: WebRTCSlice['webRTC']['linkState']) => void;
   };
 }
 
@@ -34,6 +36,13 @@ const createWebRTCSlice: AppSlice<WebRTCSlice> = (set, get) => ({
     },
     // TODO: media 스트림이 필요하면(Oculus 2 Oculus 연결) 미디어 스트림용 makePeer 만들어야 함
     addAfterMakePeer: (userId, initiator, socket, isOculus) => {
+      const isAlreadyPeer = get().webRTC.peers[userId];
+
+      if (isAlreadyPeer) {
+        console.log('이미 존재하는 피어');
+        return isAlreadyPeer;
+      }
+
       const TURN_URL = getTurnUrl();
       const TURN_USERNAME = getTurnUsername();
       const TURN_CREDENTIAL = getTurnCredential();
@@ -74,6 +83,12 @@ const createWebRTCSlice: AppSlice<WebRTCSlice> = (set, get) => ({
         })
         .on('connect', () => {
           console.log('피어 연결됨');
+          set(
+            produce((state: AppState) => {
+              state.webRTC.linkState = 'connected';
+            }),
+          );
+
           socket.emit('peerConnectComplete', (roomId: string) => {
             console.log({ roomId });
             // if (isOculus) {
@@ -100,15 +115,19 @@ const createWebRTCSlice: AppSlice<WebRTCSlice> = (set, get) => ({
 
       set(
         produce((state: AppState) => {
-          if (!state.webRTC.peers[userId]) {
-            state.webRTC.peers[userId] = peer;
-          } else {
-            console.log('이미 존재하는 피어');
-          }
+          state.webRTC.peers[userId] = peer;
         }),
       );
 
       return peer;
+    },
+    linkState: 'idle',
+    setLinkState: (linkState) => {
+      set(
+        produce((state: AppState) => {
+          state.webRTC.linkState = linkState;
+        }),
+      );
     },
   },
 });
