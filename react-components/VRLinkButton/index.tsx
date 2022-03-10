@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { AiOutlineSync } from 'react-icons/ai';
-import { BiErrorCircle } from 'react-icons/bi';
+import { BiCheck, BiErrorCircle } from 'react-icons/bi';
+import { MdOutlineConnectWithoutContact } from 'react-icons/md';
 import * as styles from './styles';
 
 export interface VRLinkButtonProps {
@@ -29,7 +30,8 @@ const VRLinkButton: FC<VRLinkButtonProps> = ({ state, onClick }) => {
   if (state === 'connected') {
     return (
       <button type="button" onClick={onClick} className={styles.linkButton(state)}>
-        링크 완료
+        <MdOutlineConnectWithoutContact size={24} />
+        링크 완료!
       </button>
     );
   }

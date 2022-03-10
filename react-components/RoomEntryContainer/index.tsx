@@ -1,13 +1,15 @@
 import { css } from '@emotion/react';
 import useSocket from '@hooks/useSocket';
 import fetcher from '@lib/api/fetcher';
+import { INoteEvent } from '@lib/midi/NoteEvent';
 import VRLinkButton from '@react-components/VRLinkButton';
 import { useMIDI, useMIDIMessage } from '@react-midi/hooks';
 import useStore from '@store/useStore';
 import IUser from '@typings/IUser';
 import RtcData from '@typings/RtcData';
 import MIDImessage from 'midimessage';
-import { FC, useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { AiOutlineDesktop } from 'react-icons/ai';
 import { BsBadgeVr } from 'react-icons/bs';
 import { ControlledPiano, MidiNumbers } from 'react-piano';
@@ -29,9 +31,12 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
   const { pressedKeys, addPressedKey, removePressedKey } = useStore((state) => state.piano);
   const { peers, addAfterMakePeer, linkState, setLinkState } = useStore((state) => state.webRTC);
   const { data: userData } = useSWR<IUser>('/auth', fetcher);
+  const router = useRouter();
 
   const firstNote = MidiNumbers.fromNote('a0');
   const lastNote = MidiNumbers.fromNote('c8');
+
+  const canStartXR = useMemo(() => linkState === 'connected' && isOculus, [linkState, isOculus]);
 
   const handleChangeSelect = useCallback(
     (e) => {
@@ -53,6 +58,47 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
     [setLinkState, setWorkspaceName],
   );
 
+  const onPlayNoteInput = useCallback(
+    (keyNumber: number) => {
+      if (!userData || linkState !== 'connected' || !peers[userData.id]) return;
+
+      // 노트에 넣고 피어 이벤트 발생
+      addPressedKey(keyNumber);
+
+      const data = {
+        type: 'noteOn',
+        note: keyNumber,
+      };
+      peers[userData.id].send(JSON.stringify(data));
+    },
+    [addPressedKey, userData, peers, linkState],
+  );
+
+  const onStopNoteInput = useCallback(
+    (keyNumber: number) => {
+      if (!userData || linkState !== 'connected' || !peers[userData.id]) return;
+
+      // 노트에서 삭제하고 피어 이벤트 발생
+      if (pressedKeys.has(keyNumber)) {
+        removePressedKey(keyNumber);
+        const data: INoteEvent = {
+          type: 'noteOff',
+          note: keyNumber,
+          velocity: 127,
+        };
+
+        peers[userData.id].send(JSON.stringify(data));
+      }
+    },
+    [removePressedKey, userData, peers, linkState, pressedKeys],
+  );
+
+  const onEnterWebXR = useCallback(() => {
+    if (!userData || linkState !== 'connected' || !peers[userData.id]) return;
+
+    router.push('/vr');
+  }, [userData, linkState, peers, router]);
+
   /* midimessage 발생했을 때 실행 */
   useEffect(() => {
     if (message) {
@@ -63,7 +109,9 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
           addPressedKey(midiMessage.key);
           break;
         case 'noteoff':
-          removePressedKey(midiMessage.key);
+          if (pressedKeys.has(midiMessage.key)) {
+            removePressedKey(midiMessage.key);
+          }
           break;
         default:
           break;
@@ -92,7 +140,7 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
         })
         .on('disconnect', () => {
           console.log('self setup 소켓 연결 끊김');
-          setLinkState('disconnected');
+          // setLinkState('disconnected');
         });
     }
 
@@ -101,7 +149,7 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
     };
   }, [socket, userData]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setRendered(true);
   }, []);
 
@@ -131,22 +179,30 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
         )}
       </select>
       <VRLinkButton state={linkState} onClick={onClickLink} />
-      {inputs.length > 0 ? (
-        <h3>MIDI 키보드가 연결되었습니다! 오큘러스에 접속하기 전에 미리 테스트해 보세요.</h3>
-      ) : (
-        <h3>감지된 MIDI 키보드가 없습니다. MIDI 키보드를 연결해 주세요.</h3>
+      {canStartXR && (
+        <button type="button" onClick={onEnterWebXR} className="btn btn-accent">
+          WebXR 입장하기!
+        </button>
       )}
-      {Object.keys(peers).map((peerId, i) => (
+      {!isOculus ? (
+        inputs.length > 0 ? (
+          <h3>MIDI 키보드가 연결되었습니다! 오큘러스에 접속하기 전에 미리 테스트해 보세요.</h3>
+        ) : (
+          <h3>감지된 MIDI 키보드가 없습니다. MIDI 키보드를 연결해 주세요.</h3>
+        )
+      ) : null}
+      {/* 피어 테스트용 코드 */}
+      {/* {Object.keys(peers).map((peerId, i) => (
         <div key={peerId}>{`${i + 1}번째 피어 : ${peerId}`}</div>
-      ))}
+      ))} */}
       <div className="w-full 2xl:h-36 xl:h-32 lg:h-28 md:h-24 h-20">
         <ControlledPiano
           noteRange={{ first: firstNote, last: lastNote }}
           activeNotes={Array.from(pressedKeys)}
           playNote={() => {}}
           stopNote={() => {}}
-          onPlayNoteInput={() => {}}
-          onStopNoteInput={() => {}}
+          onPlayNoteInput={onPlayNoteInput}
+          onStopNoteInput={onStopNoteInput}
           keyWidthToHeight={0.5}
           css={pianoStyle}
         />

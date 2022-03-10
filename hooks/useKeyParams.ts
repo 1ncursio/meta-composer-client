@@ -95,78 +95,80 @@ export default function useKeyParams() {
   ];
 
   useEffect(() => {
-    setKeyParamsFor88Key(
-      produce((draft) => {
-        draft.push({
-          type: 'white',
-          note: 'A',
-          topWidth: 0.019,
-          bottomWidth: 0.023,
-          topPositionX: -0.002,
-          wholePositionX: -0.024,
-          register: 0,
-          referencePositionX: -0.024 * 21,
-        });
-
-        draft.push(
-          ...keyParams.slice(10, 12).map((key, i) => ({
-            ...key,
+    if (keyParamsFor88Key.length === 0) {
+      setKeyParamsFor88Key(
+        produce((draft) => {
+          draft.push({
+            type: 'white',
+            note: 'A',
+            topWidth: 0.019,
+            bottomWidth: 0.023,
+            topPositionX: -0.002,
+            wholePositionX: -0.024,
             register: 0,
             referencePositionX: -0.024 * 21,
-          })),
-        );
+          });
 
-        let referencePositionX = -0.024 * 14;
-        for (let register = 1; register <= 7; register++) {
           draft.push(
-            ...keyParams.map((key, i) => ({
+            ...keyParams.slice(10, 12).map((key, i) => ({
               ...key,
-              register,
-              referencePositionX,
+              register: 0,
+              referencePositionX: -0.024 * 21,
             })),
           );
-          referencePositionX += 0.024 * 7;
-        }
-        draft.push({
-          type: 'white',
-          note: 'C',
-          topWidth: 0.023,
-          bottomWidth: 0.023,
-          topPositionX: 0,
-          wholePositionX: -0.024 * 6,
-          register: 8,
-          referencePositionX: 0.84,
-          key: keyParamsFor88Key.length + 21,
-        });
-      }),
-    );
 
-    let referencePositionX = -0.024 * 14;
-    for (let register = 1; register <= 7; register++) {
-      keyParamsFor88Key.push(
-        ...keyParams.map((key, i) => ({
-          ...key,
-          register,
-          referencePositionX,
-        })),
+          let referencePositionX = -0.024 * 14;
+          for (let register = 1; register <= 7; register++) {
+            draft.push(
+              ...keyParams.map((key, i) => ({
+                ...key,
+                register,
+                referencePositionX,
+              })),
+            );
+            referencePositionX += 0.024 * 7;
+          }
+          draft.push({
+            type: 'white',
+            note: 'C',
+            topWidth: 0.023,
+            bottomWidth: 0.023,
+            topPositionX: 0,
+            wholePositionX: -0.024 * 6,
+            register: 8,
+            referencePositionX: 0.84,
+            key: keyParamsFor88Key.length + 21,
+          });
+        }),
       );
-      referencePositionX += 0.024 * 7;
-    }
-    keyParamsFor88Key.push({
-      type: 'white',
-      note: 'C',
-      topWidth: 0.023,
-      bottomWidth: 0.023,
-      topPositionX: 0,
-      wholePositionX: -0.024 * 6,
-      register: 8,
-      referencePositionX: 0.84,
-      key: keyParamsFor88Key.length + 21,
-    });
 
-    return () => {
-      setKeyParamsFor88Key([]);
-    };
+      let referencePositionX = -0.024 * 14;
+      for (let register = 1; register <= 7; register++) {
+        keyParamsFor88Key.push(
+          ...keyParams.map((key, i) => ({
+            ...key,
+            register,
+            referencePositionX,
+          })),
+        );
+        referencePositionX += 0.024 * 7;
+      }
+      keyParamsFor88Key.push({
+        type: 'white',
+        note: 'C',
+        topWidth: 0.023,
+        bottomWidth: 0.023,
+        topPositionX: 0,
+        wholePositionX: -0.024 * 6,
+        register: 8,
+        referencePositionX: 0.84,
+        key: keyParamsFor88Key.length + 21,
+      });
+
+      return () => {
+        setKeyParamsFor88Key([]);
+      };
+    }
   }, []);
 
   return { keyParamsFor88Key };

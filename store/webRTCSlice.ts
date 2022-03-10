@@ -1,3 +1,4 @@
+import { INoteEvent } from '@lib/midi/NoteEvent';
 import IUser from '@typings/IUser';
 import Peers from '@typings/Peers';
 import { getTurnCredential, getTurnUrl, getTurnUsername } from '@utils/getEnv';
@@ -96,8 +97,19 @@ const createWebRTCSlice: AppSlice<WebRTCSlice> = (set, get) => ({
             // }
           });
         })
-        .on('data', () => {
-          console.log('ddd');
+        .on('data', (chuck: string) => {
+          const data: INoteEvent = JSON.parse(chuck);
+          // console.log(data);
+          switch (data.type) {
+            case 'noteOn':
+              get().piano.addPressedKey(data.note);
+              break;
+            case 'noteOff':
+              get().piano.removePressedKey(data.note);
+              break;
+            default:
+              break;
+          }
         })
         // .on('stream', (stream) => {
         //   if (audioTag.current) {
@@ -108,6 +120,11 @@ const createWebRTCSlice: AppSlice<WebRTCSlice> = (set, get) => ({
           console.log('피어 연결 끊김');
           // setMyPeer(undefined);
           // setAudio(undefined);
+          set(
+            produce((state: AppState) => {
+              state.webRTC.linkState = 'disconnected';
+            }),
+          );
         })
         .on('error', (err: Error) => {
           console.error(err);

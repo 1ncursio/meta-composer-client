@@ -1,6 +1,6 @@
 import { Box, Entity } from '@belivvr/aframe-react';
 import type { PositionProps } from '@belivvr/aframe-react/types/components/position';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import useKeyParams, { IKey } from '@hooks/useKeyParams';
 import useStore from '@store/useStore';
 
@@ -14,7 +14,7 @@ const Piano: FC<PianoProps> = ({ position }) => {
 
   const { keyParamsFor88Key } = useKeyParams();
 
-  const buildKey = (props: IKey) => {
+  const buildKey = useCallback((props: IKey) => {
     const { register, referencePositionX, topWidth, bottomWidth, topPositionX, wholePositionX, type, note } = props;
     const keyMap = {
       C: 24,
@@ -77,7 +77,7 @@ const Piano: FC<PianoProps> = ({ position }) => {
         />
       );
     }
-  };
+  }, []);
 
   useEffect(() => {
     setRendered(true);
@@ -186,9 +186,12 @@ const Piano: FC<PianoProps> = ({ position }) => {
     }
   }, [setRendered]);
 
+  const pianoKeysSelector = useMemo(() => () => document.querySelectorAll('.piano-key'), []);
+
   useEffect(() => {
     if (rendered) {
-      const keys = document.querySelectorAll('.piano-key');
+      const keys = pianoKeysSelector();
+      // const keys = document.querySelectorAll('.piano-key');
       keys.forEach((el) => {
         let key = '';
         el.classList.forEach((className) => {
