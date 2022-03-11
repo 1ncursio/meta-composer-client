@@ -3,8 +3,8 @@ import { GetStaticProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import React from 'react';
 
-const MyCoursesPage = () => {
-  return <DashboardContainer>MyCoursesPage</DashboardContainer>;
+const AssignmentsIndexPage = () => {
+  return <DashboardContainer>AssignmentsIndexPage</DashboardContainer>;
 };
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => ({
@@ -13,4 +13,4 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => ({
   },
 });
 
-export default MyCoursesPage;
+export default AssignmentsIndexPage;

@@ -1,19 +1,17 @@
-import fetcher from '@lib/api/fetcher';
-import IUser from '@typings/IUser';
+import useUserSWR from '@hooks/swr/useUserSWR';
 import { getBackEndUrl } from '@utils/getEnv';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import { BsBell } from 'react-icons/bs';
 import { FaFacebookF } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
-import { FiBell } from 'react-icons/fi';
-import useSWR from 'swr';
 import Avatar from './Avatar';
 
 const Header = () => {
   const { t } = useTranslation('common');
-  const { data: userData } = useSWR<IUser>('/auth', fetcher);
+  const { data: userData } = useUserSWR();
 
   const onClickLogin = (provider: string) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     const BACKEND_URL = getBackEndUrl();
@@ -81,7 +79,7 @@ const Header = () => {
                 <a className="btn btn-primary btn-sm rounded-sm">{t('create-room')}</a>
               </Link>
               <input className="input bg-base-200 input-sm input-primary w-full max-w-[12rem] rounded-sm" />
-              <FiBell size={24} />
+              <BsBell size={24} />
               <Avatar size="small" user={userData} hasDropdown />
             </>
           ) : (

@@ -1,11 +1,10 @@
 import { css } from '@emotion/react';
+import useUserSWR from '@hooks/swr/useUserSWR';
 import useSocket from '@hooks/useSocket';
-import fetcher from '@lib/api/fetcher';
 import { INoteEvent } from '@lib/midi/NoteEvent';
 import VRLinkButton from '@react-components/VRLinkButton';
 import { useMIDI, useMIDIMessage } from '@react-midi/hooks';
 import useStore from '@store/useStore';
-import IUser from '@typings/IUser';
 import RtcData from '@typings/RtcData';
 import MIDImessage from 'midimessage';
 import { useRouter } from 'next/router';
@@ -14,7 +13,6 @@ import { AiOutlineDesktop } from 'react-icons/ai';
 import { BsBadgeVr } from 'react-icons/bs';
 import { ControlledPiano, MidiNumbers } from 'react-piano';
 import 'react-piano/dist/styles.css';
-import useSWR from 'swr';
 import * as styles from './styles';
 
 export interface RoomEntryContainerProps {
@@ -30,7 +28,7 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
   const message = useMIDIMessage(inputs[selected]);
   const { pressedKeys, addPressedKey, removePressedKey } = useStore((state) => state.piano);
   const { peers, addAfterMakePeer, linkState, setLinkState } = useStore((state) => state.webRTC);
-  const { data: userData } = useSWR<IUser>('/auth', fetcher);
+  const { data: userData } = useUserSWR();
   const router = useRouter();
 
   const firstNote = MidiNumbers.fromNote('a0');

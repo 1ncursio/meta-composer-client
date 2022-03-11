@@ -1,3 +1,6 @@
+import DashboardContainer from '@react-components/DashboardContainer';
+import DashboardMain from '@react-components/DashboardMain';
+import DashboardSideBar from '@react-components/DashboardSideBar';
 import { GetStaticProps } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -18,7 +21,11 @@ const DashboardPage = () => {
     }
   }, [locale]);
 
-  return <div>{t('dashboard')}</div>;
+  return (
+    <DashboardContainer>
+      <DashboardMain />
+    </DashboardContainer>
+  );
 };
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => ({

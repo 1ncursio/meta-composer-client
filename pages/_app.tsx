@@ -7,6 +7,10 @@ import { themeChange } from 'theme-change';
 import { useEffect } from 'react';
 import { appWithTranslation } from 'next-i18next';
 
+if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
+  require('../mocks');
+}
+
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     themeChange(false);

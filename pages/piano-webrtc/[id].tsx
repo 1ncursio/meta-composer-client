@@ -12,7 +12,6 @@ import Rtc from '@typings/Rtc';
 const PianoWebRTCPage = () => {
   const router = useRouter();
   const { id } = router.query;
-  // const { data: userData } = useSWR<IUser>('/auth', fetcher);
   const [isPeersConnected, setIsPeersConnected] = useState(false);
   // const { onClickHTMLButton, isMidiConnected } = useMIDI();
   const { inputs, outputs, hasMIDI } = useMIDI(); // Initially returns [[], []]

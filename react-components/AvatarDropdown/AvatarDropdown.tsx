@@ -1,10 +1,10 @@
+import useTabs from '@hooks/useTabs';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import React from 'react';
-import useTabs from '@hooks/useTabs';
-import * as styles from './styles';
 import { AiOutlinePieChart } from 'react-icons/ai';
-import { RiBookLine } from 'react-icons/ri';
+import { RiBookLine, RiSettings3Line } from 'react-icons/ri';
+import * as styles from './styles';
 
 const AvatarDropdown = () => {
   const { t } = useTranslation('common');
@@ -37,6 +37,14 @@ const AvatarDropdown = () => {
             <a className="flex-1">
               <RiBookLine size={24} />
               {t('my-courses')}
+            </a>
+          </Link>
+        </li>
+        <li className="flex flex-row items-center">
+          <Link href="/settings">
+            <a className="flex-1">
+              <RiSettings3Line size={24} />
+              {t('settings')}
             </a>
           </Link>
         </li>
