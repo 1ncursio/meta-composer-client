@@ -1,10 +1,13 @@
 import produce from 'immer';
-import { AppSlice } from './useStore';
+import { AppSlice, AppState } from './useStore';
 import client from '@lib/api/client';
+import IUser from '@typings/IUser';
 
 export interface UserSlice {
   user: {
+    userData?: IUser;
     accessToken: string;
+    setUserData: (userData?: IUser) => void;
     getAccessToken: () => string;
     setAccessToken: (accessToken?: string) => void;
   };
@@ -12,7 +15,15 @@ export interface UserSlice {
 
 const createUserSlice: AppSlice<UserSlice> = (set, get) => ({
   user: {
+    userData: null,
     accessToken: '',
+    setUserData: (userData) => {
+      set(
+        produce((state: AppState) => {
+          state.user.userData = userData;
+        }),
+      );
+    },
     getAccessToken: () => {
       return get().user.accessToken;
     },

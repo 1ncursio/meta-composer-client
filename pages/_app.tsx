@@ -6,6 +6,7 @@ import Header from '@react-components/Header';
 import { themeChange } from 'theme-change';
 import { useEffect } from 'react';
 import { appWithTranslation } from 'next-i18next';
+import { SWRDevTools } from 'swr-devtools';
 
 if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
   require('../mocks');
@@ -23,10 +24,12 @@ function MyApp({ Component, pageProps }: AppProps) {
         errorRetryCount: 3,
       }}
     >
-      <Header />
-      <main className="container mx-auto flex-1">
-        <Component {...pageProps} />
-      </main>
+      <SWRDevTools>
+        <Header />
+        <main className="container mx-auto flex-1">
+          <Component {...pageProps} />
+        </main>
+      </SWRDevTools>
     </SWRConfig>
   );
 }

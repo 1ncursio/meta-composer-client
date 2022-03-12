@@ -2,13 +2,14 @@ import { isDev } from '@utils/getEnv';
 import { enableMapSet } from 'immer';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
 import create, { GetState, SetState } from 'zustand';
+import createMessageSlice, { MessageSlice } from './messageSlice';
 import createPianoSlice, { PianoSlice } from './pianoSlice';
 import createUserSlice, { UserSlice } from './userSlice';
 import createWebRTCSlice, { WebRTCSlice } from './webRTCSlice';
 
 enableMapSet();
 
-export type AppState = UserSlice & PianoSlice & WebRTCSlice;
+export type AppState = UserSlice & PianoSlice & WebRTCSlice & MessageSlice;
 
 export type AppSlice<T> = (set: SetState<AppState>, get: GetState<AppState>) => T;
 
@@ -19,6 +20,7 @@ const useStore = create<AppState>((set, get) => ({
   ...createUserSlice(set, get),
   ...createPianoSlice(set, get),
   ...createWebRTCSlice(set, get),
+  ...createMessageSlice(set, get),
 }));
 
 if (isDev() && typeof window !== 'undefined') {

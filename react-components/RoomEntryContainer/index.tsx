@@ -31,8 +31,8 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
   const { data: userData } = useUserSWR();
   const router = useRouter();
 
-  const firstNote = MidiNumbers.fromNote('a0');
-  const lastNote = MidiNumbers.fromNote('c8');
+  const firstNote: number = MidiNumbers.fromNote('a0');
+  const lastNote: number = MidiNumbers.fromNote('c8');
 
   const canStartXR = useMemo(() => linkState === 'connected' && isOculus, [linkState, isOculus]);
 

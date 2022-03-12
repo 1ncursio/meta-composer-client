@@ -3,6 +3,16 @@ import { getBackEndUrl } from '@utils/getEnv';
 import { rest } from 'msw';
 
 const backendUrl = getBackEndUrl();
+const user = {
+  id: 1,
+  email: 'ckswn1323@g.yju.ac.kr',
+  password: null,
+  provider: 'facebook',
+  username: 'Yechan Kim',
+  profile_image: 'https://lh3.googleusercontent.com/a-/AOh14Gi3OfZuPYz90d4F6WcPGiKLxDrkhp9GBwAOddBP=s96-c',
+  provider_id: 123,
+  self_introduce: null,
+};
 const messages: IMessage[] = [
   {
     id: 1,
@@ -16,14 +26,8 @@ const messages: IMessage[] = [
       provider_id: 123,
       self_introduce: null,
     },
-    createdAt: new Date(),
     message: 'hey there, how are you?',
-    chatRoom: {
-      id: 1,
-      lesson: {},
-      messages: [],
-      student: {} as any,
-    },
+    createdAt: new Date(),
   },
 ];
 
@@ -42,29 +46,22 @@ export const handlers = [
     const { body } = req;
     const { message } = body;
 
+    if (!user)
+      return res(
+        ctx.json({
+          status: 401,
+          message: 'Unauthorized',
+        }),
+      );
+
     const newMessage = {
-      id: 2,
-      user: {
-        id: 123,
-        email: 'ckswn1323@g.yju.ac.kr',
-        password: 'asd',
-        provider: 'facebook',
-        username: 'asd',
-        profile_image: null,
-        provider_id: 123,
-        self_introduce: null,
-      },
-      createdAt: new Date(),
+      id: messages.length + 1,
       message,
-      chatRoom: {
-        id: 1,
-        lesson: {},
-        messages: [],
-        student: {} as any,
-      },
+      user,
+      createdAt: new Date(),
     };
 
-    messages.push(newMessage);
+    messages.unshift(newMessage);
 
     return res(
       ctx.json({
