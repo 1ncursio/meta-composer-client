@@ -1,31 +1,37 @@
 // import { CONST } from './data/CONST.js';
 // import { getSetting } from './settings/Settings.js';
-import { BaseMidiEvent, MidiChannelControllerEvent, MidiEvent } from '@typings/MidiEvent';
-import CONST from './CONST.js';
-import { SheetGenerator } from './sheet/SheetGenerator.js';
+import {
+  MidiChannelControllerEvent,
+  MidiChannelNoteOnEvent,
+  MidiEvent,
+  MidiMetaEvent,
+  MidiMetaKeySignatureEvent,
+  MidiMetaMarkerEvent,
+  MidiMetaTimeSignatureEvent,
+} from '@typings/MidiEvent';
+import CONST from './CONST';
+import { NextEvent } from './Parser';
+// import { SheetGenerator } from './sheet/SheetGenerator.js';
 // import { getLoader } from './ui/Loader.js';
 
-export interface TimeSignature {
-  /* 박자의 분자 */
-  numerator: number;
-  /* 박자의 분모 */
-  denominator: number;
-  thirtyseconds: number;
-  metronome: number;
-}
+/**
+ * 기본적인 타입은 @typings/MidiEvent.ts에 정의되어 있다.
+ * 그 밖에 Song에서 커스텀된 타입이 있다.
+ * 이 타입들을 Song.ts 안에서 선언한다.
+ */
 
-export interface KeySignature {
-  deltaTime: number;
-  id: number;
-  key: number;
-  meta: boolean;
-  scale: string;
-  sharpsFlat: string;
-  sharpsFlatSymbol: string;
-  temporalDelta: number;
-  timestamp: number;
-  type: string;
-}
+// export interface KeySignature {
+//   deltaTime: number;
+//   id: number;
+//   key: number;
+//   meta: boolean;
+//   scale: string;
+//   sharpsFlat: string;
+//   sharpsFlatSymbol: string;
+//   temporalDelta: number;
+//   timestamp: number;
+//   type: string;
+// }
 
 export interface SustainPeriod {
   channel: string;
@@ -64,26 +70,17 @@ export interface MidiChannels {
   [key: string]: MidiChannel;
 }
 
-export interface MidiNote {
-  channel: number;
-  channelVolume: number;
-  deltaTime: number;
-  duration: number;
-  id: number;
+export interface MidiChannelSongNoteEvent extends MidiChannelNoteOnEvent {
   instrument: string;
-  midiNoteNumber: number;
-  noteNumber: number;
+  /* 아래 3개는 findOffNote 메서드로 지정할 때 생기는 프로퍼티들 */
   offTime: number;
   offVelocity: number;
-  /* setNoteSustainTimestamps 메서드로 지정하지 않으면 기본값이 null임. */
-  sustainDuration: number | null;
-  sustainOffTime: number | null;
-  sustainOnTime: number | null;
-  temporalDelta: number;
-  timestamp: number;
+  duration: number;
+  /* 아래 3개는 setNoteSustainTimestamps 메서드로 지정해야 생김 */
+  sustainDuration: number;
+  sustainOffTime: number;
+  sustainOnTime: number;
   track: number;
-  type: string;
-  velocity: number;
 }
 
 export interface BPM {
@@ -99,8 +96,8 @@ export interface TemporalData {
   bpms: BPM[];
   beatsBySecond: BeatsBySecond;
   sustainsByChannelAndSecond: SustainsByChannelAndSecond;
-  timeSignatures: TimeSignature[];
-  keySignatures: KeySignature[];
+  timeSignatures: NextEvent<MidiMetaTimeSignatureEvent>[];
+  keySignatures: NextEvent<MidiMetaKeySignatureEvent>[];
 }
 
 export interface MidiData {
@@ -119,16 +116,33 @@ export interface MidiHeader {
   numTracks: number;
   /* 비트 당 틱의 수 */
   ticksPerBeat: number;
+  /* 프레임 당 틱의 수 */
+  ticksPerFrame: number;
+  /* 초당 프레임 수 */
+  framesPerSecond: number;
 }
 
 export interface ActiveTrack {
   // TODO: 악기 이름을 추가해야 함
   instrument: string;
-  // TODO: meta 타입 추가해야 함
-  meta: any;
-  /* 트랙의 이름 e.g. Piano right */
+  keySignature: MidiMetaKeySignatureEvent;
+  meta: MidiMetaEvent[];
+  notes: MidiChannelSongNoteEvent[];
+  notesBySeconds: { [second: string]: MidiChannelSongNoteEvent[] };
+  tempoChanges: any[];
+}
+
+/* distributeTrack에서 사용 */
+export interface NewTrack {
+  keySignature?: MidiMetaKeySignatureEvent;
+  meta: MidiMetaEvent[];
+  notes: MidiChannelSongNoteEvent[];
+  tempoChanges: any[];
   name: string;
-  notesBySeconds: { [second: string]: MidiNote[] };
+}
+
+export interface ControllEvents {
+  [second: string]: MidiChannelControllerEvent[];
 }
 
 export default class Song {
@@ -141,16 +155,16 @@ export default class Song {
   onready: (song: Song) => void;
   text: string[];
   /* 박자표 */
-  timeSignatures: TimeSignature[];
-  keySignatures: KeySignature[];
+  timeSignatures: MidiMetaTimeSignatureEvent[];
+  keySignatures: MidiMetaKeySignatureEvent[];
   notesBySeconds: {};
-  controlEvents: { [second: string]: MidiChannelControllerEvent[] };
+  controlEvents: ControllEvents;
   temporalData: TemporalData;
   sustainsByChannelAndSecond: SustainsByChannelAndSecond;
   header: any;
   /* 트랙별로 분리된 모든 이벤트인 듯. */
   tracks: MidiEvent[][];
-  markers: never[];
+  markers: MidiMetaMarkerEvent[];
   otherTracks: never[];
   activeTracks: ActiveTrack[];
   microSecondsPerBeat: number;
@@ -164,7 +178,7 @@ export default class Song {
   ready: boolean;
   sheetGen: any;
   notesSequence: any;
-  noteSequence: MidiNote[];
+  noteSequence: MidiChannelSongNoteEvent[];
 
   constructor(midiData: MidiData, fileName: string, name: string, copyright: string, onready: (song: Song) => void) {
     this.fileName = fileName;
@@ -236,16 +250,23 @@ export default class Song {
   }
 
   /* TODO: 현재 첫번째 time signature만 반환함. 추후에 수정 */
-  getTimeSignature(): TimeSignature {
+  getTimeSignature(): MidiMetaTimeSignatureEvent {
     //TODO handle multple timesignature within a song
     if (this.timeSignatures instanceof Array) {
       return this.timeSignatures[0];
     }
+
     return {
+      type: 'timeSignature',
+      meta: true,
+      deltaTime: 0,
+      timestamp: 0,
       numerator: 4,
       denominator: 4,
-      thirtyseconds: 8,
+      thirtySeconds: 8,
       metronome: 24,
+      id: 0,
+      temporalDelta: 0,
     };
   }
 
@@ -260,12 +281,13 @@ export default class Song {
       key: 0,
     };
   }
+
   setMeasureLines() {
     const timeSignature = this.getTimeSignature();
 
     const numerator = timeSignature.numerator || 4;
     const denominator = timeSignature.denominator || 4;
-    const thirtySeconds = timeSignature.thirtyseconds || 8;
+    const thirtySeconds = timeSignature.thirtySeconds || 8;
 
     const beatsToSkip = numerator * (4 / denominator);
     // const beatsPerMeasure = numerator / (denominator * (thirtySeconds / 32))
@@ -370,6 +392,7 @@ export default class Song {
       });
     });
   }
+
   getAllInstruments() {
     const instruments: Instruments = {};
     this.controlEvents = {};
@@ -379,30 +402,58 @@ export default class Song {
     });
     return Object.keys(instruments);
   }
-  getAllInstrumentsOfTrack(track) {
+
+  /**
+   * 이름과는 달리 프로퍼티를 설정하는 부분이 있다.
+   */
+  getAllInstrumentsOfTrack(track: MidiEvent[]) {
     let instruments: Instruments = {};
-    let programs = {};
+    let programs: { [channel: string]: number } = {};
     track.forEach((event) => {
-      let channel = event.channel;
+      // let channel = event.channel;
 
-      if (event.type == 'programChange') {
-        programs[channel] = event.programNumber;
-      }
+      // if (event.type == 'programChange') {
+      //   programs[channel] = event.programNumber;
+      // }
 
-      if (event.type == 'noteOn' || event.type == 'noteOff') {
-        if (channel != 9) {
-          let program = programs[channel];
-          let instrument = CONST.INSTRUMENTS.BY_ID[isFinite(program) ? program : channel];
-          instruments[instrument.id] = true;
-          event.instrument = instrument.id;
-        } else {
-          instruments['percussion'] = true;
-          event.instrument = 'percussion';
-        }
+      // if (event.type == 'noteOn' || event.type == 'noteOff') {
+      //   if (channel != 9) {
+      //     let program = programs[channel];
+      //     let instrument = CONST.INSTRUMENTS.BY_ID[isFinite(program) ? program : channel];
+      //     instruments[instrument.id] = true;
+      //     event.instrument = instrument.id;
+      //   } else {
+      //     instruments['percussion'] = true;
+      //     event.instrument = 'percussion';
+      //   }
+      // }
+
+      let channel: number;
+
+      switch (event.type) {
+        case 'programChange':
+          channel = event.channel;
+          programs[channel] = event.programNumber;
+          break;
+        case 'noteOn':
+        case 'noteOff':
+          channel = event.channel;
+          if (channel != 9) {
+            let program = programs[channel];
+            let instrument = CONST.INSTRUMENTS.BY_ID[isFinite(program) ? program : channel];
+            instruments[instrument.id] = true;
+            event.instrument = instrument.id;
+          } else {
+            instruments['percussion'] = true;
+            event.instrument = 'percussion';
+          }
+          break;
       }
     });
+
     return Object.keys(instruments);
   }
+
   processEvents(midiData: MidiData) {
     midiData.trackInstruments = {};
     midiData.tracks.forEach((track, trackIndex) => {
@@ -425,7 +476,10 @@ export default class Song {
       this.ready = true;
       this.getMeasureLines();
       this.onready(this);
-      if (getSetting('enableSheet')) this.generateSheet();
+
+      // TODO: Sheet 생기면 주석 해제
+      // if (getSetting('enableSheet')) this.generateSheet();
+
       //TODO wait for/modify Vexflow to be able to run in worker
       // let sheetGenWorker = new Worker("./js/SheetGenWorker.js")
       // sheetGenWorker.onmessage = ev => {
@@ -461,6 +515,7 @@ export default class Song {
 
     await this.getSheet();
   }
+
   async getSheet() {
     if (this.sheetGen) {
       this.sheetGen.clear();
@@ -469,23 +524,32 @@ export default class Song {
     }
     if (!this.sheetGen) {
       console.log('creating sheet');
-      this.sheetGen = new SheetGenerator(
-        this.getMeasureLines(),
-        this.getTimeSignature().numerator,
-        this.getTimeSignature().denominator,
-        this.getKeySignature(),
-        this.getEnd(),
-      );
+      // TODO: sheetGen 생기면 주석 해제
+      // this.sheetGen = new SheetGenerator(
+      //   this.getMeasureLines(),
+      //   this.getTimeSignature().numerator,
+      //   this.getTimeSignature().denominator,
+      //   this.getKeySignature(),
+      //   this.getEnd(),
+      // );
       console.log(this.sheetGen);
     }
-    await this.sheetGen.generate(this.activeTracks).then(() => getLoader().stopLoad());
+    // TODO: Sheet 생기면 주석 해제
+    // await this.sheetGen.generate(this.activeTracks).then(() => getLoader().stopLoad());
   }
 
   /* 이벤트들을 타입에 맞게 분배한다. */
-  distributeEvents(track, newTrack) {
+  distributeEvents(track: MidiEvent[], newTrack: NewTrack) {
+    // {
+    //   notes: [],
+    //   meta: [],
+    //   tempoChanges: [],
+    // }
     track.forEach((event) => {
       event.id = this.idCounter++;
       if (event.type == 'noteOn' || event.type == 'noteOff') {
+        // TODO: 후처리된 이벤트가 저장되긴 할텐데 일단 ignore 처리
+        // @ts-ignore
         newTrack.notes.push(event);
       } else if (event.type == 'setTempo') {
         newTrack.tempoChanges.push(event);
@@ -503,28 +567,21 @@ export default class Song {
       } else if (event.type == 'marker') {
         this.markers.push(event);
       } else {
+        // TODO: 위에서 처리하는 것들을 제외한 나머지 이벤트들은 meta에 넣는다. 이게 좋을 것 같진 않음. 나중에 수정해야 함
+        // @ts-ignore
         newTrack.meta.push(event);
-      }
-    });
-  }
-
-  setNotesBySecond(track) {
-    track.notes.forEach((note) => {
-      let second = Math.floor(note.timestamp / 1000);
-      if (track.notesBySeconds.hasOwnProperty(second)) {
-        track.notesBySeconds[second].push(note);
-      } else {
-        track.notesBySeconds[second] = [note];
       }
     });
   }
 
   getNoteSequence() {
     if (!this.notesSequence) {
-      let tracks = [];
-      for (let t in this.activeTracks) [tracks.push(this.activeTracks[t].notes)];
+      let tracks: MidiChannelSongNoteEvent[][] = [];
+      for (let t in this.activeTracks) tracks.push(this.activeTracks[t].notes);
 
-      this.noteSequence = [].concat.apply([], tracks).sort((a, b) => a.timestamp - b.timestamp);
+      // TODO: 알아보기 쉽게 바꿨는데, 문제가 생기면 다시 바꿔야함
+      this.noteSequence = [...tracks.flat()].sort((a, b) => a.timestamp - b.timestamp);
+      // this.noteSequence = [].concat.apply([], tracks).sort((a, b) => a.timestamp - b.timestamp);
     }
     return this.noteSequence.slice(0);
   }
@@ -544,21 +601,21 @@ export default class Song {
     return { min, max };
   }
 
-  setNoteSustainTimestamps(notes: MidiNote[]) {
+  setNoteSustainTimestamps(notes: MidiChannelSongNoteEvent[]) {
     for (let i = 0; i < notes.length; i++) {
       let note = notes[i];
       let currentSustains = this.sustainPeriods
-        .filter((period) => period.channel == note.channel)
+        .filter((period) => parseInt(period.channel, 10) === note.channel)
         .filter(
           (period) =>
-            (period.start < note.timestamp && period.end > note.timestamp) ||
-            (period.start < note.offTime && period.end > note.offTime),
+            (period.start < note.timestamp && (period.end as number) > note.timestamp) ||
+            (period.start < note.offTime && (period.end as number) > note.offTime),
         );
-      if (currentSustains.length) {
+      if (Array.isArray(currentSustains) && currentSustains.length > 0) {
         note.sustainOnTime = currentSustains[0].start;
         let end = Math.max.apply(
           null,
-          currentSustains.map((sustain) => sustain.end),
+          currentSustains.map((sustain) => sustain.end as number),
         );
         note.sustainOffTime = end;
         note.sustainDuration = note.sustainOffTime - note.timestamp;
@@ -566,25 +623,39 @@ export default class Song {
     }
   }
 
-  setNoteOffTimestamps(notes: MidiNote[]) {
+  /* TODO: 현재까지는 아무 쓸모 없어 보임. */
+  setNoteOffTimestamps(notes: MidiChannelSongNoteEvent[]) {
     for (let i = 0; i < notes.length; i++) {
       let note = notes[i];
       if (note.type == 'noteOn') {
-        Song.findOffNote(i, notes.slice(0));
+        findOffNote(i, notes.slice(0));
       }
     }
   }
+}
 
-  static findOffNote(index: number, notes: MidiNote[]) {
-    let onNote = notes[index];
-    for (let i = index + 1; i < notes.length; i++) {
-      if (notes[i].type == 'noteOff' && onNote.noteNumber == notes[i].noteNumber) {
-        onNote.offTime = notes[i].timestamp;
-        onNote.offVelocity = notes[i].velocity;
-        onNote.duration = onNote.offTime - onNote.timestamp;
+export function setNotesBySecond(track: ActiveTrack) {
+  track.notes.forEach((note) => {
+    let second = Math.floor(note.timestamp / 1000);
+    if (track.notesBySeconds.hasOwnProperty(second)) {
+      track.notesBySeconds[second].push(note);
+    } else {
+      track.notesBySeconds[second] = [note];
+    }
+  });
+}
 
-        break;
-      }
+export function findOffNote(index: number, notes: MidiChannelSongNoteEvent[]) {
+  let onNote = notes[index];
+  for (let i = index + 1; i < notes.length; i++) {
+    /* TODO: 원래 아래처럼 noteOff 조건이 들어가 있었는데, 왜 이렇게 되어 있었는지 모르겠음. 호출하는 조건은 noteOn이라 사실상 항상 false임. */
+    // if (notes[i].type === 'noteOff' && onNote.noteNumber === notes[i].noteNumber) {
+    if (onNote.noteNumber === notes[i].noteNumber) {
+      onNote.offTime = notes[i].timestamp;
+      onNote.offVelocity = notes[i].velocity;
+      onNote.duration = onNote.offTime - onNote.timestamp;
+
+      break;
     }
   }
 }

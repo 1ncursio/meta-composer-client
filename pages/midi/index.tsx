@@ -1,3 +1,5 @@
+import MidiLoader from '@lib/midi/MidiLoader';
+import Player from '@lib/midi/Player';
 import React, { useCallback, useEffect } from 'react';
 import useAudioPlayer from '~/hooks/useAudioPlayer';
 
@@ -11,20 +13,21 @@ const MIDIPage = () => {
 
     reader.onload = (theFile) => {
       console.log({ result: reader.result, fileName });
-      // getPlayer();
+      Player.getInstance().loadSong(reader.result as string, fileName);
+      // MidiLoader.loadFile(reader.result as string).then((midiFile) => {
+      //   console.log({ midiFile });
+      // });
       console.log('loaded midiFile');
     };
     reader.readAsDataURL(file);
   }, []);
 
   const onLoadMIDI = useCallback(
-    (e) => {
+    (e: React.ChangeEvent<HTMLInputElement>) => {
       e.preventDefault();
-      const files = e.target.files;
+      if (!e.target.files) return;
 
-      for (let i = 0; i < files.length; i++) {
-        readMIDIFile(files[i]);
-      }
+      Array.from(e.target.files).forEach((file) => readMIDIFile(file));
     },
     [readMIDIFile],
   );
@@ -37,7 +40,7 @@ const MIDIPage = () => {
 
   return (
     <div>
-      <input type="file" onChange={onLoadMIDI} />
+      <input type="file" onChange={onLoadMIDI} accept=".mid, .midi" />
       <audio src="/assets/audio/metronome/1.wav" />
       {JSON.stringify(context)}
     </div>

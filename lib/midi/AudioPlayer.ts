@@ -1,7 +1,13 @@
+import AudioNote, { createCompleteAudioNote, createContinuousAudioNote } from './AudioNote';
+import { getBufferForNote, hasBuffer } from './Buffers';
+import Song, { MidiChannelSongNoteEvent } from './Song';
+import { SoundfontLoader } from './SoundFontLoader';
+import { getTrack, getTracks } from './Tracks';
+
 export class AudioPlayer {
   context: AudioContext;
   buffers: { [key: string]: {} };
-  audioNotes: never[];
+  audioNotes: AudioNote[];
   soundfontName: string;
   convolverNode: ConvolverNode;
   reverbEnabled: boolean;
@@ -17,7 +23,8 @@ export class AudioPlayer {
     this.soundfontName = 'MusyngKite';
     this.convolverNode = this.context.createConvolver();
 
-    this.loadMetronomeSounds();
+    // TODO: 메트로놈 사용가능하게 하기
+    // this.loadMetronomeSounds();
 
     // TODO: setting 설정 추가하면 주석 삭제
     // if (getSetting('enableReverb')) {
@@ -46,11 +53,13 @@ export class AudioPlayer {
     //   }
     // });
   }
+
   cleanEndedNotes() {
     this.audioNotes = this.audioNotes.filter(
       (audioNote) => !audioNote.deleteAt || audioNote.deleteAt > this.context.currentTime,
     );
   }
+
   getConvolver() {
     if (!this.convolverNode) {
       this.convolverNode = this.context.createConvolver();
@@ -58,28 +67,37 @@ export class AudioPlayer {
     }
     return this.convolverNode;
   }
+
   setReverb() {
-    let reverb = getSetting('reverbImpulseResponse');
+    // TODO: setting 바꾸면 수정
+    let reverb = 'SteinmanHall';
+    // let reverb = getSetting('reverbImpulseResponse');
     this.loadImpulseBuffer('../../Reverb/' + reverb + '.wav').then((result) => {
       this.getConvolver().buffer = result;
       this.getConvolver().connect(this.context.destination);
     });
   }
+
   getContextTime() {
     return this.context.currentTime;
   }
+
   getContext() {
     return this.context;
   }
+
   isRunning() {
     return this.context.state == 'running';
   }
+
   resume() {
     this.context.resume();
   }
+
   suspend() {
     this.context.suspend();
   }
+
   stopAllSources() {
     this.audioNotes.forEach((audioNote) => {
       try {
@@ -91,22 +109,26 @@ export class AudioPlayer {
     });
     this.audioNotes = [];
   }
-  async loadImpulseBuffer(impulseUrl) {
+
+  async loadImpulseBuffer(impulseUrl: string) {
     return fetch(impulseUrl)
       .then((response) => response.arrayBuffer())
       .then((arrayBuffer) => this.context.decodeAudioData(arrayBuffer));
   }
-  getSoundfontName(instrument) {
+
+  getSoundfontName(instrument: string) {
     let soundfontName = this.soundfontName;
-    if (instrument == 'percussion') {
+    if (instrument === 'percussion') {
       soundfontName = 'FluidR3_GM';
     }
-    if (instrument == 'acoustic_grand_piano' && getSetting('useHQPianoSoundfont')) {
-      soundfontName = 'HQSoundfont';
-    }
+    // TODO: 이 세팅은 안쓸듯
+    // if (instrument === 'acoustic_grand_piano' && getSetting('useHQPianoSoundfont')) {
+    //   soundfontName = 'HQSoundfont';
+    // }
     return soundfontName;
   }
-  createContinuousNote(noteNumber, volume, instrument) {
+
+  createContinuousNote(noteNumber: number, volume: number, instrument: string) {
     if (this.context.state === 'suspended') {
       this.wasSuspended = true;
       this.context.resume();
@@ -121,19 +143,27 @@ export class AudioPlayer {
 
     return audioNote;
   }
-  noteOffContinuous(audioNote) {
+
+  noteOffContinuous(audioNote: AudioNote) {
     audioNote.endAt(this.context.currentTime + 0.1, false);
   }
 
-  playCompleteNote(currentTime, note, playbackSpeed, volume, isPlayAlong) {
-    let instrument = note.instrument;
-    if (getTrack(note.track).overwrittenInstrument) {
-      instrument = getTrack(note.track).overwrittenInstrument;
-    }
-    let soundfontName = this.soundfontName;
-    if (instrument == 'acoustic_grand_piano' && getSetting('useHQPianoSoundfont')) {
-      soundfontName = 'HQSoundfont';
-    }
+  playCompleteNote(
+    currentTime: number,
+    note: MidiChannelSongNoteEvent,
+    playbackSpeed: number,
+    volume: number,
+    isPlayAlong: boolean,
+  ) {
+    let instrument = getTrack(note.track).overwrittenInstrument || note.instrument;
+    // if (getTrack(note.track).overwrittenInstrument) {
+    //   instrument = getTrack(note.track).overwrittenInstrument;
+    // }
+    // let soundfontName = this.soundfontName;
+    // TODO: setting 설정 추가하면 주석 삭제
+    // if (instrument == 'acoustic_grand_piano' && getSetting('useHQPianoSoundfont')) {
+    //   soundfontName = 'HQSoundfont';
+    // }
     const buffer = getBufferForNote(this.getSoundfontName(instrument), instrument, note.noteNumber);
 
     let audioNote = createCompleteAudioNote(
@@ -148,6 +178,7 @@ export class AudioPlayer {
     );
     this.audioNotes.push(audioNote);
   }
+
   getDestination() {
     if (this.reverbEnabled) {
       return this.getConvolver();
@@ -155,14 +186,17 @@ export class AudioPlayer {
       return this.context.destination;
     }
   }
-  playBeat(time, newMeasure) {
+
+  playBeat(time: number, newMeasure: boolean) {
     if (time < 0) return;
     this.context.resume();
     let ctxTime = this.context.currentTime;
 
     const source = this.context.createBufferSource();
     const gainNode = this.context.createGain();
-    gainNode.gain.value = getSetting('metronomeVolume');
+    // TODO: setting 설정 추가하면 주석 삭제
+    // gainNode.gain.value = getSetting('metronomeVolume');
+    gainNode.gain.value = 0.1;
     source.buffer = newMeasure ? this.metronomSound1 : this.metronomSound2;
     source.connect(gainNode);
     gainNode.connect(this.context.destination);
@@ -178,53 +212,58 @@ export class AudioPlayer {
   //     getLoader().setLoadMessage('Loading Buffers');
   //     return await this.loadBuffers();
   //   }
-  loadMetronomeSounds() {
-    let audioPl = this;
 
-    const request = new XMLHttpRequest();
-    request.open('GET', '../../metronome/1.wav');
-    request.responseType = 'arraybuffer';
-    request.onload = function () {
-      let undecodedAudio = request.response;
-      audioPl.context.decodeAudioData(undecodedAudio, (data) => (audioPl.metronomSound1 = data));
-    };
-    request.send();
+  // TODO: 메트로놈 사용 여부 가능하도록 하기
+  // loadMetronomeSounds() {
+  //   let audioPl = this;
 
-    const request2 = new XMLHttpRequest();
-    request2.open('GET', '../../metronome/2.wav');
-    request2.responseType = 'arraybuffer';
-    request2.onload = function () {
-      let undecodedAudio = request2.response;
-      audioPl.context.decodeAudioData(undecodedAudio, (data) => (audioPl.metronomSound2 = data));
-    };
-    request2.send();
-  }
-  async loadInstrumentsForSong(currentSong) {
+  //   const request = new XMLHttpRequest();
+  //   request.open('GET', '../../metronome/1.wav');
+  //   request.responseType = 'arraybuffer';
+  //   request.onload = function () {
+  //     let undecodedAudio = request.response;
+  //     audioPl.context.decodeAudioData(undecodedAudio, (data) => (audioPl.metronomSound1 = data));
+  //   };
+  //   request.send();
+
+  //   const request2 = new XMLHttpRequest();
+  //   request2.open('GET', '../../metronome/2.wav');
+  //   request2.responseType = 'arraybuffer';
+  //   request2.onload = function () {
+  //     let undecodedAudio = request2.response;
+  //     audioPl.context.decodeAudioData(undecodedAudio, (data) => (audioPl.metronomSound2 = data));
+  //   };
+  //   request2.send();
+  // }
+
+  async loadInstrumentsForSong(currentSong: Song) {
     if (!this.buffers.hasOwnProperty(this.soundfontName)) {
       this.buffers[this.soundfontName] = {};
     }
 
     let instrumentsOfSong = currentSong.getAllInstruments();
-    let instrumentSoundfontMap = {};
+    let instrumentSoundfontMap: { [instrument: string]: string } = {};
     instrumentsOfSong.forEach((instrument) => {
       instrumentSoundfontMap[instrument] = this.soundfontName;
     });
-    instrumentSoundfontMap[getSetting('inputInstrument')] = this.soundfontName;
+    // instrumentSoundfontMap[getSetting('inputInstrument')] = this.soundfontName;
+    instrumentSoundfontMap['acoustic_grand_piano'] = this.soundfontName;
 
     //get instruments from custom track instruments
     let tracks = getTracks();
     Object.keys(tracks)
-      .map((trackId) => tracks[trackId])
+      .map((trackId) => tracks[parseInt(trackId)])
       .filter((track) => track.hasOwnProperty('overwrittenInstrument'))
-      .filter((track) => !instrumentsOfSong.includes(track.overwrittenInstrument))
-      .forEach((track) => (instrumentSoundfontMap[track.overwrittenInstrument] = this.soundfontName));
+      .filter((track) => !instrumentsOfSong.includes(track.overwrittenInstrument as string))
+      .forEach((track) => (instrumentSoundfontMap[track.overwrittenInstrument!] = this.soundfontName));
 
     if (instrumentSoundfontMap.hasOwnProperty('percussion')) {
       instrumentSoundfontMap['percussion'] = 'FluidR3_GM';
     }
-    if (instrumentSoundfontMap.hasOwnProperty('acoustic_grand_piano') && getSetting('useHQPianoSoundfont')) {
-      instrumentSoundfontMap['acoustic_grand_piano'] = 'HQSoundfont';
-    }
+    // TODO: setting 설정 추가하면 주석 삭제
+    // if (instrumentSoundfontMap.hasOwnProperty('acoustic_grand_piano') && getSetting('useHQPianoSoundfont')) {
+    //   instrumentSoundfontMap['acoustic_grand_piano'] = 'HQSoundfont';
+    // }
 
     //filter instruments we've loaded already and directly map onto promise
     let neededInstruments = Object.entries(instrumentSoundfontMap)
@@ -235,11 +274,12 @@ export class AudioPlayer {
     }
     await Promise.all(neededInstruments);
   }
-  isInstrumentLoaded(instrument) {
+
+  isInstrumentLoaded(instrument: string) {
     return hasBuffer(this.getSoundfontName(instrument), instrument);
   }
 
-  async loadInstrument(instrument) {
+  async loadInstrument(instrument: string) {
     await SoundfontLoader.loadInstrument(instrument, this.soundfontName);
     return await this.loadBuffers();
   }

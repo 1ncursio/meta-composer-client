@@ -22,6 +22,7 @@
     "aframe-slice9-component": "^1.0.0",
     "async-mutex": "^0.3.2",
     "axios": "^0.25.0",
+    "base64-arraybuffer": "^1.0.2",
     "daisyui": "^2.0.9",
     "dayjs": "^1.10.8",
     "immer": "^9.0.12",

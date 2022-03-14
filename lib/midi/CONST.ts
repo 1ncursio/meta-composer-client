@@ -1,3 +1,8 @@
+export interface WhiteAndBlack {
+  white: string;
+  black: string;
+}
+
 export interface Const {
   NOTE_DENOMS_NAMES: {
     Full: number;
@@ -31,7 +36,7 @@ export interface Const {
   PARTICLE_TEXTURES: string[];
   REVERBS: string[];
   LOOKBACKTIME: number;
-  TRACK_COLORS: { white: string; black: string }[];
+  TRACK_COLORS: WhiteAndBlack[];
   INSTRUMENTS: {
     BY_ID: {
       [id: string]: {

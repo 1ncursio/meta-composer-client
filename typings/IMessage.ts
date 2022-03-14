@@ -3,7 +3,7 @@ import IUser from './IUser';
 
 export interface IMessage {
   id: number;
-  chatRoom?: IChatRoom;
+  chatRoom: IChatRoom;
   user: IUser;
   message: string;
   createdAt: Date;
