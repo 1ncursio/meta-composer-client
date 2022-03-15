@@ -7,6 +7,7 @@ import {
   MidiMetaEvent,
   MidiMetaKeySignatureEvent,
   MidiMetaMarkerEvent,
+  MidiMetaSetTempoEvent,
   MidiMetaTimeSignatureEvent,
 } from '@typings/MidiEvent';
 import CONST from './CONST';
@@ -123,23 +124,23 @@ export interface MidiHeader {
 }
 
 export interface ActiveTrack {
-  // TODO: 악기 이름을 추가해야 함
+  name: string;
   instrument: string;
-  keySignature: MidiMetaKeySignatureEvent;
-  meta: MidiMetaEvent[];
-  notes: MidiChannelSongNoteEvent[];
-  notesBySeconds: { [second: string]: MidiChannelSongNoteEvent[] };
-  tempoChanges: any[];
-}
-
-/* distributeTrack에서 사용 */
-export interface NewTrack {
   keySignature?: MidiMetaKeySignatureEvent;
   meta: MidiMetaEvent[];
   notes: MidiChannelSongNoteEvent[];
-  tempoChanges: any[];
-  name: string;
+  notesBySeconds: { [second: string]: MidiChannelSongNoteEvent[] };
+  tempoChanges: MidiMetaSetTempoEvent[];
 }
+
+/* distributeTrack에서 사용 */
+// export interface NewTrack {
+//   keySignature?: MidiMetaKeySignatureEvent;
+//   meta: MidiMetaEvent[];
+//   notes: MidiChannelSongNoteEvent[];
+//   tempoChanges: any[];
+//   name: string;
+// }
 
 export interface ControllEvents {
   [second: string]: MidiChannelControllerEvent[];
@@ -459,7 +460,7 @@ export default class Song {
     midiData.tracks.forEach((track, trackIndex) => {
       midiData.trackInstruments[trackIndex] = this.getAllInstrumentsOfTrack(track);
     });
-    let songWorker = new Worker('./js/SongWorker.js');
+    let songWorker = new Worker('./assets/js/workers/SongWorker.js');
     songWorker.onmessage = (ev) => {
       let dat = JSON.parse(ev.data);
       this.sustainPeriods = dat.sustainPeriods;
@@ -539,7 +540,7 @@ export default class Song {
   }
 
   /* 이벤트들을 타입에 맞게 분배한다. */
-  distributeEvents(track: MidiEvent[], newTrack: NewTrack) {
+  distributeEvents(track: MidiEvent[], newTrack: ActiveTrack) {
     // {
     //   notes: [],
     //   meta: [],

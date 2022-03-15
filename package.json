@@ -10,7 +10,8 @@
     "generate-css-types": "tailwindcss-classnames",
     "spritesheet": "npm run spritesheet:system-action && npm run spritesheet:system-notice",
     "spritesheet:system-action": "spritesheet-js -f json -p public/assets/images/spritesheets/ --padding 8 --divisibleByTwo -n sprite-system-action-spritesheet --powerOfTwo public/assets/images/sprites/action/*",
-    "spritesheet:system-notice": "spritesheet-js -f json -p public/assets/images/spritesheets/ --padding 8 --divisibleByTwo -n sprite-system-notice-spritesheet --powerOfTwo public/assets/images/sprites/notice/*"
+    "spritesheet:system-notice": "spritesheet-js -f json -p public/assets/images/spritesheets/ --padding 8 --divisibleByTwo -n sprite-system-notice-spritesheet --powerOfTwo public/assets/images/sprites/notice/*",
+    "worker:build": "tsc lib/midi/SongWorker.ts --module commonjs --target es5 --lib es2015 --outDir public/assets/js/workers/SongWorker.js"
   },
   "dependencies": {
     "@belivvr/aframe-react": "^0.3.3",
