@@ -19,30 +19,42 @@ import Piano from '@react-components/Piano';
 import '@components/text-button';
 import '@components/rounded';
 import SheetEntity from '@react-components/SheetEntity';
-import s from '@utils/s';
+import { coordStr, styleStr } from '@utils/aframeUtils';
 import 'aframe-troika-text';
 import 'aframe-geometry-merger-component';
 import 'aframe-html-shader';
 import 'aframe-slice9-component';
 import Script from 'next/script';
 import React from 'react';
+import { Vector3 } from 'three';
 
 window.handlePianoX = (e: CustomEvent, percent: number) => {
   const piano = document.querySelector('#piano');
-  console.log({ e, percent });
-  piano.setAttribute('position', `${percent * 2 - 1} 0 0`);
+  const { x, y, z }: Vector3 = piano.getAttribute('position');
+
+  // percent가 0~1 일때, x를 x-2 ~ x+2 사이로 조정해줌.
+  const newX = x + (percent - 0.5) * 4;
+
+  piano.setAttribute('position', coordStr({ x: newX, y, z }));
 };
 
 window.handlePianoY = (e: CustomEvent, percent: number) => {
   const piano = document.querySelector('#piano');
-  console.log({ e, percent });
-  piano.setAttribute('position', `0 ${percent * 2 - 1} 0`);
+  const { x, y, z }: Vector3 = piano.getAttribute('position');
+
+  // percent가 0~1 일때, y를 y-2 ~ y+2 사이로 조정해줌.
+  const newY = y + (percent - 0.5) * 4;
+  piano.setAttribute('position', coordStr({ x, y: newY, z }));
 };
 
 window.handlePianoZ = (e: CustomEvent, percent: number) => {
   const piano = document.querySelector('#piano');
-  console.log({ e, percent });
-  piano.setAttribute('position', `0 0 ${percent * 2 - 1}`);
+  const { x, y, z }: Vector3 = piano.getAttribute('position');
+
+  // percent가 0~1 일때, z를 z-2 ~ z+2 사이로 조정해줌.
+  const newZ = z + (percent - 0.5) * 4;
+
+  piano.setAttribute('position', coordStr({ x, y, z: newZ }));
 };
 
 const XRSceneContainer = () => {
@@ -57,8 +69,8 @@ const XRSceneContainer = () => {
         inspector={{
           url: new URL('https://cdn.jsdelivr.net/gh/aframevr/aframe-inspector@master/dist/aframe-inspector.min.js'),
         }}
-        cursor={s({ rayOrigin: 'mouse', fuse: false })}
-        raycaster={s({ objects: ['.raycastable', '[gui-interactable]'] })}
+        cursor={styleStr({ rayOrigin: 'mouse', fuse: false })}
+        raycaster={styleStr({ objects: ['.raycastable', '[gui-interactable]'] })}
         // raycaster="objects: [gui-interactable], .raycastable"
         // background={{
         //   transparent: true,
@@ -189,7 +201,7 @@ const XRSceneContainer = () => {
         </Entity>
         <Mixin
           id="rounded-action-button"
-          slice9={s({
+          slice9={styleStr({
             width: 0.2,
             height: 0.2,
             left: 64,
@@ -263,13 +275,13 @@ const XRSceneContainer = () => {
         />
         <Mixin
           id="rounded-text-button"
-          text-button={s({
+          text-button={styleStr({
             textHoverColor: '#fff',
             textColor: '#fff',
             backgroundColor: '#1da1f2',
             backgroundHoverColor: '#2db1ff',
           })}
-          slice9={s({
+          slice9={styleStr({
             color: '#0F40A9',
             width: 0.8,
             height: 0.2,
@@ -297,11 +309,11 @@ const XRSceneContainer = () => {
           justify-content="center"
           align-items="normal"
           component-padding="0.1"
-          opacity="0.7"
+          opacity={0.3}
           width="3.5"
           height="6"
           panel-color="#072B73"
-          panel-rounded="0.2"
+          panel-rounded={0.1}
           position="0 2.5 -6"
           rotation="0 0 0"
         >
@@ -369,7 +381,7 @@ const XRSceneContainer = () => {
             bevel="true"
           ></a-gui-button> */}
 
-          <a-gui-button width="2.5" height="0.7" onclick="" value="Example 5"></a-gui-button>
+          <a-gui-button width="2.5" height="0.7" onclick="" value="Adjust the position of the piano."></a-gui-button>
           <a-gui-label
             width={2.5}
             height={0.75}
@@ -379,7 +391,7 @@ const XRSceneContainer = () => {
             letter-spacing={0}
             margin="0 0 0.05 0"
           />
-          <a-gui-slider width="2.5" height="0.75" onclick="handlePianoX" percent="0.29" margin="0 0 0.05 0" />
+          <a-gui-slider width="2.5" height="0.75" onclick="handlePianoX" percent={0.5} margin="0 0 0.05 0" />
           <a-gui-label
             width={2.5}
             height={0.75}
@@ -389,7 +401,7 @@ const XRSceneContainer = () => {
             letter-spacing={0}
             margin="0 0 0.05 0"
           />
-          <a-gui-slider width="2.5" height="0.75" onclick="handlePianoY" percent="0.29" margin="0 0 0.05 0" />
+          <a-gui-slider width="2.5" height="0.75" onclick="handlePianoY" percent={0.5} margin="0 0 0.05 0" />
           <a-gui-label
             width={2.5}
             height={0.75}
@@ -399,9 +411,9 @@ const XRSceneContainer = () => {
             letter-spacing={0}
             margin="0 0 0.05 0"
           />
-          <a-gui-slider width="2.5" height="0.75" onclick="handlePianoZ" percent="0.29" margin="0 0 0.05 0" />
+          <a-gui-slider width="2.5" height="0.75" onclick="handlePianoZ" percent={0.5} margin="0 0 0.05 0" />
 
-          {/* <a-gui-vertical-slider width="2.5" height="2" onclick="" percent="0.29" margin="0 0 0.05 0" /> */}
+          {/* <a-gui-vertical-slider width="2.5" height="2" onclick="" percent={0.5} margin="0 0 0.05 0" /> */}
 
           {/* <a-gui-progressbar width="2.5" height="0.25" margin="0 0 0.1 0"></a-gui-progressbar> */}
         </a-gui-flex-container>

@@ -21,11 +21,11 @@ export default AFRAME.registerComponent('gui-slider', {
     // const piano = document.querySelector('#piano');
     // this.piano = piano;
 
-    var data = this.data;
-    var el = this.el;
-    var guiItem = el.getAttribute('gui-item');
-    var sliderWidth = guiItem.width - data.leftRightPadding * 2.0;
-    var sliderHeight = guiItem.height - data.topBottomPadding * 2.0;
+    const data = this.data;
+    const el = this.el;
+    const guiItem = el.getAttribute('gui-item');
+    const sliderWidth = guiItem.width - data.leftRightPadding * 2.0;
+    const sliderHeight = guiItem.height - data.topBottomPadding * 2.0;
 
     el.setAttribute('geometry', `primitive: plane; height: ${guiItem.height}; width: ${guiItem.height};`);
     el.setAttribute('material', `shader: flat; opacity: 1;  color: ${data.backgroundColor}; side:front;`);
@@ -118,7 +118,9 @@ export default AFRAME.registerComponent('gui-slider', {
       //   piano.setAttribute('position', `${data.percent * 2 - 1} 0 0`);
     });
   },
-  update() {},
+  update() {
+    console.log('update');
+  },
   tick() {},
   remove() {},
   pause() {},
