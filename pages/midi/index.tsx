@@ -1,10 +1,11 @@
-import MidiLoader from '@lib/midi/MidiLoader';
 import Player from '@lib/midi/Player';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import useAudioPlayer from '~/hooks/useAudioPlayer';
+import dynamic from 'next/dynamic';
+const SheetContainer = dynamic(() => import('@react-components/SheetContainer'), { ssr: false });
 
 const MIDIPage = () => {
-  const { context, metronomSound1, metronomSound2 } = useAudioPlayer();
+  // const { context, metronomSound1, metronomSound2 } = useAudioPlayer();
   //   const player = new Player();
 
   const readMIDIFile = useCallback((file: File) => {
@@ -32,17 +33,17 @@ const MIDIPage = () => {
     [readMIDIFile],
   );
 
-  useEffect(() => {
-    if (context) {
-      console.log('context', context);
-    }
-  }, [context]);
+  // useEffect(() => {
+  //   if (context) {
+  //     console.log('context', context);
+  //   }
+  // }, [context]);
 
   return (
     <div>
       <input type="file" onChange={onLoadMIDI} accept=".mid, .midi" />
-      <audio src="/assets/audio/metronome/1.wav" />
-      {JSON.stringify(context)}
+      {/* <audio src="/assets/audio/metronome/1.wav" /> */}
+      <SheetContainer />
     </div>
   );
 };

@@ -3,6 +3,7 @@
     "baseUrl": ".",
     "paths": {
       "@components/*": ["components/*"],
+      "@primitives/*": ["primitives/*"],
       "@react-components/*": ["react-components/*"],
       "@utils/*": ["utils/*"],
       "@store/*": ["store/*"],

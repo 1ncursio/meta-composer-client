@@ -26,7 +26,7 @@ export interface OtherParams {
 let idCounter = 0;
 
 self.onmessage = (ev) => {
-  postMessage(JSON.stringify(processEvents(JSON.parse(ev.data))));
+  self.postMessage(JSON.stringify(processEvents(JSON.parse(ev.data))));
   self.close();
 };
 
@@ -88,7 +88,7 @@ const processEvents = (midiData: MidiData) => {
     track.notesBySeconds = {};
     setNoteOffTimestamps(track.notes);
     setNoteSustainTimestamps(track.notes, sustainPeriods);
-    track.notes = track.notes.slice(0).filter((note) => note.type == 'noteOn');
+    track.notes = track.notes.slice(0).filter((note) => note.type === 'noteOn');
     track.notes.forEach((note) => (note.track = trackIndex));
     setNotesBySecond(track);
     longNotes[trackIndex] = track.notes.filter((note) => note.duration > 4 * 1000);

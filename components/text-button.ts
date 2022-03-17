@@ -15,10 +15,6 @@ export interface ATextButton {
       type: string;
     };
   };
-  init(): void;
-  play(): void;
-  pause(): void;
-  update(): void;
   updateButtonState(): void;
   onHover(e: Event | MouseEvent): void;
   onHoverOut(e: Event | MouseEvent): void;
@@ -43,8 +39,9 @@ export default AFRAME.registerComponent<ATextButton>('text-button', {
   hovering: false,
   init() {
     // TODO: This is a bit of a hack to deal with position "component" not setting matrixNeedsUpdate. Come up with a better solution.
-    // this.el.object3D.matrixNeedsUpdate = true;
-    this.el.object3D.matrixWorldNeedsUpdate = true;
+    // @ts-ignore
+    this.el.object3D.matrixNeedsUpdate = true;
+    // this.el.object3D.matrixWorldNeedsUpdate = true;
     // 엔티티 안에 a-text 엔티티가 존재할 경우에만 작동함.
     this.textEl = this.el.querySelector('[text]');
 

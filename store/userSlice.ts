@@ -15,7 +15,7 @@ export interface UserSlice {
 
 const createUserSlice: AppSlice<UserSlice> = (set, get) => ({
   user: {
-    userData: null,
+    userData: undefined,
     accessToken: '',
     setUserData: (userData) => {
       set(

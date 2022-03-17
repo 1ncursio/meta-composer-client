@@ -1,37 +1,51 @@
-import '../styles/globals.css';
-import type { AppProps } from 'next/app';
-import { SWRConfig } from 'swr';
 import Header from '@react-components/Header';
+import { NextComponentType, NextPage } from 'next';
+import { appWithTranslation } from 'next-i18next';
+import type { AppContext, AppInitialProps, AppLayoutProps } from 'next/app';
+import { ReactElement, useEffect } from 'react';
+import { SWRConfig } from 'swr';
+import { SWRDevTools } from 'swr-devtools';
 // @ts-ignore
 import { themeChange } from 'theme-change';
-import { useEffect } from 'react';
-import { appWithTranslation } from 'next-i18next';
-import { SWRDevTools } from 'swr-devtools';
+import '../styles/globals.css';
 
 if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
   require('../mocks');
 }
 
-function MyApp({ Component, pageProps }: AppProps) {
+export type NextPageWithLayout = NextPage & { getLayout: (page: ReactElement) => ReactElement };
+
+const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
+  Component,
+  pageProps,
+}: AppLayoutProps) => {
+  const defaultLayout = (page: ReactElement) => (
+    <>
+      <Header />
+      <main className="container mx-auto flex-1">
+        <Component {...pageProps} />
+      </main>
+    </>
+  );
+
+  const getLayout = Component.getLayout ?? defaultLayout;
+
   useEffect(() => {
     themeChange(false);
     // 👆 false parameter is required for react project
   }, []);
 
-  return (
+  return getLayout(
     <SWRConfig
       value={{
         errorRetryCount: 3,
       }}
     >
       <SWRDevTools>
-        <Header />
-        <main className="container mx-auto flex-1">
-          <Component {...pageProps} />
-        </main>
+        <Component {...pageProps} />
       </SWRDevTools>
-    </SWRConfig>
+    </SWRConfig>,
   );
-}
+};
 
 export default appWithTranslation(MyApp);

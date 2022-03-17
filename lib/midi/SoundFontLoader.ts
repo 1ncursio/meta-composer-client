@@ -1,6 +1,6 @@
 // import { getLoader } from './ui/Loader.js';
 // import { replaceAllString, iOS } from './Util.js';
-import base64 from 'base64-arraybuffer';
+import { decode } from 'base64-arraybuffer';
 import { hasBuffer, setBuffer } from './Buffers';
 
 export interface NoteBuffer {
@@ -136,6 +136,6 @@ export class SoundfontLoader {
     // 	)
   }
   static getBase64Buffer(str: string) {
-    return base64.decode(str);
+    return decode(str.split(',')[1]);
   }
 }

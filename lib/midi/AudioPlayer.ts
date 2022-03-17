@@ -70,8 +70,8 @@ export class AudioPlayer {
 
   setReverb() {
     // TODO: setting 바꾸면 수정
-    let reverb = 'SteinmanHall';
-    // let reverb = getSetting('reverbImpulseResponse');
+    const reverb = 'SteinmanHall';
+    // const reverb = getSetting('reverbImpulseResponse');
     this.loadImpulseBuffer('../../Reverb/' + reverb + '.wav').then((result) => {
       this.getConvolver().buffer = result;
       this.getConvolver().connect(this.context.destination);
@@ -134,7 +134,7 @@ export class AudioPlayer {
       this.context.resume();
     }
 
-    let audioNote = createContinuousAudioNote(
+    const audioNote = createContinuousAudioNote(
       this.context,
       getBufferForNote(this.getSoundfontName(instrument), instrument, noteNumber),
       volume / 100,
@@ -241,8 +241,8 @@ export class AudioPlayer {
       this.buffers[this.soundfontName] = {};
     }
 
-    let instrumentsOfSong = currentSong.getAllInstruments();
-    let instrumentSoundfontMap: { [instrument: string]: string } = {};
+    const instrumentsOfSong = currentSong.getAllInstruments();
+    const instrumentSoundfontMap: { [instrument: string]: string } = {};
     instrumentsOfSong.forEach((instrument) => {
       instrumentSoundfontMap[instrument] = this.soundfontName;
     });
@@ -250,7 +250,7 @@ export class AudioPlayer {
     instrumentSoundfontMap['acoustic_grand_piano'] = this.soundfontName;
 
     //get instruments from custom track instruments
-    let tracks = getTracks();
+    const tracks = getTracks();
     Object.keys(tracks)
       .map((trackId) => tracks[parseInt(trackId)])
       .filter((track) => track.hasOwnProperty('overwrittenInstrument'))
@@ -266,7 +266,7 @@ export class AudioPlayer {
     // }
 
     //filter instruments we've loaded already and directly map onto promise
-    let neededInstruments = Object.entries(instrumentSoundfontMap)
+    const neededInstruments = Object.entries(instrumentSoundfontMap)
       .filter((entry) => !this.isInstrumentLoaded(entry[0]))
       .map((entry) => SoundfontLoader.loadInstrument(entry[0], entry[1]));
     if (neededInstruments.length == 0) {

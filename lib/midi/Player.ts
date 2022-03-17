@@ -222,6 +222,7 @@ export default class Player {
       //create song obj. When songWorker is done processing, this.setSong will be called.
       new Song(midiFile, fileName, name || '', copyright || '', (song) => {
         console.log({ song });
+        console.log({ player: this });
         this.setSong(song);
       });
     } catch (error) {

@@ -229,7 +229,11 @@ const Piano: FC<PianoProps> = ({ position }) => {
     return <>loading</>;
   }
 
-  return <Entity position={position}>{keyParamsFor88Key.map((key) => buildKey(key))}</Entity>;
+  return (
+    <Entity id="piano" position={position}>
+      {keyParamsFor88Key.map((key) => buildKey(key))}
+    </Entity>
+  );
 };
 
 export default Piano;
