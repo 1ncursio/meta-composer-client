@@ -13,8 +13,9 @@ import '@components/slider';
 import '@primitives/slider';
 import '@components/vertical-slider';
 import '@primitives/vertical-slider';
-import '@components/draw-canvas';
 import '@components/icon-button';
+import '@primitives/icon-button';
+import '@components/draw-canvas';
 import Piano from '@react-components/Piano';
 import '@components/text-button';
 import '@components/rounded';
@@ -27,6 +28,7 @@ import 'aframe-slice9-component';
 import Script from 'next/script';
 import React from 'react';
 import { Vector3 } from 'three';
+import { icon_font } from '@components/vars';
 
 window.handlePianoX = (e: CustomEvent, percent: number) => {
   const piano = document.querySelector('#piano');
@@ -308,13 +310,13 @@ const XRSceneContainer = () => {
           flex-direction="column"
           justify-content="center"
           align-items="normal"
-          component-padding="0.1"
-          opacity={0.3}
-          width="3.5"
-          height="6"
+          component-padding={0.1}
+          opacity={1}
+          width={3.5}
+          height={6}
           panel-color="#072B73"
           panel-rounded={0.1}
-          position="0 2.5 -6"
+          position={coordStr({ x: 0, y: 2.5, z: -6 })}
           rotation="0 0 0"
         >
           {/* <a-gui-label
@@ -391,7 +393,19 @@ const XRSceneContainer = () => {
             letter-spacing={0}
             margin="0 0 0.05 0"
           />
-          <a-gui-slider width="2.5" height="0.75" onclick="handlePianoX" percent={0.5} margin="0 0 0.05 0" />
+          <a-gui-slider
+            border-color="#f6f6f6"
+            background-color="#072B73"
+            active-color="#f59f0a"
+            hover-color="#f97316"
+            handle-outer-radius={0}
+            handle-inner-radius={0.08}
+            width={2.5}
+            height={0.5}
+            onclick="handlePianoX"
+            percent={0.5}
+            margin="0 0 0.05 0"
+          />
           <a-gui-label
             width={2.5}
             height={0.75}
@@ -402,16 +416,29 @@ const XRSceneContainer = () => {
             margin="0 0 0.05 0"
           />
           <a-gui-slider width="2.5" height="0.75" onclick="handlePianoY" percent={0.5} margin="0 0 0.05 0" />
-          <a-gui-label
-            width={2.5}
-            height={0.75}
-            value="Z"
-            font-size={0.35}
-            line-height={0.8}
-            letter-spacing={0}
-            margin="0 0 0.05 0"
-          />
           <a-gui-slider width="2.5" height="0.75" onclick="handlePianoZ" percent={0.5} margin="0 0 0.05 0" />
+          <a-gui-icon-button
+            height="0.75"
+            onclick="testButtonAction"
+            icon="f04c"
+            icon-font="assets/fonts/fa-solid-900.ttf"
+            icon-font-size={0.4}
+            font-color="#f59f0a"
+            hover-color="#fff"
+            focus-color="#ccc"
+            background-color="#fff"
+          />
+          {/* <a-gui-icon-label-button
+            width="2.5"
+            height="0.75"
+            onclick="buttonActionFunction"
+            icon="f2b9"
+            icon-font="assets/fonts/fa-solid-900.ttf"
+            value="icon label"
+            font-family="assets/fonts/PressStart2P-Regular.ttf"
+            font-size="0.16"
+            margin="0 0 0.05 0"
+          ></a-gui-icon-label-button> */}
 
           {/* <a-gui-vertical-slider width="2.5" height="2" onclick="" percent={0.5} margin="0 0 0.05 0" /> */}
 

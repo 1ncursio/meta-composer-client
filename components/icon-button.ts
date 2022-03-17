@@ -1,108 +1,153 @@
-export interface AIconButton {
+import { key_offwhite, key_grey, key_grey_dark, key_orange } from './vars';
+
+export default AFRAME.registerComponent('gui-icon-button', {
   schema: {
-    image: {
-      type: 'string';
-    };
-    hoverImage: {
-      type: 'string';
-    };
-    activeImage: {
-      type: 'string';
-    };
-    activeHoverImage: { type: 'string' };
-    disabledImage: { type: 'string' };
-    active: { type: 'boolean' };
-    disabled: { type: 'boolean' };
-    tooltip: { type: 'selector' };
-    tooltipText: { type: 'string' };
-    activeTooltipText: { type: 'string' };
-  };
-  hovering: boolean;
-  updateButtonState(): void;
-  onHover(): void;
-  onHoverOut(): void;
-}
-
-/**
- * A button with an image, tooltip, hover states.
- * @namespace ui
- * @component icon-button
- */
-export default AFRAME.registerComponent<AIconButton>('icon-button', {
-  schema: {
-    image: { type: 'string' },
-    hoverImage: { type: 'string' },
-    activeImage: { type: 'string' },
-    activeHoverImage: { type: 'string' },
-    disabledImage: { type: 'string' },
-    active: { type: 'boolean' },
-    disabled: { type: 'boolean' },
-    tooltip: { type: 'selector' },
-    tooltipText: { type: 'string' },
-    activeTooltipText: { type: 'string' },
+    on: { default: 'click' },
+    toggle: { type: 'boolean', default: false },
+    toggleState: { type: 'boolean', default: false },
+    icon: { type: 'string', default: 'f0f3' },
+    iconActive: { type: 'string', default: '' },
+    iconFontSize: { type: 'number', default: 0.4 },
+    iconFont: { type: 'string', default: 'assets/fonts/fa-regular-400.ttf' },
+    fontColor: { type: 'string', default: key_offwhite },
+    borderColor: { type: 'string', default: key_offwhite },
+    backgroundColor: { type: 'string', default: key_grey },
+    hoverColor: { type: 'string', default: key_grey_dark },
+    activeColor: { type: 'string', default: key_orange },
   },
-  hovering: false,
-  init() {
-    this.el.object3D.matrixWorldNeedsUpdate = true;
-  },
+  init: function () {
+    var data = this.data;
+    var el = this.el;
+    var guiItem = el.getAttribute('gui-item');
+    this.guiItem = guiItem;
+    var toggleState = (this.toggleState = data.toggle);
+    var guiInteractable = el.getAttribute('gui-interactable');
+    this.guiInteractable = guiInteractable;
 
-  play() {
-    this.updateButtonState();
-    this.el.object3D.addEventListener('hovered', this.onHover);
-    this.el.object3D.addEventListener('unhovered', this.onHoverOut);
-  },
-
-  pause() {
-    this.el.object3D.removeEventListener('hovered', this.onHover);
-    this.el.object3D.removeEventListener('unhovered', this.onHoverOut);
-  },
-
-  update() {
-    this.updateButtonState();
-  },
-
-  updateButtonState() {
-    const hovering = this.hovering;
-    const active: boolean = this.data.active;
-    const disabled: boolean = this.data.disabled;
-
-    let image;
-    if (disabled) {
-      image = 'disabledImage';
-    } else if (active) {
-      image = hovering ? 'activeHoverImage' : 'activeImage';
-    } else {
-      image = hovering ? 'hoverImage' : 'image';
+    //fallback for old font-sizing
+    if (data.iconFontSize > 20) {
+      // 150/1000
+      var newSize = data.iconFontSize / 750;
+      data.iconFontSize = newSize;
     }
 
-    if (this.el.components.sprite) {
-      if (this.data[image]) {
-        this.el.setAttribute('sprite', 'name', this.data[image]);
-      } else {
-        console.warn(`No ${image} image on me.`, this);
+    el.setAttribute('geometry', `primitive: plane; height: ${guiItem.height}; width: ${guiItem.width};`);
+    el.setAttribute(
+      'material',
+      `shader: flat; transparent: true; opacity: 0.0; alphaTest: 0.5; side:double; color:${data.backgroundColor};`,
+    );
+
+    var buttonContainer = document.createElement('a-entity');
+    buttonContainer.setAttribute('geometry', `primitive: cylinder; radius: ${guiItem.height / 2}; height: 0.02;`);
+    buttonContainer.setAttribute('material', `shader: flat; opacity: 1; side:double; color: ${data.borderColor}`);
+    buttonContainer.setAttribute('rotation', '90 0 0');
+    buttonContainer.setAttribute('position', '0 0 0.01');
+    el.appendChild(buttonContainer);
+
+    var buttonEntity = document.createElement('a-entity');
+    buttonEntity.setAttribute('geometry', `primitive: cylinder; radius: ${guiItem.height / 2.05}; height: 0.04;`);
+    buttonEntity.setAttribute('material', `shader: flat; opacity: 1; side:double; color: ${data.backgroundColor}`);
+    buttonEntity.setAttribute('rotation', '90 0 0');
+    buttonEntity.setAttribute('position', '0 0 0.02');
+    el.appendChild(buttonEntity);
+    this.buttonEntity = buttonEntity;
+
+    this.setIcon(data.icon);
+
+    el.addEventListener('mouseenter', function (evt) {
+      buttonEntity.removeAttribute('animation__leave');
+      if (!data.toggle) {
+        buttonEntity.setAttribute(
+          'animation__enter',
+          `property: material.color; from: ${data.backgroundColor}; to:${data.hoverColor}; dur:200;`,
+        );
       }
-    } else {
-      console.error('No sprite.');
-    }
+    });
+    el.addEventListener('mouseleave', function (evt) {
+      if (!data.toggle) {
+        buttonEntity.removeAttribute('animation__click');
+        buttonEntity.setAttribute(
+          'animation__leave',
+          `property: material.color; from: ${data.hoverColor}; to:${data.backgroundColor}; dur:200; easing: easeOutQuad;`,
+        );
+      }
+      buttonEntity.removeAttribute('animation__enter');
+    });
+    el.addEventListener(data.on, function (event) {
+      if (!data.toggle) {
+        // if not toggling flashing active state
+        buttonEntity.setAttribute(
+          'animation__click',
+          `property: material.color; from: ${data.activeColor}; to:${data.backgroundColor}; dur:400; easing: easeOutQuad;`,
+        );
+      } else {
+        var guiButton = el.components['gui-button'];
+        // console.log("about to toggle, current state: " + guiButton.data.toggleState);
+        guiButton.setActiveState(!guiButton.data.toggleState);
+        //  buttonEntity.setAttribute('material', 'color', data.activeColor);
+      }
 
-    if (this.data.tooltip && hovering) {
-      const tooltipText =
-        (this.data.active ? this.data.activeTooltipText : this.data.tooltipText) + (disabled ? ' Disabled' : '');
-      this.data.tooltip.querySelector('[text]').setAttribute('text', 'value', tooltipText);
+      var clickActionFunctionName = guiInteractable.clickAction;
+      // console.log("in button, clickActionFunctionName: "+clickActionFunctionName);
+      // find object
+      var clickActionFunction = window[clickActionFunctionName];
+      //console.log("clickActionFunction: "+clickActionFunction);
+      // is object a function?
+      if (typeof clickActionFunction === 'function') clickActionFunction(event);
+    });
+    ////WAI ARIA Support
+    el.setAttribute('role', 'button');
+  },
+  play: function () {},
+  update: function (oldData) {
+    console.log('In button update, toggle: ' + this.toggleState);
+    var data = this.data;
+    var el = this.el;
+
+    if (this.iconEntity) {
+      console.log('has iconEntity: ' + this.iconEntity);
+
+      var oldEntity = this.iconEntity;
+      oldEntity.parentNode.removeChild(oldEntity);
+
+      this.setIcon(this.data.icon);
+    } else {
+      console.log('no iconEntity!');
     }
   },
-  onHover() {
-    this.hovering = true;
-    if (this.data.tooltip) {
-      this.data.tooltip.object3D.visible = true;
+  setActiveState: function (activeState) {
+    // console.log("in setActiveState function, new state: " + activeState);
+    this.data.toggleState = activeState;
+    if (!activeState) {
+      console.log('not active, about to set background color');
+      this.buttonEntity.setAttribute('material', 'color', this.data.backgroundColor);
+    } else {
+      console.log('active, about to set active color');
+      this.buttonEntity.setAttribute('material', 'color', this.data.activeColor);
     }
-    this.updateButtonState();
   },
-  onHoverOut() {
-    this.hovering = false;
-    if (this.data.tooltip) {
-      this.data.tooltip.object3D.visible = false;
-    }
-    this.updateButtonState();
+  setIcon: function (unicode) {
+    var hex = parseInt(unicode, 16);
+    var char = String.fromCharCode(hex);
+
+    var iconEntity = document.createElement('a-entity');
+    this.iconEntity = iconEntity;
+    iconEntity.setAttribute(
+      'troika-text',
+      `value:${char}; 
+                                              align:center; 
+                                              anchor:center; 
+                                              baseline:center;
+                                              lineHeight:${this.guiItem.height};
+                                              maxWidth:${this.guiItem.width};
+                                              color:${this.data.fontColor};
+                                              font:${this.data.iconFont};
+                                              fontSize:${this.data.iconFontSize};
+                                              depthOffset:1;
+                                              `,
+    );
+    iconEntity.setAttribute('position', `0 0 0.05`); // 0.05 y axis adjustment for fontawesome
+    //        textEntity.setAttribute('troika-text-material', `shader: flat;`);
+    this.el.appendChild(iconEntity);
   },
 });

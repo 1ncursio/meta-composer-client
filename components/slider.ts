@@ -5,7 +5,7 @@ export default AFRAME.registerComponent('gui-slider', {
     activeColor: { type: 'string', default: key_orange },
     backgroundColor: { type: 'string', default: key_offwhite },
     borderColor: { type: 'string', default: key_grey },
-    handleColor: { type: 'string', default: key_white },
+    handleColor: { type: 'string', default: '#f59f0a' },
     handleInnerDepth: { type: 'number', default: 0.02 },
     handleInnerRadius: { type: 'number', default: 0.13 },
     handleOuterDepth: { type: 'number', default: 0.04 },
