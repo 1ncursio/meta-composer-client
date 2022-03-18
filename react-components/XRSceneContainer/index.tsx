@@ -1,34 +1,32 @@
-import { Assets, Entity, Mixin, Plane, Scene, Sky, Text } from '@belivvr/aframe-react';
 import 'aframe';
-import '@components/item';
-import '@components/bevelbox';
-import '@components/interactable';
-import '@components/flex-container';
-import '@primitives/flex-container';
-import '@components/label';
-import '@primitives/label';
-import '@components/button';
-import '@primitives/button';
-import '@components/slider';
-import '@primitives/slider';
-import '@components/vertical-slider';
-import '@primitives/vertical-slider';
-import '@components/icon-button';
-import '@primitives/icon-button';
-import '@components/draw-canvas';
-import Piano from '@react-components/Piano';
-import '@components/text-button';
-import '@components/rounded';
-import SheetEntity from '@react-components/SheetEntity';
-import { coordStr, styleStr } from '@utils/aframeUtils';
-import 'aframe-troika-text';
 import 'aframe-geometry-merger-component';
 import 'aframe-html-shader';
 import 'aframe-slice9-component';
-import Script from 'next/script';
+import 'aframe-troika-text';
+import '@components/bevelbox';
+import '@components/button';
+import '@components/draw-canvas';
+import '@components/flex-container';
+import '@components/icon-button';
+import '@components/interactable';
+import '@components/item';
+import '@components/label';
+import '@components/rounded';
+import '@components/slider';
+import '@components/text-button';
+import '@components/vertical-slider';
+import '@primitives/button';
+import '@primitives/flex-container';
+import '@primitives/icon-button';
+import '@primitives/label';
+import '@primitives/slider';
+import '@primitives/vertical-slider';
+import { Assets, Entity, Light, Mixin, Plane, Scene, Sky, Text } from '@belivvr/aframe-react';
+import Piano from '@react-components/Piano';
+import useStore from '@store/useStore';
+import { coordStr, styleStr } from '@utils/aframeUtils';
 import React from 'react';
 import { Vector3 } from 'three';
-import { icon_font } from '@components/vars';
 
 window.handlePianoX = (e: CustomEvent, percent: number) => {
   const piano = document.querySelector('#piano');
@@ -60,12 +58,10 @@ window.handlePianoZ = (e: CustomEvent, percent: number) => {
 };
 
 const XRSceneContainer = () => {
+  const { onClickHandler } = useStore((state) => state.xr);
   return (
     <>
-      <Script
-        src="https://unpkg.com/aframe-environment-component@1.3.1/dist/aframe-environment-component.min.js"
-        strategy="lazyOnload"
-      />
+      {/* <Script src="https://unpkg.com/aframe-environment-component@1.3.1/dist/aframe-environment-component.min.js" /> */}
       {/* <Script src="https://rawgit.com/rdub80/aframe-gui/master/dist/aframe-gui.min.js" strategy="lazyOnload" /> */}
       <Scene
         inspector={{
@@ -73,18 +69,18 @@ const XRSceneContainer = () => {
         }}
         cursor={styleStr({ rayOrigin: 'mouse', fuse: false })}
         raycaster={styleStr({ objects: ['.raycastable', '[gui-interactable]'] })}
-        // raycaster="objects: [gui-interactable], .raycastable"
+        stats
         // background={{
         //   transparent: true,
         // }}
-        // stats
       >
         {/* <Entity environment /> */}
-        <Entity environment />
         <Assets>
           <img id="button" src="/assets/hud/button.9.png" alt="button" />
           <img id="mute_on" src="/assets/hud/mute_on.png" alt="button" />
           <img id="action-button" src="/assets/hud/action_button.9.png" alt="action-button" />
+          <img id="sky-texture" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/sechelt.jpg" />
+          <img id="ground-texture" src="https://cdn.aframe.io/a-painter/images/floor.jpg" />
         </Assets>
         {/* <Camera
     lookControls={{
@@ -215,7 +211,18 @@ const XRSceneContainer = () => {
             src: '#action-button',
           })}
         />
-        <Plane position={{ x: 0, y: 0, z: 0 }} rotation={{ x: -90, y: 0, z: 0 }} width={1} height={1} color="#7BC8A4" />
+        <Plane
+          rotation={{ x: -90, y: 0, z: 0 }}
+          width={30}
+          height={30}
+          src="#ground-texture"
+          // repeat={{
+          //   x: 10,
+          //   y: 10,
+          // }}
+          gui-interactable
+          onClick={(e) => console.log('이게 된다고', e)}
+        />
         {/* <a-mixin
     id="rounded-twitter-text-action-button"
     text-button="
@@ -235,7 +242,17 @@ const XRSceneContainer = () => {
                 alphaTest: 0.1;
                 src: #button"
   ></a-mixin> */}
-        {/* <Sky color="#ECECEC" /> */}
+        <Sky src="#sky-texture" />
+        <Light type="ambient" color="#445451" />
+        <Light
+          type="point"
+          intensity={2}
+          position={{
+            x: 2,
+            y: 4,
+            z: 4,
+          }}
+        />
         {/* <a-entity geometry-merger="preserveOriginal: false" material="color: #AAA">
     <a-entity geometry="primitive: box; buffer: false" position="-1 0.5 -2"></a-entity>
     <a-entity geometry="primitive: sphere; buffer: false" position="0 0.5 -2"></a-entity>
@@ -312,8 +329,8 @@ const XRSceneContainer = () => {
           align-items="normal"
           component-padding={0.1}
           opacity={1}
-          width={3.5}
-          height={6}
+          width={2}
+          height={3}
           panel-color="#072B73"
           panel-rounded={0.1}
           position={coordStr({ x: 0, y: 2.5, z: -6 })}
@@ -385,8 +402,8 @@ const XRSceneContainer = () => {
 
           <a-gui-button width="2.5" height="0.7" onclick="" value="Adjust the position of the piano."></a-gui-button>
           <a-gui-label
-            width={2.5}
-            height={0.75}
+            width={1.5}
+            height={0.5}
             value="X"
             font-size={0.35}
             line-height={0.8}
@@ -400,14 +417,15 @@ const XRSceneContainer = () => {
             hover-color="#f97316"
             handle-outer-radius={0}
             handle-inner-radius={0.08}
-            width={2.5}
+            width={10}
             height={0.5}
-            onclick="handlePianoX"
-            percent={0.5}
+            slider-bar-height={0.04}
+            onClick={onClickHandler}
+            percent={0.2}
             margin="0 0 0.05 0"
           />
           <a-gui-label
-            width={2.5}
+            width={1.5}
             height={0.75}
             value="Y"
             font-size={0.35}
@@ -428,21 +446,6 @@ const XRSceneContainer = () => {
             focus-color="#ccc"
             background-color="#fff"
           />
-          {/* <a-gui-icon-label-button
-            width="2.5"
-            height="0.75"
-            onclick="buttonActionFunction"
-            icon="f2b9"
-            icon-font="assets/fonts/fa-solid-900.ttf"
-            value="icon label"
-            font-family="assets/fonts/PressStart2P-Regular.ttf"
-            font-size="0.16"
-            margin="0 0 0.05 0"
-          ></a-gui-icon-label-button> */}
-
-          {/* <a-gui-vertical-slider width="2.5" height="2" onclick="" percent={0.5} margin="0 0 0.05 0" /> */}
-
-          {/* <a-gui-progressbar width="2.5" height="0.25" margin="0 0 0.1 0"></a-gui-progressbar> */}
         </a-gui-flex-container>
       </Scene>
     </>

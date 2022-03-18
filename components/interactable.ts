@@ -40,7 +40,7 @@ export default AFRAME.registerComponent('gui-interactable', {
   remove() {},
   pause() {},
   play() {},
-  setClickAction(action: Function) {
+  setClickAction(action: string) {
     this.data.clickAction = action; //change function dynamically
   },
 });

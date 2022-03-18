@@ -6,10 +6,11 @@ import createMessageSlice, { MessageSlice } from './messageSlice';
 import createPianoSlice, { PianoSlice } from './pianoSlice';
 import createUserSlice, { UserSlice } from './userSlice';
 import createWebRTCSlice, { WebRTCSlice } from './webRTCSlice';
+import createXRSlice, { XRSlice } from './XRSlice';
 
 enableMapSet();
 
-export type AppState = UserSlice & PianoSlice & WebRTCSlice & MessageSlice;
+export type AppState = UserSlice & PianoSlice & WebRTCSlice & MessageSlice & XRSlice;
 
 export type AppSlice<T> = (set: SetState<AppState>, get: GetState<AppState>) => T;
 
@@ -21,6 +22,7 @@ const useStore = create<AppState>((set, get) => ({
   ...createPianoSlice(set, get),
   ...createWebRTCSlice(set, get),
   ...createMessageSlice(set, get),
+  ...createXRSlice(set, get),
 }));
 
 if (isDev() && typeof window !== 'undefined') {
