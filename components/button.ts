@@ -19,9 +19,9 @@ export default AFRAME.registerComponent('gui-button', {
   dependencies: ['aframe-troika-text'],
 
   init: function () {
-    var data = this.data;
-    var el = this.el;
-    var guiItem = el.getAttribute('gui-item');
+    const data = this.data;
+    const el = this.el;
+    const guiItem = el.getAttribute('gui-item');
     this.guiItem = guiItem;
     /* gui item parameters
             type: {type: 'string'},
@@ -43,11 +43,11 @@ export default AFRAME.registerComponent('gui-button', {
     //fallback for old font-sizing
     if (data.fontSize > 20) {
       // 150/1000
-      var newSize = data.fontSize / 750;
+      const newSize = data.fontSize / 750;
       data.fontSize = newSize;
     }
 
-    var guiInteractable = el.getAttribute('gui-interactable');
+    const guiInteractable = el.getAttribute('gui-interactable');
     this.guiInteractable = guiInteractable;
     /* gui interactable parameters
             clickAction: {type: 'string'},
@@ -73,11 +73,11 @@ export default AFRAME.registerComponent('gui-button', {
                                      `,
     );
 
-    var buttonContainer = document.createElement('a-entity');
+    const buttonContainer = document.createElement('a-entity');
 
     if (guiItem.bevel) {
-      var bevelsize_adjust = guiItem.bevelSize * 1;
-      var bevelthickness_adjust = guiItem.bevelThickness;
+      const bevelsize_adjust = guiItem.bevelSize * 1;
+      const bevelthickness_adjust = guiItem.bevelThickness;
       buttonContainer.setAttribute(
         'bevelbox',
         `width: ${guiItem.width - guiItem.width * bevelsize_adjust}; 
@@ -113,10 +113,10 @@ export default AFRAME.registerComponent('gui-button', {
     el.appendChild(buttonContainer);
     this.buttonContainer = buttonContainer;
 
-    var buttonEntity = document.createElement('a-entity');
+    const buttonEntity = document.createElement('a-entity');
     if (guiItem.bevel) {
-      var bevelsize_adjust = guiItem.bevelSize * 1;
-      var bevelthickness_adjust = guiItem.bevelThickness;
+      const bevelsize_adjust = guiItem.bevelSize * 1;
+      const bevelthickness_adjust = guiItem.bevelThickness;
       buttonEntity.setAttribute(
         'bevelbox',
         `width: ${guiItem.width - guiItem.gap - (guiItem.width - guiItem.gap) * bevelsize_adjust}; 
@@ -199,16 +199,16 @@ export default AFRAME.registerComponent('gui-button', {
           `property: material.color; from: ${data.activeColor}; to:${data.backgroundColor}; dur:400; easing: easeOutQuad;`,
         );
       } else {
-        var guiButton = el.components['gui-button'];
+        const guiButton = el.components['gui-button'];
         // console.log("about to toggle, current state: " + guiButton.data.toggleState);
         guiButton.setActiveState(!guiButton.data.toggleState);
         //  buttonEntity.setAttribute('material', 'color', data.activeColor);
       }
 
-      var clickActionFunctionName = guiInteractable.clickAction;
+      const clickActionFunctionName = guiInteractable.clickAction;
       // console.log("in button, clickActionFunctionName: "+clickActionFunctionName);
       // find object
-      var clickActionFunction = window[clickActionFunctionName];
+      const clickActionFunction = window[clickActionFunctionName];
       //console.log("clickActionFunction: "+clickActionFunction);
       // is object a function?
       if (typeof clickActionFunction === 'function') clickActionFunction(event);
@@ -232,9 +232,9 @@ export default AFRAME.registerComponent('gui-button', {
   },
   play: function () {},
   update: function (oldData) {
-    var data = this.data;
-    var el = this.el;
-    var guiItem = el.getAttribute('gui-item');
+    const data = this.data;
+    const el = this.el;
+    const guiItem = el.getAttribute('gui-item');
     this.guiItem = guiItem;
 
     el.setAttribute(
@@ -255,8 +255,8 @@ export default AFRAME.registerComponent('gui-button', {
     );
 
     if (guiItem.bevel) {
-      var bevelsize_adjust = guiItem.bevelSize * 1;
-      var bevelthickness_adjust = guiItem.bevelThickness;
+      const bevelsize_adjust = guiItem.bevelSize * 1;
+      const bevelthickness_adjust = guiItem.bevelThickness;
       this.buttonContainer.setAttribute(
         'bevelbox',
         `width: ${guiItem.width - guiItem.width * bevelsize_adjust}; 
@@ -293,8 +293,8 @@ export default AFRAME.registerComponent('gui-button', {
     );
 
     if (guiItem.bevel) {
-      var bevelsize_adjust = guiItem.bevelSize * 1;
-      var bevelthickness_adjust = guiItem.bevelThickness;
+      const bevelsize_adjust = guiItem.bevelSize * 1;
+      const bevelthickness_adjust = guiItem.bevelThickness;
       this.buttonEntity.setAttribute(
         'bevelbox',
         `width: ${guiItem.width - guiItem.gap - (guiItem.width - guiItem.gap) * bevelsize_adjust}; 
@@ -332,7 +332,7 @@ export default AFRAME.registerComponent('gui-button', {
     if (this.textEntity) {
       console.log('has textEntity: ' + this.textEntity);
 
-      var oldEntity = this.textEntity;
+      const oldEntity = this.textEntity;
       oldEntity.parentNode.removeChild(oldEntity);
 
       this.setText(this.data.value);
@@ -352,11 +352,11 @@ export default AFRAME.registerComponent('gui-button', {
     }
   },
   setText: function (newText) {
-    var data = this.data;
-    var el = this.el;
-    var guiItem = el.getAttribute('gui-item');
+    const data = this.data;
+    const el = this.el;
+    const guiItem = el.getAttribute('gui-item');
 
-    var textEntity = document.createElement('a-entity');
+    const textEntity = document.createElement('a-entity');
     this.textEntity = textEntity;
     textEntity.setAttribute(
       'troika-text',

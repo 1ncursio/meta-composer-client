@@ -19,6 +19,7 @@ export default AFRAME.registerPrimitive('a-gui-icon-button', {
     'font-family': 'gui-icon-button.fontFamily',
     'border-color': 'gui-icon-button.borderColor',
     'background-color': 'gui-icon-button.backgroundColor',
+    'background-color-opacity': 'gui-icon-button.backgroundColorOpacity',
     'hover-color': 'gui-icon-button.hoverColor',
     'active-color': 'gui-icon-button.activeColor',
     icon: 'gui-icon-button.icon',

@@ -1,12 +1,12 @@
-import { Box, Entity } from '@belivvr/aframe-react';
+import { Box, Entity, Plane } from '@belivvr/aframe-react';
 import type { PositionProps } from '@belivvr/aframe-react/types/components/position';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import useKeyParams, { IKey } from '@hooks/useKeyParams';
 import useStore from '@store/useStore';
 
-export type PianoProps = {
+export interface PianoProps {
   position: PositionProps;
-};
+}
 
 const Piano: FC<PianoProps> = ({ position }) => {
   const [rendered, setRendered] = useState<boolean>(false);
@@ -45,6 +45,9 @@ const Piano: FC<PianoProps> = ({ position }) => {
           key={`${register}-${note}`}
           white-key
           width={bottomWidth}
+          material={{
+            shader: 'standard',
+          }}
           height={0.015}
           depth={0.045}
           className={`raycastable piano-key key-${key}`}
@@ -54,6 +57,9 @@ const Piano: FC<PianoProps> = ({ position }) => {
             height={0.015}
             depth={0.05}
             white-key
+            material={{
+              shader: 'standard',
+            }}
             position={{ x: topPositionX, y: 0, z: -0.0475 }}
             className={`raycastable piano-key key-${key}`}
           />
@@ -69,6 +75,9 @@ const Piano: FC<PianoProps> = ({ position }) => {
             x: referencePositionX + wholePositionX,
             y: 0.0025,
             z: -0.0475,
+          }}
+          material={{
+            shader: 'standard',
           }}
           color="#000000"
           key={`${register}-${note}`}
@@ -230,9 +239,44 @@ const Piano: FC<PianoProps> = ({ position }) => {
   }
 
   return (
-    <Entity id="piano" position={position}>
-      {keyParamsFor88Key.map((key) => buildKey(key))}
-    </Entity>
+    <>
+      <Entity id="piano" position={position}>
+        <Plane
+          material={{
+            color: '#000000',
+            shader: 'standard',
+            opacity: 0.7,
+          }}
+          width={1.28}
+          height={0.6}
+          position={{
+            x: 0.083,
+            y: 0.2,
+            z: -0.3,
+          }}
+          rotation={{
+            x: -45,
+            y: 0,
+            z: 0,
+          }}
+        />
+        <Box
+          material={{
+            color: '#000000',
+            shader: 'standard',
+          }}
+          width={1.28}
+          height={0.03}
+          depth={0.12}
+          position={{
+            x: 0.083,
+            y: -0.02,
+            z: -0.03,
+          }}
+        />
+        {keyParamsFor88Key.map((key) => buildKey(key))}
+      </Entity>
+    </>
   );
 };
 

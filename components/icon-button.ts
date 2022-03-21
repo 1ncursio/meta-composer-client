@@ -1,4 +1,5 @@
-import { key_offwhite, key_grey, key_grey_dark, key_orange } from './vars';
+import { styleStr } from '@utils/aframeUtils';
+import { key_grey, key_grey_dark, key_grey_light, key_offwhite } from './vars';
 
 export default AFRAME.registerComponent('gui-icon-button', {
   schema: {
@@ -12,22 +13,29 @@ export default AFRAME.registerComponent('gui-icon-button', {
     fontColor: { type: 'string', default: key_offwhite },
     borderColor: { type: 'string', default: key_offwhite },
     backgroundColor: { type: 'string', default: key_grey },
+    backgroundColorOpacity: { type: 'number', default: 0.3 },
     hoverColor: { type: 'string', default: key_grey_dark },
-    activeColor: { type: 'string', default: key_orange },
+    activeColor: { type: 'string', default: key_grey_light },
   },
-  init: function () {
-    var data = this.data;
-    var el = this.el;
-    var guiItem = el.getAttribute('gui-item');
+  guiItem: null,
+  guiInteractable: null,
+  iconEntity: null,
+  buttonEntity: null,
+  toggleState: false,
+  init() {
+    const data = this.data;
+    const el = this.el;
+    const guiItem = el.getAttribute('gui-item');
     this.guiItem = guiItem;
-    var toggleState = (this.toggleState = data.toggle);
-    var guiInteractable = el.getAttribute('gui-interactable');
+    this.toggleState = data.toggle;
+    const toggleState = data.toggle;
+    const guiInteractable = el.getAttribute('gui-interactable');
     this.guiInteractable = guiInteractable;
 
     //fallback for old font-sizing
     if (data.iconFontSize > 20) {
       // 150/1000
-      var newSize = data.iconFontSize / 750;
+      const newSize = data.iconFontSize / 750;
       data.iconFontSize = newSize;
     }
 
@@ -37,16 +45,23 @@ export default AFRAME.registerComponent('gui-icon-button', {
       `shader: flat; transparent: true; opacity: 0.0; alphaTest: 0.5; side:double; color:${data.backgroundColor};`,
     );
 
-    var buttonContainer = document.createElement('a-entity');
+    const buttonContainer = document.createElement('a-entity');
     buttonContainer.setAttribute('geometry', `primitive: cylinder; radius: ${guiItem.height / 2}; height: 0.02;`);
-    buttonContainer.setAttribute('material', `shader: flat; opacity: 1; side:double; color: ${data.borderColor}`);
+    buttonContainer.setAttribute(
+      'material',
+      `shader: flat; opacity: ${data.backgroundColorOpacity}; side:double; color: ${data.borderColor}`,
+    );
     buttonContainer.setAttribute('rotation', '90 0 0');
     buttonContainer.setAttribute('position', '0 0 0.01');
-    el.appendChild(buttonContainer);
+    // TODO: 없는 게 더 보기 좋아서 일단 주석처리
+    // el.appendChild(buttonContainer);
 
-    var buttonEntity = document.createElement('a-entity');
+    const buttonEntity = document.createElement('a-entity');
     buttonEntity.setAttribute('geometry', `primitive: cylinder; radius: ${guiItem.height / 2.05}; height: 0.04;`);
-    buttonEntity.setAttribute('material', `shader: flat; opacity: 1; side:double; color: ${data.backgroundColor}`);
+    buttonEntity.setAttribute(
+      'material',
+      `shader: flat; opacity: ${data.backgroundColorOpacity}; side:double; color: ${data.backgroundColor}`,
+    );
     buttonEntity.setAttribute('rotation', '90 0 0');
     buttonEntity.setAttribute('position', '0 0 0.02');
     el.appendChild(buttonEntity);
@@ -54,7 +69,7 @@ export default AFRAME.registerComponent('gui-icon-button', {
 
     this.setIcon(data.icon);
 
-    el.addEventListener('mouseenter', function (evt) {
+    el.addEventListener('mouseenter', (elem) => {
       buttonEntity.removeAttribute('animation__leave');
       if (!data.toggle) {
         buttonEntity.setAttribute(
@@ -63,7 +78,7 @@ export default AFRAME.registerComponent('gui-icon-button', {
         );
       }
     });
-    el.addEventListener('mouseleave', function (evt) {
+    el.addEventListener('mouseleave', (e) => {
       if (!data.toggle) {
         buttonEntity.removeAttribute('animation__click');
         buttonEntity.setAttribute(
@@ -73,7 +88,9 @@ export default AFRAME.registerComponent('gui-icon-button', {
       }
       buttonEntity.removeAttribute('animation__enter');
     });
-    el.addEventListener(data.on, function (event) {
+    el.addEventListener(data.on, (e) => {
+      console.log('ㅎㅇ');
+      console.log({ data: this.data });
       if (!data.toggle) {
         // if not toggling flashing active state
         buttonEntity.setAttribute(
@@ -81,16 +98,17 @@ export default AFRAME.registerComponent('gui-icon-button', {
           `property: material.color; from: ${data.activeColor}; to:${data.backgroundColor}; dur:400; easing: easeOutQuad;`,
         );
       } else {
-        var guiButton = el.components['gui-button'];
+        const guiButton = el.components['gui-button'];
+        console.log({ components: el.components });
         // console.log("about to toggle, current state: " + guiButton.data.toggleState);
         guiButton.setActiveState(!guiButton.data.toggleState);
         //  buttonEntity.setAttribute('material', 'color', data.activeColor);
       }
 
-      var clickActionFunctionName = guiInteractable.clickAction;
+      const clickActionFunctionName = guiInteractable.clickAction;
       // console.log("in button, clickActionFunctionName: "+clickActionFunctionName);
       // find object
-      var clickActionFunction = window[clickActionFunctionName];
+      const clickActionFunction = window[clickActionFunctionName];
       //console.log("clickActionFunction: "+clickActionFunction);
       // is object a function?
       if (typeof clickActionFunction === 'function') clickActionFunction(event);
@@ -98,16 +116,16 @@ export default AFRAME.registerComponent('gui-icon-button', {
     ////WAI ARIA Support
     el.setAttribute('role', 'button');
   },
-  play: function () {},
-  update: function (oldData) {
+  play() {},
+  update(oldData) {
     console.log('In button update, toggle: ' + this.toggleState);
-    var data = this.data;
-    var el = this.el;
+    const data = this.data;
+    const el = this.el;
 
     if (this.iconEntity) {
       console.log('has iconEntity: ' + this.iconEntity);
 
-      var oldEntity = this.iconEntity;
+      const oldEntity = this.iconEntity;
       oldEntity.parentNode.removeChild(oldEntity);
 
       this.setIcon(this.data.icon);
@@ -115,9 +133,10 @@ export default AFRAME.registerComponent('gui-icon-button', {
       console.log('no iconEntity!');
     }
   },
-  setActiveState: function (activeState) {
+  setActiveState(activeState: boolean) {
     // console.log("in setActiveState function, new state: " + activeState);
     this.data.toggleState = activeState;
+    console.log('이거 호출되긴 하냐');
     if (!activeState) {
       console.log('not active, about to set background color');
       this.buttonEntity.setAttribute('material', 'color', this.data.backgroundColor);
@@ -126,25 +145,26 @@ export default AFRAME.registerComponent('gui-icon-button', {
       this.buttonEntity.setAttribute('material', 'color', this.data.activeColor);
     }
   },
-  setIcon: function (unicode) {
-    var hex = parseInt(unicode, 16);
-    var char = String.fromCharCode(hex);
+  setIcon(unicode: string) {
+    const hex = parseInt(unicode, 16);
+    const char = String.fromCharCode(hex);
 
-    var iconEntity = document.createElement('a-entity');
+    const iconEntity = document.createElement('a-entity');
     this.iconEntity = iconEntity;
     iconEntity.setAttribute(
       'troika-text',
-      `value:${char}; 
-                                              align:center; 
-                                              anchor:center; 
-                                              baseline:center;
-                                              lineHeight:${this.guiItem.height};
-                                              maxWidth:${this.guiItem.width};
-                                              color:${this.data.fontColor};
-                                              font:${this.data.iconFont};
-                                              fontSize:${this.data.iconFontSize};
-                                              depthOffset:1;
-                                              `,
+      styleStr({
+        value: char,
+        align: 'center',
+        anchor: 'center',
+        baseline: 'center',
+        lineHeight: this.guiItem.height,
+        maxWidth: this.guiItem.width,
+        color: this.data.fontColor,
+        font: this.data.iconFont,
+        fontSize: this.data.iconFontSize,
+        depthOffset: 1,
+      }),
     );
     iconEntity.setAttribute('position', `0 0 0.05`); // 0.05 y axis adjustment for fontawesome
     //        textEntity.setAttribute('troika-text-material', `shader: flat;`);

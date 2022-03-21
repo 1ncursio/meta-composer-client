@@ -5,8 +5,8 @@ export const hiddenYPosition = 1000;
 export const key_orange = '#ed5b21'; // rgb(237, 91, 33) Light orange
 export const key_orange_light = '#ef8c60'; // rgb (239, 140, 96) Extra Light Orange
 export const key_grey = '#22252a'; // rgb(34, 37, 42) Standard grey
-export const key_grey_dark = '#2c3037'; // rgb(44, 48, 55) Medium grey
-export const key_grey_light = '#606876'; // rgb(96, 104, 118) Light grey
+export const key_grey_dark = '#706f6f'; //
+export const key_grey_light = '#cacaca'; //
 export const key_offwhite = '#d3d3d4'; // rgb(211, 211, 212) Extra Light grey
 export const key_white = '#fff';
 

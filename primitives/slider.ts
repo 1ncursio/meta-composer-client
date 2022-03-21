@@ -7,6 +7,7 @@ export default AFRAME.registerPrimitive('a-gui-slider', {
   mappings: {
     'active-color': 'gui-slider.activeColor',
     'background-color': 'gui-slider.backgroundColor',
+    'background-opacity': 'gui-slider.backgroundOpacity',
     'border-color': 'gui-slider.borderColor',
     'handle-color': 'gui-slider.handleColor',
     'handle-inner-depth': 'gui-slider.handleInnerDepth',

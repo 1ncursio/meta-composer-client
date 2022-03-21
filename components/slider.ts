@@ -6,6 +6,7 @@ export interface AGUISlider {
   schema: {
     activeColor: { type: 'string'; default: string };
     backgroundColor: { type: 'string'; default: string };
+    backgroundOpacity: { type: 'number'; default: 0.1 };
     borderColor: { type: 'string'; default: string };
     handleColor: { type: 'string'; default: string };
     handleInnerDepth: { type: 'number'; default: number };
@@ -69,7 +70,7 @@ export default AFRAME.registerComponent<AGUISlider>('gui-slider', {
       styleStr({
         shader: 'flat',
         color: data.backgroundColor,
-        opacity: 1,
+        opacity: data.backgroundOpacity,
         side: 'front',
       }),
     );
@@ -97,17 +98,7 @@ export default AFRAME.registerComponent<AGUISlider>('gui-slider', {
     sliderActiveBar.setAttribute(
       'position',
       coordStr({
-        // 1일때 총 width 0.5, x: -0.25, 2일때 총 width 1.5 x: -0.375
-        // (0.5 - 1.5) * 0.5 = -0.25
-        // x: (this.data.percent - sliderWidth) * 0.5,
-        // 이전의 식으로 계산하면 (0 - 0.5) * 0.5 = -0.25이 나왔음
-        // 하지만 (0 - 1.5) * 0.5 = -0.75가 나와서, 어디선가 * 0.5가 누락됨
-        // 기존의 라이브러리에는 data.percent - sliderWidth * 0.5이라고 나와있음
-        // 0 - 0.5 * 0.5 = -0.25가 나오네.
-        // x: (this.data.percent * 2 - sliderWidth) * 0.5,
-        // x: sliderWidth * 0.5 = 0.,
-        // x: -9.5 * 0.25,
-        x: (this.data.percent - sliderWidth) * 0.5,
+        x: (data.percent * sliderWidth - sliderWidth) * 0.5,
         y: 0,
         z: data.sliderBarDepth - 0.01,
       }),
@@ -213,15 +204,19 @@ export default AFRAME.registerComponent<AGUISlider>('gui-slider', {
     this.handleContainer = handleContainer;
 
     /* 이벤트 핸들러 */
-    el.addEventListener('mouseenter', () => handle.setAttribute('material', 'color', data.hoverColor));
+    el.addEventListener('mouseenter', () => {
+      handle.setAttribute('material', 'color', data.hoverColor);
+      sliderActiveBar.setAttribute('material', 'color', data.hoverColor);
+    });
 
-    el.addEventListener('mouseleave', () => handle.setAttribute('material', 'color', data.handleColor));
+    el.addEventListener('mouseleave', () => {
+      handle.setAttribute('material', 'color', data.handleColor);
+      sliderActiveBar.setAttribute('material', 'color', data.handleColor);
+    });
 
     el.addEventListener('click', this.onClick.bind(this));
   },
-  update() {
-    console.log('update');
-  },
+  update() {},
   tick() {},
   remove() {},
   pause() {},
@@ -247,19 +242,15 @@ export default AFRAME.registerComponent<AGUISlider>('gui-slider', {
         primitive: 'box',
         // width: this.data.percent * 2,
         width: this.data.percent * sliderBarWidth,
-        height: 0.05,
+        height: this.data.sliderBarHeight,
         depth: 0.03,
       }),
     );
-    // -0.5 ~ 0.5
+
     this.sliderActiveBar!.setAttribute(
       'position',
       coordStr({
-        // x: this.data.percent - 1,
-        // x: this.data.percent - sliderBarWidth * 0.5 * this.data.percent,
-        x: (this.data.percent - sliderBarWidth) * 0.5,
-        // x: this.data.percent - sliderBarWidth * 0.5,
-        // this.data.percent * sliderBarWidth * 0.5
+        x: (this.data.percent * sliderBarWidth - sliderBarWidth) * 0.5,
         y: 0,
         z: 0.02,
       }),
@@ -272,7 +263,7 @@ export default AFRAME.registerComponent<AGUISlider>('gui-slider', {
         primitive: 'box',
         // width: 2 - this.data.percent * 2,
         width: sliderBarWidth - this.data.percent * sliderBarWidth,
-        height: 0.05,
+        height: this.data.sliderBarHeight,
         depth: 0.03,
       }),
     );

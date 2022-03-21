@@ -15,11 +15,11 @@ const SheetContainer: FC<SheetContainerProps> = ({ id }) => {
       //   canvasRef.current.height = 500 * 2;
       const VF = Vex.Flow;
       const renderer = new VF.Renderer(canvasRef.current!, VF.Renderer.Backends.CANVAS);
-      renderer.resize(500, 500);
-      canvasRef.current.width = 500 * 4;
-      canvasRef.current.height = 500 * 4;
-      canvasRef.current.style.width = '500px';
-      canvasRef.current.style.height = '500px';
+      renderer.resize(1200, 300);
+      // canvasRef.current.width = 500 * 4;
+      // canvasRef.current.height = 500 * 4;
+      // canvasRef.current.style.width = '500px';
+      // canvasRef.current.style.height = '500px';
       // canvas의 width와 height를 1000으로, style을 500으로 하면 2배가 될 듯?
       const context = renderer.getContext();
       context.setFont('Arial', 10, 600).setBackgroundFillStyle('#eed');
