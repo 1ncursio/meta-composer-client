@@ -3,6 +3,7 @@ import 'aframe-geometry-merger-component';
 import 'aframe-html-shader';
 import 'aframe-slice9-component';
 import 'aframe-troika-text';
+import '@components/oculus-controller';
 import '@components/bevelbox';
 import '@components/button';
 import '@components/draw-canvas';
@@ -216,6 +217,7 @@ const XRSceneContainer = () => {
   </a-entity> */}
         <Entity
           id="left-hand"
+          oculus-controller
           handTrackingControls={{
             hand: 'left',
             modelColor: '#fbceb1',
@@ -233,6 +235,7 @@ const XRSceneContainer = () => {
         />
         <Entity
           id="right-hand"
+          oculus-controller
           handTrackingControls={{
             hand: 'right',
             modelColor: '#fbceb1',

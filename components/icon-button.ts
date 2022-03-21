@@ -9,7 +9,7 @@ export default AFRAME.registerComponent('gui-icon-button', {
     icon: { type: 'string', default: 'f0f3' },
     iconActive: { type: 'string', default: '' },
     iconFontSize: { type: 'number', default: 0.4 },
-    iconFont: { type: 'string', default: 'assets/fonts/fa-regular-400.ttf' },
+    iconFont: { type: 'string', default: 'assets/fonts/fa-solid-900.ttf' },
     fontColor: { type: 'string', default: key_offwhite },
     borderColor: { type: 'string', default: key_offwhite },
     backgroundColor: { type: 'string', default: key_grey },
@@ -71,47 +71,25 @@ export default AFRAME.registerComponent('gui-icon-button', {
 
     el.addEventListener('mouseenter', (elem) => {
       buttonEntity.removeAttribute('animation__leave');
-      if (!data.toggle) {
-        buttonEntity.setAttribute(
-          'animation__enter',
-          `property: material.color; from: ${data.backgroundColor}; to:${data.hoverColor}; dur:200;`,
-        );
-      }
+      buttonEntity.setAttribute(
+        'animation__enter',
+        `property: material.color; from: ${data.backgroundColor}; to:${data.hoverColor}; dur:200;`,
+      );
     });
     el.addEventListener('mouseleave', (e) => {
-      if (!data.toggle) {
-        buttonEntity.removeAttribute('animation__click');
-        buttonEntity.setAttribute(
-          'animation__leave',
-          `property: material.color; from: ${data.hoverColor}; to:${data.backgroundColor}; dur:200; easing: easeOutQuad;`,
-        );
-      }
+      buttonEntity.removeAttribute('animation__click');
+      buttonEntity.setAttribute(
+        'animation__leave',
+        `property: material.color; from: ${data.hoverColor}; to:${data.backgroundColor}; dur:200; easing: easeOutQuad;`,
+      );
       buttonEntity.removeAttribute('animation__enter');
     });
     el.addEventListener(data.on, (e) => {
-      console.log('ㅎㅇ');
-      console.log({ data: this.data });
-      if (!data.toggle) {
-        // if not toggling flashing active state
-        buttonEntity.setAttribute(
-          'animation__click',
-          `property: material.color; from: ${data.activeColor}; to:${data.backgroundColor}; dur:400; easing: easeOutQuad;`,
-        );
-      } else {
-        const guiButton = el.components['gui-button'];
-        console.log({ components: el.components });
-        // console.log("about to toggle, current state: " + guiButton.data.toggleState);
-        guiButton.setActiveState(!guiButton.data.toggleState);
-        //  buttonEntity.setAttribute('material', 'color', data.activeColor);
-      }
-
-      const clickActionFunctionName = guiInteractable.clickAction;
-      // console.log("in button, clickActionFunctionName: "+clickActionFunctionName);
-      // find object
-      const clickActionFunction = window[clickActionFunctionName];
-      //console.log("clickActionFunction: "+clickActionFunction);
-      // is object a function?
-      if (typeof clickActionFunction === 'function') clickActionFunction(event);
+      // if not toggling flashing active state
+      buttonEntity.setAttribute(
+        'animation__click',
+        `property: material.color; from: ${data.activeColor}; to:${data.backgroundColor}; dur:400; easing: easeOutQuad;`,
+      );
     });
     ////WAI ARIA Support
     el.setAttribute('role', 'button');
@@ -136,7 +114,6 @@ export default AFRAME.registerComponent('gui-icon-button', {
   setActiveState(activeState: boolean) {
     // console.log("in setActiveState function, new state: " + activeState);
     this.data.toggleState = activeState;
-    console.log('이거 호출되긴 하냐');
     if (!activeState) {
       console.log('not active, about to set background color');
       this.buttonEntity.setAttribute('material', 'color', this.data.backgroundColor);

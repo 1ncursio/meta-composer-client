@@ -7,9 +7,7 @@ export interface XRSlice {
   xr: {
     [ONCLICK_HANDLER]: (e: any, a: any) => void;
     isMicMuted: boolean;
-    muteMic: () => void;
-    unmuteMic: () => void;
-    toggleMic: () => void;
+    toggleMuteMic: () => Promise<void>;
   };
 }
 
@@ -18,22 +16,15 @@ const createXRSlice: AppSlice<XRSlice> = (set, get) => ({
     [ONCLICK_HANDLER](e, a) {
       console.log({ e, a });
     },
-    isMicMuted: true,
-    muteMic: () => {
-      set(
-        produce((state: AppState) => {
-          state.xr.isMicMuted = true;
-        }),
-      );
-    },
-    unmuteMic: () => {
-      set(
-        produce((state: AppState) => {
-          state.xr.isMicMuted = false;
-        }),
-      );
-    },
-    toggleMic: () => {
+    isMicMuted: false,
+    toggleMuteMic: async () => {
+      const { myStream } = get().webRTC;
+      if (!myStream) {
+        throw new Error('myStream is not defined');
+      }
+
+      myStream.getAudioTracks().forEach((track) => (track.enabled = !track.enabled));
+
       set(
         produce((state: AppState) => {
           state.xr.isMicMuted = !state.xr.isMicMuted;

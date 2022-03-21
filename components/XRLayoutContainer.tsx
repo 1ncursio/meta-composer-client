@@ -1,14 +1,80 @@
+import Player from '@lib/midi/Player';
 import SheetEntity from '@react-components/SheetEntity';
 import useStore from '@store/useStore';
 import { coordStr } from '@utils/aframeUtils';
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 const XRLayoutContainer = () => {
-  const [testToggle, setTestToggle] = useState(false);
-  const { onClickHandler } = useStore((state) => state.xr);
+  const [openPopup, setOpenPopup] = useState(false);
+  const { onClickHandler, isMicMuted, toggleMuteMic } = useStore((state) => state.xr);
+  const { initMyStream } = useStore((state) => state.webRTC);
+
+  const micIconUnicode = useMemo(() => (isMicMuted ? 'f131' : 'f130'), [isMicMuted]);
+
+  const playOrPauseIconUnicode = useMemo(() => (Player.getInstance().paused ? 'f04b' : 'f04c'), []);
+
+  const onTogglePlay = () => {
+    if (Player.getInstance().paused) {
+      Player.getInstance().startPlay();
+    } else {
+      Player.getInstance().pause();
+    }
+  };
+
+  const onClosePopup = (e) => {
+    e.target.parentEl.setAttribute('visible', false);
+  };
+
+  useEffect(() => {
+    initMyStream();
+  }, []);
 
   return (
     <>
+      {/* 세팅 레이아웃 */}
+
+      <a-gui-flex-container
+        visible={openPopup}
+        is-top-container
+        flex-direction="column"
+        justify-content="center"
+        align-items="normal"
+        item-padding={1}
+        width={1.6}
+        height={0.8}
+        panel-color="#000000"
+        panel-rounded={0}
+        opacity={1}
+        position={coordStr({
+          x: 0.083,
+          y: 1.5,
+          z: -0.7,
+        })}
+        scale={coordStr({
+          x: 0.1,
+          y: 0.1,
+          z: 0.5,
+        })}
+      >
+        {/* 세팅 닫기 버튼 */}
+        <a-gui-icon-button
+          scale={coordStr({
+            x: 1,
+            y: 1,
+            z: 0.2,
+          })}
+          height={1}
+          icon="58"
+          icon-font-size={0.5}
+          font-color="#f59f0a"
+          focus-color="#ccc"
+          background-color="#000000"
+          toggle
+          toggle-state={openPopup}
+          // onClick={onClosePopup}
+          onClick={() => setOpenPopup((prev) => !prev)}
+        />
+      </a-gui-flex-container>
       {/* 악보 컨테이너 */}
       <a-gui-flex-container
         is-top-container
@@ -61,7 +127,6 @@ const XRLayoutContainer = () => {
           height={1}
           onclick=""
           icon="f027"
-          icon-font="assets/fonts/fa-solid-900.ttf"
           icon-font-size={0.5}
           font-color="#f59f0a"
           focus-color="#ccc"
@@ -98,7 +163,6 @@ const XRLayoutContainer = () => {
           height={1}
           onclick=""
           icon="f048"
-          icon-font="assets/fonts/fa-solid-900.ttf"
           icon-font-size={0.5}
           font-color="#f59f0a"
           focus-color="#ccc"
@@ -112,15 +176,14 @@ const XRLayoutContainer = () => {
             z: 0.2,
           })}
           height={1}
-          onClick={(e) => setTestToggle((prev) => !prev)}
-          icon="f04c"
-          icon-font="assets/fonts/fa-solid-900.ttf"
+          icon={playOrPauseIconUnicode}
           icon-font-size={0.5}
           font-color="#f59f0a"
           focus-color="#ccc"
           background-color="#000000"
           toggle
-          toggle-state={testToggle}
+          toggle-state={false}
+          onClick={onTogglePlay}
         />
         {/* forward-step 아이콘 */}
         <a-gui-icon-button
@@ -132,7 +195,6 @@ const XRLayoutContainer = () => {
           height={1}
           onclick=""
           icon="f051"
-          icon-font="assets/fonts/fa-solid-900.ttf"
           icon-font-size={0.5}
           font-color="#f59f0a"
           focus-color="#ccc"
@@ -146,13 +208,14 @@ const XRLayoutContainer = () => {
             z: 0.2,
           })}
           height={1}
-          onclick=""
-          icon="f130"
-          icon-font="assets/fonts/fa-solid-900.ttf"
+          icon={micIconUnicode}
           icon-font-size={0.5}
           font-color="#f59f0a"
           focus-color="#ccc"
           background-color="#000000"
+          toggle
+          toggle-state={isMicMuted}
+          onClick={toggleMuteMic}
         />
         {/* 설정 아이콘 */}
         <a-gui-icon-button
@@ -162,13 +225,14 @@ const XRLayoutContainer = () => {
             z: 0.2,
           })}
           height={1}
-          onclick=""
           icon="f013"
-          icon-font="assets/fonts/fa-solid-900.ttf"
           icon-font-size={0.5}
           font-color="#f59f0a"
           focus-color="#ccc"
           background-color="#000000"
+          toggle
+          toggle-state={openPopup}
+          onClick={() => setOpenPopup((prev) => !prev)}
         />
       </a-gui-flex-container>
       <a-gui-flex-container
@@ -218,32 +282,16 @@ const XRLayoutContainer = () => {
           letter-spacing={0}
           margin="0 0 0.05 0"
         />
-        <a-gui-slider width={2.5} height={0.75} onclick="handlePianoY" percent={0.5} margin="0 0 0.05 0" />
-        <a-gui-slider width={2.5} height={0.75} onclick="handlePianoZ" percent={0.5} margin="0 0 0.05 0" />
-        <a-gui-flex-container>
-          <a-gui-icon-button
-            height={0.75}
-            onclick=""
-            icon="f131"
-            icon-font="assets/fonts/fa-solid-900.ttf"
-            icon-font-size={0.4}
-            font-color="#f59f0a"
-            hover-color="#fff"
-            focus-color="#ccc"
-            background-color="#fff"
-          />
-          <a-gui-icon-button
-            height={0.75}
-            onclick=""
-            icon="f6a9"
-            icon-font="assets/fonts/fa-solid-900.ttf"
-            icon-font-size={0.4}
-            font-color="#f59f0a"
-            hover-color="#fff"
-            focus-color="#ccc"
-            background-color="#fff"
-          />
-        </a-gui-flex-container>
+        <a-gui-icon-button
+          height={0.75}
+          onclick=""
+          icon="f6a9"
+          icon-font-size={0.4}
+          font-color="#f59f0a"
+          hover-color="#fff"
+          focus-color="#ccc"
+          background-color="#fff"
+        />
       </a-gui-flex-container>
     </>
   );
