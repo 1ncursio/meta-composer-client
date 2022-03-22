@@ -22,5 +22,6 @@ export default AFRAME.registerPrimitive('a-gui-flex-container', {
     'hover-color': 'gui-flex-container.styles.hoverColor',
     'active-color': 'gui-flex-container.styles.activeColor',
     'handle-color': 'gui-flex-container.styles.handleColor',
+    visible: 'gui-flex-container.visible',
   },
 });

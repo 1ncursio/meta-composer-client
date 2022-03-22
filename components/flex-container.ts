@@ -1,5 +1,5 @@
 /*  //trying to figure out global styles that customize gui items
-var styles = StyleSheet.create({
+const styles = StyleSheet.create({
     fontFamily: {
         type: 'string',
         default: 'Helvetica'
@@ -31,6 +31,9 @@ var styles = StyleSheet.create({
 });
 */
 
+import { coordStr, styleStr } from '@utils/aframeUtils';
+import { Entity } from 'aframe';
+import { Vector3 } from 'three';
 import { key_grey, key_grey_dark, key_offwhite, key_orange } from './vars';
 
 const onAppendChildToContainer = (elem: Node, f: (containerElement: Node, addedChildren: NodeList) => void) => {
@@ -57,6 +60,7 @@ export default AFRAME.registerComponent('gui-flex-container', {
     isTopContainer: { type: 'boolean', default: false },
     panelColor: { type: 'string', default: key_grey },
     panelRounded: { type: 'number', default: 0.05 },
+    visible: { type: 'boolean', default: true },
 
     //global settings for GUI items
     styles: {
@@ -69,6 +73,7 @@ export default AFRAME.registerComponent('gui-flex-container', {
       handleColor: { type: 'string', default: key_offwhite },
     },
   },
+  panelBackground: null as Entity | null,
   init() {
     console.log('in aframe-gui-component init for: ' + this.el.getAttribute('id'));
     const containerGuiItem = this.el.getAttribute('gui-item');
@@ -124,11 +129,11 @@ export default AFRAME.registerComponent('gui-flex-container', {
       if (this.data.justifyContent == 'flexStart') {
         cursorY = 0;
       } else if (this.data.justifyContent == 'center' || this.data.justifyContent == 'flexEnd') {
-        var columnHeight = 0;
-        for (var i = 0; i < this.children.length; i++) {
-          var childElement = this.children[i];
+        let columnHeight = 0;
+        for (let i = 0; i < this.children.length; i++) {
+          const childElement = this.children[i];
           //console.log("childElement: "+childElement);
-          var childGuiItem = childElement.getAttribute('gui-item');
+          const childGuiItem = childElement.getAttribute('gui-item');
           //console.log("childGuiItem: "+childGuiItem);
           columnHeight = columnHeight + childGuiItem.margin.x + childGuiItem.height + childGuiItem.margin.z;
         }
@@ -150,15 +155,15 @@ export default AFRAME.registerComponent('gui-flex-container', {
     //console.log(`initial cursor position for ${this.el.getAttribute("id")}: ${cursorX} ${cursorY} 0.01`)
 
     // not that cursor positions are determined, loop through and lay out items
-    var wrapOffsetX = 0; // not used yet since wrapping isn't supported
-    var wrapOffsetY = 0; // not used yet since wrapping isn't supported
-    for (var i = 0; i < this.children.length; i++) {
-      var childElement = this.children[i];
+    let wrapOffsetX = 0; // not used yet since wrapping isn't supported
+    let wrapOffsetY = 0; // not used yet since wrapping isn't supported
+    for (let i = 0; i < this.children.length; i++) {
+      const childElement = this.children[i];
       // TODO: change this to call gedWidth() and setWidth() of component
-      var childPositionX = 0;
-      var childPositionY = 0;
-      var childPositionZ = 0.01;
-      var childGuiItem = childElement.getAttribute('gui-item');
+      let childPositionX = 0;
+      let childPositionY = 0;
+      let childPositionZ = 0.01;
+      const childGuiItem = childElement.getAttribute('gui-item');
 
       // now get object position in aframe container cordinates (0, 0 is center)
       if (childGuiItem) {
@@ -190,7 +195,7 @@ export default AFRAME.registerComponent('gui-flex-container', {
           `primitive: plane; height: ${childGuiItem.height}; width: ${childGuiItem.width};`,
         );
 
-        var childFlexContainer = childElement.components['gui-flex-container'];
+        const childFlexContainer = childElement.components['gui-flex-container'];
         if (childFlexContainer) {
           childFlexContainer.setBackground();
         }
@@ -201,7 +206,7 @@ export default AFRAME.registerComponent('gui-flex-container', {
       //console.log('****** containerElement: ' + containerElement);
       //console.log('****** addedChildren: ' + addedChildren.length);
       // containerElement.components['gui-flex-container'].init();
-      var addedChild = addedChildren[0];
+      const addedChild = addedChildren[0];
       addedChildren[0].addEventListener('loaded', (e) => {
         //console.log('in appended element loaded handler: '+e);
         //console.log('addedChild: '+addedChild);
@@ -210,41 +215,60 @@ export default AFRAME.registerComponent('gui-flex-container', {
       });
     });
   },
-  update() {},
-  tick() {},
+  update() {
+    console.log('업데이틑');
+  },
+  tick() {
+    // this.panelBackground!.object3D.visible = this.data.visible;
+  },
   remove() {},
   pause() {},
   play() {},
   getElementSize() {},
   setBackground() {
     if (this.data.opacity > 0) {
-      console.log('panel position: ' + JSON.stringify(this.el.getAttribute('position')));
-      var guiItem = this.el.getAttribute('gui-item');
-      var panelBackground = document.createElement('a-entity');
+      const position: Vector3 = this.el.getAttribute('position');
+      const rotation: Vector3 = this.el.getAttribute('rotation');
+
+      console.log('panel position', position);
+      const guiItem = this.el.getAttribute('gui-item');
+      const panelBackground = document.createElement('a-entity');
       panelBackground.setAttribute(
         'rounded',
-        `height: ${guiItem.height}; width: ${guiItem.width}; opacity: ${this.data.opacity}; color: ${this.data.panelColor}; radius:${this.data.panelRounded}; depthWrite:false; polygonOffset:true; polygonOffsetFactor: 2;`,
+        styleStr({
+          height: guiItem.height,
+          width: guiItem.width,
+          opacity: this.data.opacity,
+          color: this.data.panelColor,
+          radius: this.data.panelRounded,
+          depthWrite: false,
+          polygonOffset: true,
+          polygonOffsetFactor: 2,
+        }),
       );
-      //            panelBackground.setAttribute('geometry', `primitive: box; height: ${guiItem.height}; width: ${guiItem.width}; depth:0.025;`);
-      console.log('about to set panel background color to: : ' + this.data.panelColor);
-      //            panelBackground.setAttribute('material', `shader: standard; depthTest: true; opacity: ${this.data.opacity}; color: ${this.data.panelColor};`);
+
+      console.log('about to set panel background color to', this.data.panelColor);
       panelBackground.setAttribute(
         'position',
-        this.el.getAttribute('position').x +
-          ' ' +
-          this.el.getAttribute('position').y +
-          ' ' +
-          (this.el.getAttribute('position').z - 0.0125),
+        coordStr({
+          x: position.x,
+          y: position.y,
+          z: position.z - 0.0125,
+        }),
       );
       panelBackground.setAttribute(
         'rotation',
-        this.el.getAttribute('rotation').x +
-          ' ' +
-          this.el.getAttribute('rotation').y +
-          ' ' +
-          this.el.getAttribute('rotation').z,
+        coordStr({
+          x: rotation.x,
+          y: rotation.y,
+          z: rotation.z,
+        }),
       );
-      this.el.parentNode.insertBefore(panelBackground, this.el);
+
+      // panelBackground.setAttribute('visible', false);
+
+      this.panelBackground = panelBackground;
+      this.el.parentNode?.insertBefore(panelBackground, this.el);
     }
   },
 });

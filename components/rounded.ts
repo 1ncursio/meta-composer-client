@@ -14,27 +14,28 @@ export default AFRAME.registerComponent('rounded', {
     color: { type: 'color', default: '#F0F0F0' },
     opacity: { type: 'number', default: 1 },
   },
-  init: function () {
-    this.rounded = new THREE.Mesh(
+  rounded: null as THREE.Mesh<THREE.ShapeGeometry, THREE.MeshStandardMaterial> | null,
+  init() {
+    this.rounded = new AFRAME.THREE.Mesh(
       this.draw(),
-      new THREE.MeshStandardMaterial({ color: new THREE.Color(this.data.color) }),
+      new AFRAME.THREE.MeshStandardMaterial({ color: new AFRAME.THREE.Color(this.data.color) }),
     );
     this.updateOpacity();
     this.el.setObject3D('mesh', this.rounded);
   },
-  update: function () {
+  update() {
     if (this.data.enabled) {
       if (this.rounded) {
         this.rounded.visible = true;
         this.rounded.geometry = this.draw();
-        this.rounded.material.color = new THREE.Color(this.data.color);
+        this.rounded.material.color = new AFRAME.THREE.Color(this.data.color);
         this.updateOpacity();
       }
     } else {
-      this.rounded.visible = false;
+      this.rounded!.visible = false;
     }
   },
-  updateOpacity: function () {
+  updateOpacity() {
     if (this.data.opacity < 0) {
       this.data.opacity = 0;
     }
@@ -42,62 +43,40 @@ export default AFRAME.registerComponent('rounded', {
       this.data.opacity = 1;
     }
     if (this.data.opacity < 1) {
-      this.rounded.material.transparent = true;
-      this.rounded.material.opacity = this.data.opacity;
-      this.rounded.material.alphaTest = 0;
+      this.rounded!.material.transparent = true;
+      this.rounded!.material.opacity = this.data.opacity;
+      this.rounded!.material.alphaTest = 0;
     } else {
-      this.rounded.material.transparent = false;
+      this.rounded!.material.transparent = false;
     }
   },
-  tick: function () {},
-  remove: function () {
+  tick() {},
+  remove() {
     if (!this.rounded) {
       return;
     }
+
     this.el.object3D.remove(this.rounded);
     this.rounded = null;
   },
-  draw: function () {
-    var roundedRectShape = new THREE.Shape();
-    function roundedRect(ctx, x, y, width, height, topLeftRadius, topRightRadius, bottomLeftRadius, bottomRightRadius) {
-      if (!topLeftRadius) {
-        topLeftRadius = 0.00001;
-      }
-      if (!topRightRadius) {
-        topRightRadius = 0.00001;
-      }
-      if (!bottomLeftRadius) {
-        bottomLeftRadius = 0.00001;
-      }
-      if (!bottomRightRadius) {
-        bottomRightRadius = 0.00001;
-      }
-      ctx.moveTo(x, y + topLeftRadius);
-      ctx.lineTo(x, y + height - topLeftRadius);
-      ctx.quadraticCurveTo(x, y + height, x + topLeftRadius, y + height);
-      ctx.lineTo(x + width - topRightRadius, y + height);
-      ctx.quadraticCurveTo(x + width, y + height, x + width, y + height - topRightRadius);
-      ctx.lineTo(x + width, y + bottomRightRadius);
-      ctx.quadraticCurveTo(x + width, y, x + width - bottomRightRadius, y);
-      ctx.lineTo(x + bottomLeftRadius, y);
-      ctx.quadraticCurveTo(x, y, x, y + bottomLeftRadius);
-    }
+  draw() {
+    const roundedRectShape = new AFRAME.THREE.Shape();
 
-    var corners = [this.data.radius, this.data.radius, this.data.radius, this.data.radius];
-    if (this.data.topLeftRadius != -1) {
+    const corners = [this.data.radius, this.data.radius, this.data.radius, this.data.radius];
+    if (this.data.topLeftRadius !== -1) {
       corners[0] = this.data.topLeftRadius;
     }
-    if (this.data.topRightRadius != -1) {
+    if (this.data.topRightRadius !== -1) {
       corners[1] = this.data.topRightRadius;
     }
-    if (this.data.bottomLeftRadius != -1) {
+    if (this.data.bottomLeftRadius !== -1) {
       corners[2] = this.data.bottomLeftRadius;
     }
-    if (this.data.bottomRightRadius != -1) {
+    if (this.data.bottomRightRadius !== -1) {
       corners[3] = this.data.bottomRightRadius;
     }
 
-    roundedRect(
+    this.roundedRect(
       roundedRectShape,
       -this.data.width / 2,
       -this.data.height / 2,
@@ -108,29 +87,41 @@ export default AFRAME.registerComponent('rounded', {
       corners[2],
       corners[3],
     );
-    return new THREE.ShapeBufferGeometry(roundedRectShape);
+    return new AFRAME.THREE.ShapeBufferGeometry(roundedRectShape);
   },
-  pause: function () {},
-  play: function () {},
-});
-
-AFRAME.registerPrimitive('a-rounded', {
-  defaultComponents: {
-    rounded: {},
-  },
-  mappings: {
-    enabled: 'rounded.enabled',
-    width: 'rounded.width',
-    height: 'rounded.height',
-    radius: 'rounded.radius',
-    'depth-write': 'rounded.depthWrite',
-    'polygon-offset': 'rounded.polygonOffset',
-    'polygon-offset-factor': 'rounded.polygonOffsetFactor',
-    'top-left-radius': 'rounded.topLeftRadius',
-    'top-right-radius': 'rounded.topRightRadius',
-    'bottom-left-radius': 'rounded.bottomLeftRadius',
-    'bottom-right-radius': 'rounded.bottomRightRadius',
-    color: 'rounded.color',
-    opacity: 'rounded.opacity',
+  pause() {},
+  play() {},
+  roundedRect(
+    ctx: THREE.Shape,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    topLeftRadius: number,
+    topRightRadius: number,
+    bottomLeftRadius: number,
+    bottomRightRadius: number,
+  ) {
+    if (!topLeftRadius) {
+      topLeftRadius = 0.00001;
+    }
+    if (!topRightRadius) {
+      topRightRadius = 0.00001;
+    }
+    if (!bottomLeftRadius) {
+      bottomLeftRadius = 0.00001;
+    }
+    if (!bottomRightRadius) {
+      bottomRightRadius = 0.00001;
+    }
+    ctx.moveTo(x, y + topLeftRadius);
+    ctx.lineTo(x, y + height - topLeftRadius);
+    ctx.quadraticCurveTo(x, y + height, x + topLeftRadius, y + height);
+    ctx.lineTo(x + width - topRightRadius, y + height);
+    ctx.quadraticCurveTo(x + width, y + height, x + width, y + height - topRightRadius);
+    ctx.lineTo(x + width, y + bottomRightRadius);
+    ctx.quadraticCurveTo(x + width, y, x + width - bottomRightRadius, y);
+    ctx.lineTo(x + bottomLeftRadius, y);
+    ctx.quadraticCurveTo(x, y, x, y + bottomLeftRadius);
   },
 });

@@ -14,6 +14,7 @@ export default AFRAME.registerComponent('gui-interactable', {
       window.addEventListener(
         'keydown',
         (event) => {
+          event.preventDefault();
           const key = event.key || event.keyCode;
 
           // console.log('in keydown handler, event key: ' + event.key);
@@ -28,8 +29,6 @@ export default AFRAME.registerComponent('gui-interactable', {
           //     //    console.log("key press by gui-interactable, keyCode: " + data.keyCode);
           //     el.emit("click");
           //   }
-
-          event.preventDefault();
         },
         true,
       );

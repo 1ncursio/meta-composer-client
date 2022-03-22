@@ -2,11 +2,8 @@ export default AFRAME.registerComponent('canvas-updater', {
   dependencies: ['geometry', 'material'],
 
   tick: function () {
-    var el = this.el;
-    var material;
-
     // @ts-ignore
-    material = el.getObject3D('mesh').material;
+    const { material } = this.el.getObject3D('mesh');
     if (!material.map) {
       return;
     }

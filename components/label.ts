@@ -1,3 +1,4 @@
+import { styleStr } from '@utils/aframeUtils';
 import { key_grey_dark, key_offwhite } from './vars';
 
 export default AFRAME.registerComponent('gui-label', {
@@ -15,9 +16,9 @@ export default AFRAME.registerComponent('gui-label', {
     textDepth: { type: 'number', default: 0.01 },
   },
   init() {
-    var data = this.data;
-    var el = this.el;
-    var guiItem = el.getAttribute('gui-item');
+    const data = this.data;
+    const el = this.el;
+    const guiItem = el.getAttribute('gui-item');
     this.guiItem = guiItem;
 
     el.setAttribute('geometry', `primitive: plane; height: ${guiItem.height}; width: ${guiItem.width};`);
@@ -29,7 +30,7 @@ export default AFRAME.registerComponent('gui-label', {
     //fallback for old font-sizing
     if (data.fontSize > 20) {
       // 150/750
-      var newSize = data.fontSize / 750;
+      const newSize = data.fontSize / 750;
       data.fontSize = newSize;
     }
 
@@ -42,13 +43,10 @@ export default AFRAME.registerComponent('gui-label', {
     // }
   },
   update(oldData) {
-    var data = this.data;
-    var el = this.el;
-
     if (this.textEntity) {
       console.log('has textEntity: ' + this.textEntity);
 
-      var oldEntity = this.textEntity;
+      const oldEntity = this.textEntity;
       oldEntity.parentNode.removeChild(oldEntity);
 
       this.setText(this.data.value);
@@ -61,32 +59,23 @@ export default AFRAME.registerComponent('gui-label', {
     this.textEntity = textEntity;
     textEntity.setAttribute(
       'troika-text',
-      `value: ${newText};
-                                                  align: ${this.data.align};
-                                                  anchor: ${this.data.anchor};
-                                                  baseline:center;
-                                                  letterSpacing:0;
-                                                  lineHeight: ${this.data.lineHeight};
-                                                  color:${this.data.fontColor};
-                                                  font:${this.data.fontFamily};
-                                                  fontSize:${this.data.fontSize};
-                                                  depthOffset:1;
-                                                  maxWidth:${this.guiItem.width / 1.05};
-                                                  `,
+      styleStr({
+        value: newText,
+        align: this.data.align,
+        anchor: this.data.anchor,
+        baseline: 'center',
+        letterSpacing: 0,
+        lineHeight: this.data.lineHeight,
+        color: this.data.fontColor,
+        font: this.data.fontFamily,
+        fontSize: this.data.fontSize,
+        depthOffset: 1,
+        maxWidth: this.guiItem.width / 1.05,
+      }),
     );
-    // textEntity.setAttribute(
-    //   'text',
-    //   `value: ${newText};
-    //                                               align: ${this.data.align};
-    //                                               anchor: ${this.data.anchor};
-    //                                               baseline:center;
-    //                                               letterSpacing:0;
-    //                                               lineHeight: ${this.data.lineHeight};
-    //                                               color:${this.data.fontColor};
-    //                                               `,
-    // );
+
     textEntity.setAttribute('position', `0 0 ${this.data.textDepth}`);
-    //        textEntity.setAttribute('troika-text-material', `shader: flat;`);
+    // textEntity.setAttribute('troika-text-material', `shader: flat;`);
     this.el.appendChild(textEntity);
   },
 });

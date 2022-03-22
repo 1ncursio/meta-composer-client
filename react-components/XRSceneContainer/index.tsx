@@ -20,14 +20,16 @@ import '@primitives/button';
 import '@primitives/flex-container';
 import '@primitives/icon-button';
 import '@primitives/label';
+import '@primitives/rounded';
 import '@primitives/slider';
 import '@primitives/vertical-slider';
+import { Vector3 } from 'three';
 import { Assets, Entity, Light, Mixin, Plane, Scene, Sky } from '@belivvr/aframe-react';
 import { coordStr, styleStr } from '@utils/aframeUtils';
 import React from 'react';
-import { Vector3 } from 'three';
 import SheetContainer from '@react-components/SheetContainer';
 import PianoContainer from '@components/PianoContainer';
+import useStore from '@store/useStore';
 
 window.handlePianoX = (e: CustomEvent, percent: number) => {
   const piano = document.querySelector('#piano');
@@ -59,6 +61,7 @@ window.handlePianoZ = (e: CustomEvent, percent: number) => {
 };
 
 const XRSceneContainer = () => {
+  const { offsetX, offsetY, offsetZ } = useStore((state) => state.xr);
   return (
     <>
       {/* <Script src="https://unpkg.com/aframe-environment-component@1.3.1/dist/aframe-environment-component.min.js" /> */}
@@ -108,9 +111,9 @@ const XRSceneContainer = () => {
         /> */}
         <PianoContainer
           position={{
-            x: 0,
-            y: 0.75,
-            z: -0.4,
+            x: 0 + offsetX,
+            y: 0.75 + offsetY,
+            z: -0.4 + offsetZ,
           }}
         />
         {/* <Text
