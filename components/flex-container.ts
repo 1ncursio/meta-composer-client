@@ -84,7 +84,16 @@ export default AFRAME.registerComponent('gui-flex-container', {
       //          this.el.setAttribute('material', `shader: flat; transparent: true; alphaTest: 0.5; side:front;`);
       this.el.setAttribute(
         'rounded',
-        `height: ${containerGuiItem.height}; width: ${containerGuiItem.width}; opacity: ${this.data.opacity}; color: ${this.data.panelColor}; radius:${this.data.panelRounded}; depthWrite:false; polygonOffset:true; polygonOffsetFactor: 1;`,
+        styleStr({
+          height: containerGuiItem.height,
+          width: containerGuiItem.width,
+          opacity: this.data.opacity,
+          color: this.data.panelColor,
+          radius: this.data.panelRounded,
+          depthWrite: false,
+          polygonOffset: true,
+          polygonOffsetFactor: 1,
+        }),
       );
     }
 
@@ -219,9 +228,27 @@ export default AFRAME.registerComponent('gui-flex-container', {
     console.log('업데이틑');
   },
   tick() {
-    // this.panelBackground!.object3D.visible = this.data.visible;
+    if (this.panelBackground) {
+      if (this.data.visible) {
+        this.panelBackground.setAttribute('visible', true);
+        this.panelBackground.object3D.visible = true;
+      } else {
+        // this.panelBackground.object3D.removeFromParent();
+        this.panelBackground.setAttribute('visible', false);
+        this.panelBackground.object3D.visible = false;
+      }
+      // this.panelBackground!.object3D.visible = this.data.visible;
+    }
   },
-  remove() {},
+  remove() {
+    if (!this.panelBackground) {
+      return;
+    }
+
+    // this.el.object3D.remove(this.panelBackground);
+    this.panelBackground.object3D.removeFromParent();
+    this.panelBackground = null;
+  },
   pause() {},
   play() {},
   getElementSize() {},

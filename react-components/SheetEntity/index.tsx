@@ -13,11 +13,14 @@ const SheetEntity = () => {
           shader: 'flat',
           src: '#sheet',
         }}
+        // width={2.4}
+        // height={0.6}
         width={1.2}
         height={0.3}
         rotation={{ x: 0, y: 0, z: 0 }}
         draw-canvas
         canvas-updater
+        // scale={{ x: 0.5, y: 0.5, z: 1 }}
       />
     </>
   );

@@ -9,28 +9,29 @@ const SheetContainer: FC<SheetContainerProps> = ({ id }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
-    // canvas scale 2
     if (canvasRef.current) {
-      //   canvasRef.current.width = 500 * 2;
-      //   canvasRef.current.height = 500 * 2;
       const VF = Vex.Flow;
       const renderer = new VF.Renderer(canvasRef.current!, VF.Renderer.Backends.CANVAS);
-      renderer.resize(1200, 300);
-      // canvasRef.current.width = 500 * 4;
-      // canvasRef.current.height = 500 * 4;
-      // canvasRef.current.style.width = '500px';
-      // canvasRef.current.style.height = '500px';
-      // canvas의 width와 height를 1000으로, style을 500으로 하면 2배가 될 듯?
+      const width = 2400;
+      const height = 600;
+      renderer.resize(width, height);
       const context = renderer.getContext();
-      context.setFont('Arial', 10, 600).setBackgroundFillStyle('#eed');
-      const stave = new VF.Stave(10, 40, 400, { vertical_bar_width: 100 });
+      context.setFont('Arial', 10, 600);
+
+      context.setFillStyle('white');
+      // context.setStrokeStyle('red');
+      context.fillRect(0, 0, width, height);
+
+      context.setFillStyle('black');
+      // context.setBackgroundFillStyle('black');
+      const stave = new VF.Stave(10, 40, 400, { fill_style: 'black' });
       // // Add a clef and time signature.
       stave.addClef('treble').addTimeSignature('4/4');
       // // Connect it to the rendering context and draw!
       stave.setContext(context).draw();
 
       // add a note to the stave
-      var notes = [
+      const notes = [
         // A quarter-note C.
         new VF.StaveNote({ clef: 'treble', keys: ['c/4'], duration: 'q' }),
 
@@ -45,11 +46,16 @@ const SheetContainer: FC<SheetContainerProps> = ({ id }) => {
         new VF.StaveNote({ clef: 'treble', keys: ['c/4', 'e/4', 'g/4'], duration: 'q' }),
       ];
 
-      var voice = new VF.Voice({ num_beats: 4, beat_value: 4 });
+      notes.forEach((note) => {
+        note.setStyle({ fillStyle: 'black' });
+      });
+
+      const voice = new VF.Voice({ num_beats: 4, beat_value: 4 });
       voice.addTickables(notes);
+      // voice.addTickables(notes);
 
       // Format and justify the notes to 350 pixels (50 pixels left for key and time signatures).
-      var formatter = new VF.Formatter().joinVoices([voice]).format([voice], 350);
+      const formatter = new VF.Formatter().joinVoices([voice]).format([voice], 350);
 
       // Render voice
       voice.draw(context, stave);
