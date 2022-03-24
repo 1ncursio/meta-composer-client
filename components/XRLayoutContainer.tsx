@@ -56,9 +56,14 @@ const XRLayoutContainer = () => {
         panel-rounded={0}
         opacity={0.8}
         position={coordStr({
-          x: 0.083,
+          x: 1.364,
           y: 1.5,
-          z: -0.7,
+          z: -0.42,
+        })}
+        rotation={coordStr({
+          x: 0,
+          y: -45,
+          z: 0,
         })}
         scale={coordStr({
           x: 0.1,
@@ -72,7 +77,7 @@ const XRLayoutContainer = () => {
             scale={coordStr({
               x: 1,
               y: 1,
-              z: 0.2,
+              z: 1,
             })}
             height={1}
             icon="f068"
@@ -99,7 +104,7 @@ const XRLayoutContainer = () => {
             scale={coordStr({
               x: 1,
               y: 1,
-              z: 0.2,
+              z: 1,
             })}
             height={1}
             icon="2b"
@@ -116,7 +121,7 @@ const XRLayoutContainer = () => {
             scale={coordStr({
               x: 1,
               y: 1,
-              z: 0.2,
+              z: 1,
             })}
             height={1}
             icon="f068"
@@ -143,7 +148,7 @@ const XRLayoutContainer = () => {
             scale={coordStr({
               x: 1,
               y: 1,
-              z: 0.2,
+              z: 1,
             })}
             height={1}
             icon="2b"
@@ -160,7 +165,7 @@ const XRLayoutContainer = () => {
             scale={coordStr({
               x: 1,
               y: 1,
-              z: 0.2,
+              z: 1,
             })}
             height={1}
             icon="f068"
@@ -187,7 +192,7 @@ const XRLayoutContainer = () => {
             scale={coordStr({
               x: 1,
               y: 1,
-              z: 0.2,
+              z: 1,
             })}
             height={1}
             icon="2b"

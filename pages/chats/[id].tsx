@@ -107,7 +107,7 @@ const ChatRoomPage = () => {
 
   return (
     <div className="flex gap-8 h-full">
-      {roomListData && <MessageRoomList roomListData={roomListData} />}
+      {roomListData && <MessageRoomList />}
       <div className="flex-1 flex flex-col">
         <div className="flex-1 overflow-y-scroll">
           <MessageList chatSections={chatSections} ref={scrollbarRef} isReachingEnd={isReachingEnd} setSize={setSize} />

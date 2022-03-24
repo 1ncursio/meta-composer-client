@@ -1,5 +1,4 @@
-import ITeacher from './ITeacher';
-
+/* 레슨 */
 export default interface ILesson {
   id: number;
   introduce: string;
@@ -7,5 +6,5 @@ export default interface ILesson {
   price: number;
   name: string;
   type: string;
-  teacher: ITeacher;
+  teacherId: number;
 }

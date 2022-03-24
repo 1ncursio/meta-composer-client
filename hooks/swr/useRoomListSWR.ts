@@ -11,7 +11,6 @@ export interface IRoomList {
 }
 
 export default function useRoomListSWR(options: SWRConfiguration = {}) {
-  const { setUserData } = useStore((state) => state.user);
   const response = useSWR<IRoomList>('/chat/roomList', fetcher, { ...options });
 
   return {

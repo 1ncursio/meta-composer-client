@@ -1,7 +1,8 @@
 import IConcours from './IConcours';
 import IUser from './IUser';
 
-export default interface IConcours_signup {
+/* 콩쿨 참가 신청 */
+export default interface IConcoursSignup {
   id: number;
   concours: IConcours;
   user: IUser;

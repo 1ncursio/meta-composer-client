@@ -1,3 +1,4 @@
+/* 콩쿨 */
 export default interface IConcours {
   id: number;
   price: number;

@@ -1,5 +1,6 @@
 import IUser from './IUser';
 
+/* 알림 */
 export interface INotification {
   id: number;
   type: string;

@@ -1,10 +1,13 @@
-import ILesson from './ILesson';
 import { IMessage } from './IMessage';
 import IUser from './IUser';
 
 export default interface IChatRoom {
   id: number;
-  student: IUser;
-  lesson: ILesson;
-  messages: IMessage[];
+  userId: number;
+  lessonId: number;
+  user: IUser;
+  // lesson: ILesson;
+  __messages__: IMessage[];
+  created_at: Date;
+  updated_at: Date;
 }

@@ -1,10 +1,11 @@
-import IChatRoom from './IChatRoom';
-import IUser from './IUser';
-
+/* 메시지 */
 export interface IMessage {
   id: number;
-  chatRoom: IChatRoom;
+  // chatRoom: IChatRoom;
   senderId: number;
+  chatRoomId: number;
   message: string;
-  createdAt: Date;
+  is_read: boolean;
+  created_at: Date;
+  updated_at: Date;
 }

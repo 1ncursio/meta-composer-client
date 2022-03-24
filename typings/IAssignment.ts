@@ -1,6 +1,7 @@
 import ILesson from './ILesson';
 import IUser from './IUser';
 
+/* 과제 */
 export default interface IAssignment {
   id: number;
   startedTime: Date;
