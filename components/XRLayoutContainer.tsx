@@ -378,6 +378,38 @@ const XRLayoutContainer = () => {
           background-color="#000000"
           onClick={openSettings}
         />
+        {/* 악보 선택 아이콘 */}
+        <a-gui-icon-button
+          scale={coordStr({
+            x: 1,
+            y: 1,
+            z: 0.2,
+          })}
+          height={1}
+          icon="f518"
+          icon-font-size={0.5}
+          font-color="#f59f0a"
+          focus-color="#ccc"
+          background-color="#000000"
+          onClick={openSettings}
+        />
+        {/* <a-gui-button
+          scale={coordStr({
+            x: 1,
+            y: 1,
+            z: 0.2,
+          })}
+          width={1.5}
+          height={1}
+          value="Select Sheet"
+          font-size={0.35}
+          line-height={0.8}
+          letter-spacing={0}
+          background-color="#000000"
+          opacity={0.8}
+          font-color="#ffffff"
+          margin="0 0 0.05 0"
+        /> */}
       </a-gui-flex-container>
       <a-gui-flex-container
         is-top-container
