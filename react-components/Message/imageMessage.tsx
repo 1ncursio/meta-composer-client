@@ -8,7 +8,7 @@ export interface MessageProps {
   message: IMessage;
 }
 
-const Message: FC<MessageProps> = ({ message }) => {
+const ImageMessage: FC<MessageProps> = ({ message }) => {
   const { data: userData } = useUserSWR();
 
   const isOwnMessage = useMemo(() => userData?.id === message.senderId, [userData, message.senderId]);
@@ -25,11 +25,11 @@ const Message: FC<MessageProps> = ({ message }) => {
 
   return (
     <div className={styles.messageRow(isOwnMessage)}>
-      <div className={styles.messageRowContent(isOwnMessage)}>{message.message}</div>
+      <img className="w-1/4" src={'http://localhost:4000/' + message.image} />
       <div className="text-base-content select-none">{dayjs(message.created_at).format('A HH:mm')}</div>
       <div>{isReadMessage}</div>
     </div>
   );
 };
 
-export default Message;
+export default ImageMessage;
