@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { IoMdClose } from 'react-icons/io';
 
 export interface SheetSearchContainerProps {
   onCloseSheet: () => void;
@@ -6,8 +7,24 @@ export interface SheetSearchContainerProps {
 
 const SheetSearchContainer: FC<SheetSearchContainerProps> = ({ onCloseSheet }) => {
   return (
-    <div className="absolute -z-50 top-0 left-0">
-      <button onClick={onCloseSheet}>삭제 테스트</button>
+    <div className="absolute z-10 top-1/2 left-1/2 bg-white -translate-x-1/2 -translate-y-1/2 flex flex-col w-full max-w-4xl">
+      <div className="flex justify-end">
+        <button onClick={onCloseSheet}>
+          <IoMdClose size={24} />
+        </button>
+      </div>
+      <div className="p-2">
+        <form className="flex">
+          <input
+            name="q"
+            autoComplete="off"
+            className="flex-1 input bg-base-200 input-sm input-primary focus:outline-none"
+          />
+          <button type="submit" className="btn btn-primary btn-sm no-animation">
+            검색
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
