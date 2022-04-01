@@ -107,17 +107,22 @@ const ChatRoomPage = () => {
   }, [messagesData]);
   useEffect(() => {
     //이부분 다시 하기 이상함
-    if (typeof id === 'string' && userChatsData && !isReadCheck) {
+    if (typeof id === 'string' && userChatsData) {
+      console.log('한번만!!!!!!!!!!!');
       mutateRoomList(
         produce(({ lessonChat, userChatList }) => {
           userChatList = userChatList.map((chatRoom: IUserChatRoom) => {
-            chatRoom.unReadCount = 0;
-            return;
+            if (chatRoom.id === parseInt(id)) {
+              chatRoom.unReadCount = 0;
+              return;
+            }
           });
           lessonChat = lessonChat.map((lessonChatRoom: ITeacherChatRoom) => {
             lessonChatRoom.chatRooms.map((chatRoom: IChatRoom) => {
-              chatRoom.unReadCount = 0;
-              return;
+              if (chatRoom.id === parseInt(id)) {
+                chatRoom.unReadCount = 0;
+                return;
+              }
             });
           });
         }),
@@ -125,7 +130,7 @@ const ChatRoomPage = () => {
       );
       setIsReadCheck(true);
     }
-  }, [id, userChatsData, isReadCheck]);
+  }, [id, userChatsData]);
 
   useEffect(() => {
     if (getSocket && typeof id === 'string') {
@@ -203,7 +208,7 @@ const ChatRoomPage = () => {
 
   return (
     <div className="flex gap-8 h-full">
-      {userChatsData && <MessageRoomList />}
+      {typeof id === 'string' && <MessageRoomList currentRoomId={parseInt(id)} />}
       <div className="flex-1 flex flex-col">
         <div className="flex-1 overflow-y-scroll">
           <MessageList chatSections={chatSections} ref={scrollbarRef} isReachingEnd={isReachingEnd} setSize={setSize} />

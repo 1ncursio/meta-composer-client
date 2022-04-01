@@ -11,7 +11,7 @@ export interface IRoomList {
   /* 학생일때 레슨의 채팅 */
   userChatList: IChatRoom[];
 }
-
+// 이거 굳이 만들어야함?
 export default function useRoomListSWR(options: SWRConfiguration = {}) {
   const response = useSWR<IRoomList>('/chat/roomList', fetcher, { ...options });
 
