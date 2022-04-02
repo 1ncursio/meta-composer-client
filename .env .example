@@ -1,5 +1,5 @@
 # 개발환경용
-NEXT_PUBLIC_DEV_BACKEND_URL=http://localhost:4000
+NEXT_PUBLIC_DEV_BACKEND_URL=http://localhost:4000/api
 NEXT_PUBLIC_DEV_SOCKET_URL=http://localhost:4000
 NEXT_PUBLIC_DEV_TURN_URL=turn:jungse.shop
 NEXT_PUBLIC_DEV_TURN_USERNAME=jungse
