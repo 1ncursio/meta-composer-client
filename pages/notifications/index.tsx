@@ -10,6 +10,9 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import useSWR from 'swr';
 import useSWRInfinite from 'swr/infinite';
+import client from '@lib/api/client';
+import { AiFillDelete } from 'react-icons/ai';
+import produce from 'immer';
 
 export interface NotificaitonSWR {
   notifitionData: INotification[];
@@ -18,26 +21,68 @@ export interface NotificaitonSWR {
 const NotificationsIndexPage = () => {
   const {
     data: notifitionlist,
-    mutate: mutateMessage,
+    mutate: mutateNotification,
     setSize,
   } = useSWRInfinite<NotificaitonSWR>((index) => `/notification/list?perPage=5&page=${index + 1}`, fetcher);
   const [currentPage, setCurrentPage] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
-  const test = () => {
-    setIsOpen(true);
-    console.log('Dddd');
+  const [notifitionInfo, setNotifitionInfo] = useState<INotification | null>();
+
+  const test = (id: number) => async () => {
+    const data = await client.get(`/notification/${id}/info`);
+    const noti: INotification = data.data.payload;
+
+    setNotifitionInfo(noti);
+    mutateNotification();
   };
+  const clear = () => {
+    setNotifitionInfo(null);
+  };
+  const remove = (id: number) => async () => {
+    const data = await client.delete(`/notification/${id}/remove`);
+    if (notifitionlist && notifitionlist[currentPage].notifitionData.length === 1) {
+      setCurrentPage((before) => before - 1);
+    }
+    await mutateNotification();
+    //이부분 다시 한번더 생각
+    // produce(({ notifitionData, notifitionCount }) => {
+    //   console.log(notifitionData);
+    // }),
+  };
+
   return (
     <DashboardContainer>
-      <button onClick={test}>ddddd</button>
-      {/* <NotificaitonModal isOpen={isOpen} />
-       */}
-      <Transition appear show={isOpen}></Transition>
+      <input type="checkbox" id="my-modal" className="modal-toggle" />
+      <div className="modal">
+        <div className="modal-box ">
+          {notifitionInfo ? (
+            <>
+              <h3 className="font-bold text-lg">{notifitionInfo.id}</h3>
+              <p className="py-4">{notifitionInfo.created_at}</p>
+            </>
+          ) : (
+            <div className="flex flex-col items-center">
+              <button className="btn btn-square loading "></button>
+            </div>
+          )}
+          <div className="modal-action">
+            <label htmlFor="my-modal" className="btn" onClick={clear}>
+              Yay!
+            </label>
+          </div>
+        </div>
+      </div>
+
       <div className="relative w-96 ">
         <div className="flex flex-col gap-2 m-10 w-full h-4/5">
           {notifitionlist &&
             notifitionlist[currentPage]?.notifitionData.map((noti) => (
-              <Notificaiton key={noti.id} notification={noti} />
+              <div className="flex flex-row">
+                <label key={noti.id} htmlFor="my-modal" onClick={test(noti.id)} className="w-full">
+                  <Notificaiton key={noti.id} notification={noti} />
+                </label>
+                <AiFillDelete size={30} className="m-auto w-10" onClick={remove(noti.id)} />
+              </div>
             ))}
         </div>
 

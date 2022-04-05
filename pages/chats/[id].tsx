@@ -108,7 +108,6 @@ const ChatRoomPage = () => {
   useEffect(() => {
     //이부분 다시 하기 이상함
     if (typeof id === 'string' && userChatsData) {
-      console.log('한번만!!!!!!!!!!!');
       mutateRoomList(
         produce(({ lessonChat, userChatList }) => {
           userChatList = userChatList.map((chatRoom: IUserChatRoom) => {

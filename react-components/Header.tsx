@@ -8,6 +8,7 @@ import { BsBell } from 'react-icons/bs';
 import { FaFacebookF } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import Avatar from './Avatar';
+import NavNoptification from './NavNotification';
 
 const Header = () => {
   const { t } = useTranslation('common');
@@ -79,7 +80,8 @@ const Header = () => {
                 <a className="btn btn-primary btn-sm rounded-sm">{t('create-room')}</a>
               </Link>
               <input className="input bg-base-200 input-sm input-primary w-full max-w-[12rem] rounded-sm" />
-              <BsBell size={24} />
+              {/* <BsBell size={24} /> */}
+              <NavNoptification user={userData} hasDropdown />
               <Avatar size="small" user={userData} hasDropdown />
             </>
           ) : (
