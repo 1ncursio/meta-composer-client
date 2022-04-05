@@ -16,7 +16,7 @@ const NotificaitonButton: FC<NotificaitonCountProps> = ({ count, setSize, curren
   const pageCount = useMemo(
     function () {
       const arr = [];
-      const page = parseInt(String(count / 5)) + 1;
+      const page = parseInt(String(Math.ceil(count / 5)));
       for (let i = 0; i < page; i++) {
         arr.push(i + 1);
       }

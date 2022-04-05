@@ -40,7 +40,6 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
           data: msg,
           body: msg.message,
           icon: '',
-          // icon: 'http://localhost:4000/4f85d37c-2835-449d-82ce-1a9f4fe4f82d-pngwing.com.png',
         };
         if (msg.image) {
           option.icon = 'http://localhost:4000/' + msg.image;
