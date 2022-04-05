@@ -12,7 +12,7 @@ const Notificaiton: FC<NotificaitonProps> = ({ notification }) => {
   const { data: userData } = useUserSWR();
 
   return (
-    <div className="flex max-w-md bg-white shadow-lg rounded-lg overflow-hidden w-full">
+    <div className="flex max-w-md bg-white shadow-lg rounded-lg overflow-hidden w-full h-full ">
       <div className="w-2 bg-gray-800"></div>
       <div className="flex items-center px-2 py-3">
         <img

@@ -25,8 +25,6 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
   const [socket] = useSocket('notification');
   const [state, setState] = useState('');
 
-  // ReactModal.setAppElement('#root');
-
   useEffect(() => {
     setState(window.location.pathname);
   });
