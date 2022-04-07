@@ -24,6 +24,7 @@ const MyProfileIndexPage = () => {
   });
   useEffect(() => {
     if (userData && userData.profile_image) {
+      console.log(userData);
       // console.log(`http://localhost:4000/${userData.profile_image}`);
       setImageSrc(userData.profile_image);
     }
@@ -34,6 +35,7 @@ const MyProfileIndexPage = () => {
 
   const onSend = useCallback(
     async (data: IForm) => {
+      if (!data.username) return;
       const formData = new FormData();
       formData.append('image', data.image);
       formData.append('username', data.username);
@@ -89,10 +91,9 @@ const MyProfileIndexPage = () => {
           <div className="w-3/4 flex-col gap-y-4  content-start ">
             <p className="mb-3 font-semibold">닉네임</p>
             <input
-              type="search"
               // value={userData?.username}
               spellCheck={false}
-              {...(register('username'), { required: true, maxLength: 10, minLength: 3 })}
+              {...register('username')}
               className="focus:border-yellow-500 w-full px-4 py-1 bg-slate-100 text-gray-800  focus:outline-none border-solid  border-2 border-gray-300"
               placeholder="search"
               x-model="search"
@@ -103,7 +104,11 @@ const MyProfileIndexPage = () => {
             <label className="text-xl text-gray-600">
               자기소개 <span className="text-red-500">*</span>
             </label>
-            <textarea {...register('self_introduce')} className=" border-2 border-gray-500 h-20"></textarea>
+            <textarea
+              spellCheck={false}
+              {...register('self_introduce')}
+              className=" border-2 border-gray-500 h-20"
+            ></textarea>
           </div>
           <button type="submit" className="btn  btn-warning btn-xs sm:btn-sm md:btn-md lg:btn-lg">
             저장하기
