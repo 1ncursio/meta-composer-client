@@ -6,7 +6,7 @@ import NotificaitonModal from '@react-components/notification/notifitionModal';
 import { INotification } from '@typings/INotification';
 import { GetStaticProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import useSWR from 'swr';
 import useSWRInfinite from 'swr/infinite';
@@ -49,6 +49,11 @@ const NotificationsIndexPage = () => {
     //   console.log(notifitionData);
     // }),
   };
+  const myH = useMemo(() => {
+    if (notifitionlist) {
+      return notifitionlist[currentPage]?.notifitionData.length;
+    }
+  }, [notifitionlist]);
 
   return (
     <DashboardContainer>
@@ -72,22 +77,25 @@ const NotificationsIndexPage = () => {
           </div>
         </div>
       </div>
-
-      <div className="relative w-96 ">
+      {/* <div className="max-w-2xl mx-auto mt-10 h-scrin"> */}
+      <div className="relative w-full max-w-2xl mx-auto  ">
         <div className="flex flex-col gap-2 m-10 w-full h-4/5">
           {notifitionlist &&
             notifitionlist[currentPage]?.notifitionData.map((noti) => (
-              <div className="flex flex-row">
-                <label key={noti.id} htmlFor="my-modal" onClick={test(noti.id)} className="w-full">
+              <div key={noti.id} className="flex flex-row h-full max-h-20">
+                <label htmlFor="my-modal" onClick={test(noti.id)} className="w-3/4">
                   <Notificaiton key={noti.id} notification={noti} />
                 </label>
-                <AiFillDelete size={30} className="m-auto w-10" onClick={remove(noti.id)} />
+                <div className="flex items-center">
+                  <AiFillDelete size={30} className="m-auto w-10" onClick={remove(noti.id)} />
+                </div>
               </div>
             ))}
         </div>
+        <div className={notifitionlist && 'h-' + (20 + 5 * (myH! % 5))}></div>
 
         <div className="absolute inset-x-0 bottom-0 h-16 flex items-center">
-          {notifitionlist && (
+          {notifitionlist && notifitionlist[0].notifitionCount > 5 && (
             <NotificaitonButton
               count={notifitionlist && notifitionlist[0]?.notifitionCount}
               setSize={setSize}
@@ -97,6 +105,7 @@ const NotificationsIndexPage = () => {
           )}
         </div>
       </div>
+      {/* </div> */}
     </DashboardContainer>
   );
 };

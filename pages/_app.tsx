@@ -16,6 +16,7 @@ if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
   require('../mocks');
 }
 import ReactModal from 'react-modal';
+import { INotification } from '@typings/INotification';
 export type NextPageWithLayout = NextPage & { getLayout: (page: ReactElement) => ReactElement };
 
 const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
@@ -24,8 +25,6 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
 }: AppLayoutProps) => {
   const [socket] = useSocket('notification');
   const [state, setState] = useState('');
-
-  // ReactModal.setAppElement('#root');
 
   useEffect(() => {
     setState(window.location.pathname);
