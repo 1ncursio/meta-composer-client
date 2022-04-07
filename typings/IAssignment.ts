@@ -10,8 +10,7 @@ export default interface IAssignment {
   title: string;
   isFinished: boolean;
   accuracy: number;
-  time_length: Date;
-  //??시간머임
+  time_length: string;
   finished_times: number;
   user: IUser;
   lesson: ILesson;

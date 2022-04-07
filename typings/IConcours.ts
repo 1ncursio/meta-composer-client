@@ -9,4 +9,5 @@ export default interface IConcours {
   title: string;
   contents: string;
   coverIMG_url: string;
+  minimum_starting_people: number;
 }
