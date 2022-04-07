@@ -1,3 +1,4 @@
+import useSocket from '@hooks/useSocket';
 import useTabs from '@hooks/useTabs';
 import client from '@lib/api/client';
 import fetcher from '@lib/api/fetcher';
@@ -6,7 +7,7 @@ import { INotification } from '@typings/INotification';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { stringify } from 'querystring';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { AiTwotoneSound } from 'react-icons/ai';
 import { RiBookLine, RiSettings3Line } from 'react-icons/ri';
 import { json } from 'stream/consumers';
@@ -34,7 +35,7 @@ const NotificationDropdown = () => {
     mutateNotification();
   };
   const notiType = (noti: INotification): string => {
-    if (noti.commnetId) {
+    if (noti.commentId) {
       //레슨 페이지코멘트 페이지로 이동
     }
     if (noti.signupId) {
@@ -42,6 +43,18 @@ const NotificationDropdown = () => {
     }
     return '/';
   };
+  const notiConet = useCallback((notification: INotification) => {
+    if (!notification) return;
+    if (notification.signup) {
+      return (notification.signup.__user__.username + '님이 수강등록 하셨습니다.').slice(0, 20) + '...';
+    }
+    if (notification.commentId) {
+      return (
+        `${notification.comment.user.username}님이  ${notification.comment.contents.slice(0, 6)}`.slice(0, 20) + '...'
+      );
+    }
+  }, []);
+
   return (
     <div tabIndex={0} className="shadow card card-compact dropdown-content bg-base-100 w-80 rounded-none">
       <div className="card-body">
@@ -55,7 +68,7 @@ const NotificationDropdown = () => {
               <Link href={notiType(noti)}>
                 <a className="flex-1">
                   <AiTwotoneSound size={24} />
-                  {noti.id}
+                  {notiConet(noti)}
                 </a>
               </Link>
             </li>

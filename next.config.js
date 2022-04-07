@@ -5,7 +5,7 @@ const path = require('path');
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['via.placeholder.com', 'lh3.googleusercontent.com'],
+    domains: ['via.placeholder.com', 'lh3.googleusercontent.com', 'localhost'],
   },
   i18n,
   sassOptions: {

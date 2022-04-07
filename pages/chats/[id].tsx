@@ -77,7 +77,6 @@ const ChatRoomPage = () => {
       if (typeof id !== 'string') return;
       const formData = new FormData();
       formData.append('image', e.currentTarget.files![0]);
-      console.log({ image: e.currentTarget.files![0] });
 
       const { data } = await client.post(`/chat/${id}`, formData);
       const message: IMessage = data.payload;
