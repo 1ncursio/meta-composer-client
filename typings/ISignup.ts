@@ -7,7 +7,7 @@ export default interface ISignup {
   lesson: ILesson;
   user: IUser;
   startdate: Date;
-  finishdate: Date;
+  howManyMonth: number;
   weekdays: string;
   lessonTime: string;
 }

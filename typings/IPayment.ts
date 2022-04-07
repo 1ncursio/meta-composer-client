@@ -9,5 +9,6 @@ export default interface IPayment {
   concours_Signup: IConcours_signup;
   payment_number: string;
   affiliation: string;
-  refund: string;
+  refund: boolean;
+  receipt_url: string;
 }
