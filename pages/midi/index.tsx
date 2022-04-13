@@ -33,12 +33,6 @@ const MIDIPage = () => {
     [readMIDIFile],
   );
 
-  // useEffect(() => {
-  //   if (context) {
-  //     console.log('context', context);
-  //   }
-  // }, [context]);
-
   const onClickPlaySong = () => {
     Player.getInstance().startPlay();
   };

@@ -259,7 +259,9 @@ const Piano: FC<PianoProps> = ({ position }) => {
             y: 0,
             z: 0,
           }}
-        />
+        >
+          <Box />
+        </Plane>
         <Box
           material={{
             color: '#000000',

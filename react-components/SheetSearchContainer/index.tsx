@@ -34,6 +34,7 @@ const SheetSearchContainer: FC<SheetSearchContainerProps> = ({ onCloseSheet }) =
           </button>
         </form>
       </div>
+      <div className="p-2"></div>
     </div>
   );
 };

@@ -42,6 +42,7 @@ const XRLayoutContainer = () => {
     <>
       {/* 세팅 레이아웃 */}
 
+      {/* @ts-ignore */}
       <a-gui-flex-container
         visible={isOpenSettings}
         is-top-container
