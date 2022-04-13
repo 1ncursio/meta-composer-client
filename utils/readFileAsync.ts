@@ -1,6 +1,6 @@
 export default function readMidiFileASync(file: File) {
   return new Promise((resolve, reject) => {
-    let reader = new FileReader();
+    const reader = new FileReader();
 
     reader.onload = () => {
       resolve(reader.result);

@@ -88,6 +88,7 @@ export default class Player {
     this.newSongCallbacks = [];
     this.inputActiveNotes = {};
     this.inputPlayedNotes = [];
+    // 4초 이상인 노트
     this.longNotes = {};
     this.pauseTime = 0;
 
@@ -226,7 +227,7 @@ export default class Player {
         this.setSong(song);
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       // Notification.create("Couldn't read Midi-File - " + error, 2000);
       // getLoader().stopLoad();
     }
@@ -276,6 +277,7 @@ export default class Player {
     this.newSongCallbacks.forEach((callback) => callback());
   }
 
+  // Play 버튼 클릭시
   startPlay() {
     console.log('Starting Song');
     this.wasPaused = false;
@@ -371,10 +373,10 @@ export default class Player {
   }
 
   playTick() {
-    let currentContextTime = this.audioPlayer.getContextTime();
+    const currentContextTime = this.audioPlayer.getContextTime();
     this.audioPlayer.cleanEndedNotes();
 
-    let delta = (currentContextTime - this.lastTime) * this.playbackSpeed;
+    const delta = (currentContextTime - this.lastTime) * this.playbackSpeed;
 
     // TODO: 마이크 인풋 받기인데 필요없을 듯
     //Setting doesnt exist yet. Pitch detection is too bad for a whole piano.
@@ -392,7 +394,7 @@ export default class Player {
     //   return;
     // }
 
-    let oldProgress = this.progress;
+    const oldProgress = this.progress;
     this.lastTime = currentContextTime;
     if (!this.paused && this.scrolling == 0) {
       this.progress += Math.min(0.1, delta);
@@ -401,7 +403,7 @@ export default class Player {
       return;
     }
 
-    let currentTime = this.getTime();
+    const currentTime = this.getTime();
 
     if (this.song && this.isSongEnded(currentTime - 5)) {
       this.pause();
@@ -524,7 +526,15 @@ export default class Player {
   }
 
   resume() {
-    if (!this.song || !this.paused) return;
+    if (!this.paused) {
+      console.log('already playing');
+      return;
+    }
+
+    if (!this.song) {
+      throw new Error('No song loaded');
+    }
+
     console.log('Resuming Song');
     this.paused = false;
     this.resetNoteSequence();
@@ -532,7 +542,11 @@ export default class Player {
   }
 
   resetNoteSequence() {
-    this.noteSequence = this.song!.getNoteSequence();
+    if (!this.song) {
+      throw new Error('No song loaded');
+    }
+
+    this.noteSequence = this.song.getNoteSequence();
     this.noteSequence = this.noteSequence.filter((note) => note.timestamp > this.getTime());
     this.inputActiveNotes = {};
     this.playedBeats = {};
@@ -546,9 +560,10 @@ export default class Player {
 
   playNote(note: MidiChannelSongNoteEvent) {
     if (!note.hasOwnProperty('channel') || !note.hasOwnProperty('noteNumber')) {
-      return;
+      throw new Error('Invalid note');
     }
-    let currentTime = this.getTime();
+
+    const currentTime = this.getTime();
 
     // TODO: MidHandler 추가하면 주석 해제
     // if (getMidiHandler().isOutputActive()) {

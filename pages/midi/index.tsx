@@ -39,10 +39,25 @@ const MIDIPage = () => {
   //   }
   // }, [context]);
 
+  const onClickPlaySong = () => {
+    Player.getInstance().startPlay();
+  };
+
+  const onClickPauseSong = () => {
+    Player.getInstance().pause();
+  };
+
+  const onClickStopSong = () => {
+    Player.getInstance().stop();
+  };
+
   return (
     <div>
       <input type="file" onChange={onLoadMIDI} accept=".mid, .midi" />
       {/* <audio src="/assets/audio/metronome/1.wav" /> */}
+      <button onClick={onClickPlaySong}>플레이</button>
+      <button onClick={onClickPauseSong}>일시정지</button>
+      <button onClick={onClickStopSong}>처음부터</button>
       <SheetContainer />
     </div>
   );

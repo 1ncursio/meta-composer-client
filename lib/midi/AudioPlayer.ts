@@ -28,12 +28,11 @@ export class AudioPlayer {
 
     // TODO: setting 설정 추가하면 주석 삭제
     // if (getSetting('enableReverb')) {
-    //   this.reverbEnabled = true;
-    //   this.setReverb();
+    this.reverbEnabled = true;
+    this.setReverb();
     // } else {
     //   this.reverbEnabled = false;
     // }
-    this.reverbEnabled = false;
 
     this.wasSuspended = false;
 
@@ -72,12 +71,14 @@ export class AudioPlayer {
     // TODO: setting 바꾸면 수정
     const reverb = 'SteinmanHall';
     // const reverb = getSetting('reverbImpulseResponse');
-    this.loadImpulseBuffer('../../Reverb/' + reverb + '.wav').then((result) => {
+    this.loadImpulseBuffer('/assets/audio/reverb/' + reverb + '.wav').then((result) => {
+      console.log({ result });
       this.getConvolver().buffer = result;
       this.getConvolver().connect(this.context.destination);
     });
   }
 
+  // context가 play 된 후로는 pause, stop을 해도 시간이 멈추지 않음
   getContextTime() {
     return this.context.currentTime;
   }
@@ -87,10 +88,12 @@ export class AudioPlayer {
   }
 
   isRunning() {
-    return this.context.state == 'running';
+    return this.context.state === 'running';
   }
 
   resume() {
+    console.log('audio resume');
+    console.log({ audioPlayer: this });
     this.context.resume();
   }
 
@@ -166,7 +169,7 @@ export class AudioPlayer {
     // }
     const buffer = getBufferForNote(this.getSoundfontName(instrument), instrument, note.noteNumber);
 
-    let audioNote = createCompleteAudioNote(
+    const audioNote = createCompleteAudioNote(
       note,
       currentTime,
       playbackSpeed,
@@ -176,6 +179,7 @@ export class AudioPlayer {
       buffer,
       this.getDestination(),
     );
+    console.log({ audioNote });
     this.audioNotes.push(audioNote);
   }
 

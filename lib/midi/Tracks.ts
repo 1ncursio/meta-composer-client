@@ -40,6 +40,8 @@ export const setupTracks = (activeTracks: { [trackId: number]: ActiveTrack }) =>
     }
     theTracks[trackId].color = CONST.TRACK_COLORS[parseInt(trackId, 10) % 4];
   }
+
+  console.log({ theTracks });
 };
 
 export const isTrackRequiredToPlay = (trackId: number) => {

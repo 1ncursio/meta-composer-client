@@ -49,7 +49,7 @@ const MyProfileIndexPage = () => {
   );
   useEffect(() => {
     if (!userData) return;
-    setValue('username', userData.username ? userData.username : '');
+    setValue('username', userData.username ? userData.username : 'asd');
     setValue('self_introduce', userData.self_introduce ? userData.self_introduce : '');
   }, [userData]);
 
