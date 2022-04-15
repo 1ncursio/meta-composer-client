@@ -1,13 +1,9 @@
 import Player from '@lib/midi/Player';
 import React, { useCallback, useEffect, useRef } from 'react';
-import useAudioPlayer from '~/hooks/useAudioPlayer';
 import dynamic from 'next/dynamic';
 const SheetContainer = dynamic(() => import('@react-components/SheetContainer'), { ssr: false });
 
 const MIDIPage = () => {
-  // const { context, metronomSound1, metronomSound2 } = useAudioPlayer();
-  //   const player = new Player();
-
   const readMIDIFile = useCallback((file: File) => {
     const reader = new FileReader();
     const { name: fileName } = file;
@@ -45,6 +41,10 @@ const MIDIPage = () => {
     Player.getInstance().stop();
   };
 
+  const onClickGetVolume = () => {
+    console.log(Player.getInstance().volume);
+  };
+
   return (
     <div>
       <input type="file" onChange={onLoadMIDI} accept=".mid, .midi" />
@@ -52,6 +52,7 @@ const MIDIPage = () => {
       <button onClick={onClickPlaySong}>플레이</button>
       <button onClick={onClickPauseSong}>일시정지</button>
       <button onClick={onClickStopSong}>처음부터</button>
+      <button onClick={onClickGetVolume}>볼륨 얻기</button>
       <SheetContainer />
     </div>
   );

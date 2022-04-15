@@ -45,7 +45,7 @@ export class AudioPlayer {
     // setSettingCallback('enableReverb', () => {
     //   this.reverbEnabled = getSetting('enableReverb');
     //   if (this.reverbEnabled) {
-    // this.getConvolver().buffer = null;
+    this.getConvolver().buffer = null;
     // this.setReverb();
     //   } else {
     // this.getConvolver().disconnect();
@@ -71,11 +71,14 @@ export class AudioPlayer {
     // TODO: setting 바꾸면 수정
     const reverb = 'SteinmanHall';
     // const reverb = getSetting('reverbImpulseResponse');
-    this.loadImpulseBuffer('/assets/audio/reverb/' + reverb + '.wav').then((result) => {
-      console.log({ result });
-      this.getConvolver().buffer = result;
-      this.getConvolver().connect(this.context.destination);
-    });
+    this.loadImpulseBuffer('/assets/audio/reverb/' + reverb + '.wav')
+      .then((result) => {
+        console.log({ result });
+        this.getConvolver().buffer = result;
+        console.log({ destination: this.context.destination });
+        this.getConvolver().connect(this.context.destination);
+      })
+      .catch((err) => console.error(err));
   }
 
   // context가 play 된 후로는 pause, stop을 해도 시간이 멈추지 않음
@@ -92,9 +95,13 @@ export class AudioPlayer {
   }
 
   resume() {
-    console.log('audio resume');
-    console.log({ audioPlayer: this });
-    this.context.resume();
+    this.context
+      .resume()
+      .then((d) => {
+        console.log('Audio Resume');
+        console.log(this.getContext());
+      })
+      .catch((err) => console.error(err));
   }
 
   suspend() {
@@ -185,6 +192,7 @@ export class AudioPlayer {
 
   getDestination() {
     if (this.reverbEnabled) {
+      console.log({ getDestination: this.getConvolver() });
       return this.getConvolver();
     } else {
       return this.context.destination;

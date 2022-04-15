@@ -12,6 +12,7 @@ import {
 } from '@typings/MidiEvent';
 import CONST from './CONST';
 import { NextEvent } from './Parser';
+import { LongNotes } from './Player';
 // import { SheetGenerator } from './sheet/SheetGenerator.js';
 // import { getLoader } from './ui/Loader.js';
 
@@ -129,8 +130,13 @@ export interface ActiveTrack {
   keySignature?: MidiMetaKeySignatureEvent;
   meta: MidiMetaEvent[];
   notes: MidiChannelSongNoteEvent[];
-  notesBySeconds: { [second: string]: MidiChannelSongNoteEvent[] };
+  // Render을 하면서 정보를 가져올 때 isOn이 생긴다. 현재 연주중인 노트면 isOn은 true가 된다.
+  notesBySeconds: { [second: string]: MidiChannelSongNoteEventWithIsOn[] };
   tempoChanges: MidiMetaSetTempoEvent[];
+}
+
+export interface MidiChannelSongNoteEventWithIsOn extends MidiChannelSongNoteEvent {
+  isOn: boolean;
 }
 
 /* distributeTrack에서 사용 */
@@ -175,7 +181,7 @@ export default class Song {
   smpteOffset: any;
   measureLines: any;
   sustainPeriods: SustainPeriod[];
-  longNotes: any;
+  longNotes: LongNotes;
   ready: boolean;
   sheetGen: any;
   notesSequence: any;
@@ -191,6 +197,7 @@ export default class Song {
     this.keySignatures = [];
     this.notesBySeconds = {};
     this.controlEvents = {};
+    this.longNotes = {};
     this.temporalData = midiData.temporalData;
     this.sustainsByChannelAndSecond = midiData.temporalData.sustainsByChannelAndSecond;
 

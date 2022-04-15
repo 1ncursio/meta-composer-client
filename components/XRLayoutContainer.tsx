@@ -27,6 +27,8 @@ const XRLayoutContainer = () => {
   const playOrPauseIconUnicode = useMemo(() => (Player.getInstance().paused ? 'f04b' : 'f04c'), []);
 
   const onTogglePlay = () => {
+    if (!Player.getInstance().song) return;
+
     if (Player.getInstance().paused) {
       Player.getInstance().startPlay();
     } else {

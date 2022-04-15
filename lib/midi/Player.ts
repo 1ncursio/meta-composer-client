@@ -113,18 +113,19 @@ export default class Player {
   }
 
   getState() {
-    let time = this.getTime();
-    let songReady = this.song && this.song.ready;
+    const time = this.getTime();
+    const songReady = !!this.song?.ready;
+
     return {
-      time: time,
+      time,
       ctxTime: this.audioPlayer.getContextTime(),
-      end: songReady ? this.song?.getEnd() : 0,
+      end: songReady ? this.song!.getEnd() : 0,
       loading: this.audioPlayer.loading,
       song: this.song,
       inputActiveNotes: this.inputActiveNotes,
       inputPlayedNotes: this.inputPlayedNotes,
       bpm: this.getBPM(time),
-      longNotes: songReady ? this.song?.longNotes : {},
+      longNotes: songReady ? this.song!.longNotes : {},
     };
   }
 
@@ -459,6 +460,7 @@ export default class Player {
   //   }
   // }
 
+  // 메트로놈 재생
   playMetronomeBeats(currentTime: number) {
     this.playedBeats = this.playedBeats || {};
     // let beatsBySecond = getCurrentSong().temporalData.beatsBySecond;
@@ -532,7 +534,8 @@ export default class Player {
     }
 
     if (!this.song) {
-      throw new Error('No song loaded');
+      console.log('No song loaded');
+      return;
     }
 
     console.log('Resuming Song');
@@ -543,7 +546,8 @@ export default class Player {
 
   resetNoteSequence() {
     if (!this.song) {
-      throw new Error('No song loaded');
+      console.log('No song loaded');
+      return;
     }
 
     this.noteSequence = this.song.getNoteSequence();

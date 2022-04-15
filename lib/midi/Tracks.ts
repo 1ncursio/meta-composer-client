@@ -61,7 +61,9 @@ export const isTrackDrawn = (trackId: number) => {
 };
 
 export const getTrackColor = (trackId: number) => {
-  return theTracks[trackId] ? theTracks[trackId].color : 'rgba(0,0,0,0)';
+  // TODO: rgba는 필요없을 수도 있음.
+  // return theTracks[trackId] ? theTracks[trackId].color : 'rgba(0,0,0,0)';
+  return theTracks[trackId].color;
 };
 
 export const setTrackColor = (trackId: number, colorId: keyof WhiteAndBlack, color: string) => {
