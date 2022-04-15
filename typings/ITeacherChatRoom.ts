@@ -9,7 +9,8 @@ export default interface ITeacherChatRoom {
   length: any;
   teacherId: number;
   type: string;
-  chatRooms: IChatRoom[];
+  chatRooms: IChatRoom[] | undefined;
   created_at: Date;
   updated_at: Date;
+  name: string;
 }

@@ -109,14 +109,14 @@ const ChatRoomPage = () => {
     if (typeof id === 'string' && userChatsData) {
       mutateRoomList(
         produce(({ lessonChat, userChatList }) => {
-          userChatList = userChatList.map((chatRoom: IUserChatRoom) => {
+          userChatList = userChatList?.map((chatRoom: IUserChatRoom) => {
             if (chatRoom.id === parseInt(id)) {
               chatRoom.unReadCount = 0;
               return;
             }
           });
-          lessonChat = lessonChat.map((lessonChatRoom: ITeacherChatRoom) => {
-            lessonChatRoom.chatRooms.map((chatRoom: IChatRoom) => {
+          lessonChat = lessonChat?.map((lessonChatRoom: ITeacherChatRoom) => {
+            lessonChatRoom.chatRooms?.map((chatRoom: IChatRoom) => {
               if (chatRoom.id === parseInt(id)) {
                 chatRoom.unReadCount = 0;
                 return;
@@ -166,7 +166,7 @@ const ChatRoomPage = () => {
                 return;
               });
               lessonChat = lessonChat.map((lessonChatRoom: ITeacherChatRoom) => {
-                lessonChatRoom.chatRooms.map((chatRoom: IChatRoom) => {
+                lessonChatRoom.chatRooms?.map((chatRoom: IChatRoom) => {
                   if (message.chatRoomId === chatRoom.id) {
                     chatRoom.__messages__ = [message];
                     chatRoom.unReadCount = chatRoom.unReadCount + 1;
