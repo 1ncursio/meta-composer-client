@@ -1,7 +1,12 @@
+import LessonsPage from '@react-components/Lessons';
 import React from 'react';
 
 const LessonsIndexPage = () => {
-  return <div>Lessons Page</div>;
+  return (
+    <div>
+      <LessonsPage />
+    </div>
+  );
 };
 
 export default LessonsIndexPage;
