@@ -53,6 +53,7 @@ export const whiteKeyWidth = 0.023;
 export const blackKeyWidth = 0.014;
 export const wholeKeyWidth = 0.024 * 88;
 export const whiteKeyHeight = 1;
+export const noteToHeightConst = 5;
 
 export function getRenderInfoByTrackMap(playerState: ReturnType<Player['getState']>) {
   const renderInfoByTrackMap: RenderInfoByTrackMap = {};
@@ -171,7 +172,7 @@ export function getSecondsDisplayedBefore() {
   //   const pianoPos = this._pianoPosition / 100;
   const pianoPos = 0 / 100;
   //   return Math.ceil(((1 - pianoPos) * this.getNoteToHeightConst()) / 1000);
-  return Math.ceil(((1 - pianoPos) * 3) / 1000);
+  return Math.ceil(((1 - pianoPos) * noteToHeightConst) / 1000);
 }
 
 export function getSecondsDisplayedAfter() {
@@ -182,7 +183,7 @@ export function getMilisecondsDisplayedAfter() {
   //   const pianoPos = this._pianoPosition / 100;
   const pianoPos = 0 / 100;
   //   return pianoPos * (this.getNoteToHeightConst() / this._playedNoteFalloffSpeed);
-  return pianoPos * (3 / 1);
+  return pianoPos * (noteToHeightConst / 1);
 }
 
 export function getNoteDimensions(
@@ -199,7 +200,7 @@ export function getNoteDimensions(
   // const w = isKeyBlack ? blackKeyWidth : whiteKeyWidth;
   //   let h = (dur / this.getNoteToHeightConst()) * (this.windowHeight - this.whiteKeyHeight);
   const planeHeight = 0.6;
-  let h = (dur / 3) * planeHeight * 0.001;
+  let h = (dur / noteToHeightConst) * planeHeight * 0.001;
 
   //Correct h if note too short
   let hCorrection = 0;
@@ -207,11 +208,13 @@ export function getNoteDimensions(
   // let minNoteHeight = parseFloat(this._minNoteHeight);
   // 1cm
   // const minNoteHeight = 10;
-  const minNoteHeight = 0.01;
-  if (h < minNoteHeight + 0.02) {
-    hCorrection = minNoteHeight + 0.02 - h;
-    h = minNoteHeight + 0.02;
-  }
+
+  // TODO: 잠시 주석처리
+  // const minNoteHeight = 0.01;
+  // if (h < minNoteHeight + 0.02) {
+  //   hCorrection = minNoteHeight + 0.02 - h;
+  //   h = minNoteHeight + 0.02;
+  // }
 
   //correct rad if h too low
   //   let rad = (this._noteBorderRadius / 100) * w;
@@ -220,7 +223,11 @@ export function getNoteDimensions(
   //   rad = h / 2;
   // }
 
-  let y = getYForTime(noteEndTime - currentTime);
+  // time에 맞는 y에서 전체 노트 컨테이너 높이의 반을 뺀다.
+  // let y = getYForTime(noteEndTime - currentTime) - planeHeight / 2;
+  console.log({ key: CONST.MIDI_NOTE_TO_KEY[noteNumber + 21], currentTime, noteStartTime, noteEndTime });
+  let y = getYForTime(noteEndTime - currentTime) - planeHeight / 2;
+  // console.log({ y });
   //   let reversed = this._reverseNoteDirection;
   //   if (reversed) {
   //     y -= h;
@@ -282,25 +289,16 @@ export function getNoteDimensions(
   // }
 
   const result = {
-    x: x,
-    y: y + (reversed ? hCorrection : -hCorrection),
+    x,
+    y,
+    h,
+    // y: y + (reversed ? hCorrection : -hCorrection),
     // w: w - 0.02,
-    h: h,
     // sustainH: sustainH,
     // sustainY: sustainY,
     isBlack: isKeyBlack,
   };
 
-  //   {
-  //     x: 722.1538461538462,
-  //     y: 483.08780333333226,
-  //     w: 26.846153846153847,
-  //     h: 277.85898000000003,
-  //     rad: 4.326923076923077,
-  //     sustainH: 141.21873333333326,
-  //     sustainY: 340.869069999999,
-  //     isBlack: 0,
-  //   };
   return result;
 }
 
@@ -339,13 +337,12 @@ export function getKeyX(noteNumber: number) {
 export function getYForTime(time: number) {
   const height = 0.6;
   //   let noteToHeightConst = this.getNoteToHeightConst();
-  // 화면에 보이는 시간
-  let noteToHeightConst = 5;
-  time /= 1000;
-  console.log({ time });
+  // time /= 1000;
   // TODO: getAbsolutePianoPosition 함수는 피아노의 Y 위치를 찾는 듯. 임의로 0.1 설정
   // return -(time / noteToHeightConst) * height + getAbsolutePianoPosition();
-  return (time / noteToHeightConst) * height;
+  const result = (time / noteToHeightConst) * height * 0.001;
+  console.log({ time, result });
+  return result;
   // return -(time / noteToHeightConst) * height + 0.1;
 }
 

@@ -186,13 +186,11 @@ export class AudioPlayer {
       buffer,
       this.getDestination(),
     );
-    console.log({ audioNote });
     this.audioNotes.push(audioNote);
   }
 
   getDestination() {
     if (this.reverbEnabled) {
-      console.log({ getDestination: this.getConvolver() });
       return this.getConvolver();
     } else {
       return this.context.destination;

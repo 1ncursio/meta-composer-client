@@ -138,7 +138,7 @@ console.log(keyParamsFor88Key);
 
 export const getKeyPositionX = (key: number) => {
   const keyParam = keyParamsFor88Key[key];
-  console.log({ key });
+  //   console.log({ key });
   return keyParam.wholePositionX + keyParam.referencePositionX + 4 * 0.024;
 };
 

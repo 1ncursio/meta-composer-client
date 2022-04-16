@@ -1,12 +1,12 @@
 // import { getLoader } from './ui/Loader.js';
 // import { replaceAllString, iOS } from './Util.js';
-import { decode } from 'base64-arraybuffer';
 import decodeArrayBuffer from './base64binary';
 import { hasBuffer, setBuffer } from './Buffers';
 
 export interface NoteBuffer {
   buffer: AudioBuffer;
-  noteKey: number;
+  // A0, A1 등등
+  noteKey: string;
   instrument: string;
   soundfontName: string;
 }
@@ -86,9 +86,7 @@ export class SoundfontLoader {
           for (let noteKey in MIDI[soundfontName][instrument]) {
             // @ts-ignore
             let base64Buffer = SoundfontLoader.getBase64Buffer(MIDI[soundfontName][instrument][noteKey]);
-            promises.push(
-              SoundfontLoader.getNoteBuffer(ctx, base64Buffer, soundfontName, parseInt(noteKey, 10), instrument),
-            );
+            promises.push(SoundfontLoader.getNoteBuffer(ctx, base64Buffer, soundfontName, noteKey, instrument));
           }
         }
       }
@@ -99,7 +97,7 @@ export class SoundfontLoader {
     ctx: AudioContext,
     base64Buffer: ArrayBuffer,
     soundfontName: string,
-    noteKey: number,
+    noteKey: string,
     instrument: string,
   ): Promise<NoteBuffer> {
     return new Promise((resolve, reject) => {
@@ -108,9 +106,9 @@ export class SoundfontLoader {
         (decodedBuffer) => {
           resolve({
             buffer: decodedBuffer,
-            noteKey: noteKey,
-            instrument: instrument,
-            soundfontName: soundfontName,
+            noteKey,
+            instrument,
+            soundfontName,
           });
         },
         (error) => reject(error),

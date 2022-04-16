@@ -348,22 +348,6 @@ const Piano: FC<PianoProps> = ({ position }) => {
               </>
             );
           })}
-          <Box
-            position={{
-              // x: getKeyX(whiteNote.noteNumber),
-              x: 0,
-              y: 0,
-              // y: 0,
-              z: 0,
-            }}
-            width={blackKeyWidth}
-            height={0.2}
-            depth={0.005}
-            material={{
-              color: 'blue',
-              shader: 'flat',
-            }}
-          />
         </Plane>
         <Box
           material={{
