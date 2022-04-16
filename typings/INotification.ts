@@ -4,13 +4,12 @@ import IUser from './IUser';
 export interface INotification {
   id: number;
   readTime: Date | boolean | null;
-  signupId?: number; //학생이 레슨 수강했을때 강사한테 보내느거 임
-  signup: Signup;
-  commentId?: number;
-  comment: Comment;
   created_at: Date;
   updated_at: Date;
   userId: number;
+  content: string;
+  url: string | undefined;
+  type: string;
 }
 interface Signup {
   id: number;
