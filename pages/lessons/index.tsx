@@ -34,11 +34,15 @@ const LessonsIndexPage = () => {
 
   return (
     <div className="relative h-full">
-      <div className=" grid grid-cols-4 grid-rows-2 grid-flow-col h-3/4 p-10  m-10  ">
+      <div className=" grid grid-cols-4 grid-rows-2 grid-flow-col h-full   m-10   ">
         {LessonDataList &&
           LessonDataList[current - 1]?.map((lesson) => {
             return (
-              <div onMouseEnter={() => setIsListHover(lesson.id)} onMouseLeave={() => setIsListHover(-1)}>
+              <div
+                key={lesson.id}
+                onMouseEnter={() => setIsListHover(lesson.id)}
+                onMouseLeave={() => setIsListHover(-1)}
+              >
                 <LessonComponent lesson={lesson} show={lesson.id === isListHover} />
               </div>
             );

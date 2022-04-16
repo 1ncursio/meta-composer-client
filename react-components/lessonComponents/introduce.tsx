@@ -4,18 +4,18 @@ import { FC, useEffect } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 
 export interface LessonnItoroduceProps {
-  lesson: ILesson;
+  lesson: ILesson | undefined;
 }
 
 const LessonIntoroduce: FC<LessonnItoroduceProps> = ({ lesson }) => {
   return (
-    <div className="py-8 w-1/2 p-20 ">
+    <div className="py-8 w-full  p-20 ">
       <div>
         <p className="font-bold text-xl text-black">[**] 를 위해 준비한 </p>
         <p className="font-bold text-xl text-black"> [***] 레슨 입니다.</p>
       </div>
-      <div className="py-8 ">
-        <p className="font-bold">{lesson.introduce}</p>
+      <div className="py-8  w-80 ">
+        <p className="break-words font-bold ">{lesson.introduce}</p>
       </div>
       <div className="border-2 h-40 sm:h-48 rounded-xl flex flex-row p-4">
         <div className="flex flex-row items-center mr-6">

@@ -11,4 +11,11 @@ export default interface ILesson {
   type: string;
   teacherId: number;
   __teacher__: ITeacher;
+  comments: Comment[];
+}
+export interface Comment {
+  contents: string;
+  created_at: Date;
+  id: number;
+  rating: number;
 }
