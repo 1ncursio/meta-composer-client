@@ -1,17 +1,22 @@
+import useRoomListSWR from '@hooks/swr/useRoomListSWR';
 import useUserSWR from '@hooks/swr/useUserSWR';
 import useSocket from '@hooks/useSocket';
+import client from '@lib/api/client';
 import fetcher from '@lib/api/fetcher';
 import MessageList from '@react-components/MessageList';
 import MessageRoomList from '@react-components/MessageRoomList';
 import useStore from '@store/useStore';
 import IChatRoom from '@typings/IChatRoom';
 import { IMessage } from '@typings/IMessage';
+import { IUserChatList } from '@typings/IRoomList';
+import ITeacherChatRoom from '@typings/ITeacherChatRoom';
+import IUserChatRoom from '@typings/IUserChatRoom';
 import makeSection from '@utils/makeSection';
 import produce from 'immer';
 import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { useForm } from 'react-hook-form';
 import { AiOutlinePaperClip } from 'react-icons/ai';
@@ -33,13 +38,15 @@ const ChatRoomPage = () => {
     data: messagesData,
     mutate: mutateMessage,
     setSize,
-  } = useSWRInfinite<IMessage[]>((index) => `/chats?perPage=20&page=${index + 1}`, fetcher);
-  const { data: roomListData } = useSWR<IChatRoom[]>('/chat/roomList', fetcher);
+  } = useSWRInfinite<IMessage[]>((index) => `/chat/${id}/messages?perPage=20&page=${index + 1}`, fetcher);
+  const { lessonChatsData, userChatsData, mutate: mutateRoomList } = useRoomListSWR();
   const { data: userData } = useUserSWR();
-  const [socket] = useSocket();
+  const [socket, disconnect] = useSocket('chat');
+  const [getSocket] = useSocket('notification');
 
   const { sendMessage } = useStore((state) => state.message);
-
+  const [userJoin, setUserJoin] = useState(false);
+  const [isReadCheck, setIsReadCheck] = useState(false);
   const isEmpty = messagesData?.[0]?.length === 0;
   const isReachingEnd = isEmpty || (messagesData && messagesData[messagesData.length - 1]?.length < 20) || false;
 
@@ -53,6 +60,7 @@ const ChatRoomPage = () => {
           mutate: mutateMessage,
           roomId: parseInt(id),
           socket,
+          userJoin,
         });
       } catch (e) {
         console.error(e);
@@ -61,15 +69,26 @@ const ChatRoomPage = () => {
         scrollbarRef.current?.scrollToBottom();
       }
     },
-    [resetField, userData, mutateMessage, sendMessage, id, socket],
+    [resetField, userData, mutateMessage, sendMessage, id, socket, userJoin],
   );
 
-  const onSendImage = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const formData = new FormData();
-    formData.append('image', e.currentTarget.files![0]);
+  const onSendImage = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (typeof id !== 'string') return;
+      const formData = new FormData();
+      formData.append('image', e.currentTarget.files![0]);
 
-    console.log({ image: e.currentTarget.files![0] });
-  }, []);
+      const { data } = await client.post(`/chat/${id}`, formData);
+      const message: IMessage = data.payload;
+      mutateMessage(
+        produce((messages) => {
+          messages?.[0].unshift(message);
+        }),
+        false,
+      );
+    },
+    [id],
+  );
 
   const onClickPaperClip = useCallback(() => {
     imageInputRef.current?.click();
@@ -85,29 +104,109 @@ const ChatRoomPage = () => {
       }, 100);
     }
   }, [messagesData]);
-
   useEffect(() => {
-    socket?.on('getMessage', (message: IMessage) => {
-      mutateMessage(
-        produce((messages) => {
-          messages?.[0].unshift({
-            id: (messages[0][0]?.id || 0) + 1,
-            message,
-            user,
-            createdAt: new Date(),
+    //이부분 다시 하기 이상함
+    if (typeof id === 'string' && userChatsData) {
+      mutateRoomList(
+        produce(({ lessonChat, userChatList }) => {
+          userChatList = userChatList?.map((chatRoom: IUserChatRoom) => {
+            if (chatRoom.id === parseInt(id)) {
+              chatRoom.unReadCount = 0;
+              return;
+            }
+          });
+          lessonChat = lessonChat?.map((lessonChatRoom: ITeacherChatRoom) => {
+            lessonChatRoom.chatRooms?.map((chatRoom: IChatRoom) => {
+              if (chatRoom.id === parseInt(id)) {
+                chatRoom.unReadCount = 0;
+                return;
+              }
+            });
           });
         }),
         false,
       );
-    });
+      setIsReadCheck(true);
+    }
+  }, [id, userChatsData]);
+
+  useEffect(() => {
+    if (getSocket && typeof id === 'string') {
+      setTimeout(() => {
+        getSocket.emit('chatJoin-emit', {
+          roomId: parseInt(id),
+        });
+      }, 1000);
+    }
     return () => {
-      socket?.off('getMessage');
+      getSocket?.emit('chatLeave-emit');
     };
-  }, [socket]);
+  }, [getSocket, id]);
+
+  useEffect(() => {
+    if (typeof id !== 'string' || !getSocket) return;
+
+    getSocket
+      ?.on('push-message', (message: IMessage) => {
+        if (message.chatRoomId == parseInt(id)) {
+          mutateMessage(
+            produce((messages) => {
+              messages?.[0].unshift(message);
+            }),
+            false,
+          );
+        } else {
+          mutateRoomList(
+            produce(({ lessonChat, userChatList }) => {
+              userChatList = userChatList.map((chatRoom: IUserChatRoom) => {
+                if (message.chatRoomId === chatRoom.id) {
+                  chatRoom.__messages__ = [message];
+                  chatRoom.unReadCount = chatRoom.unReadCount + 1;
+                }
+                return;
+              });
+              lessonChat = lessonChat.map((lessonChatRoom: ITeacherChatRoom) => {
+                lessonChatRoom.chatRooms?.map((chatRoom: IChatRoom) => {
+                  if (message.chatRoomId === chatRoom.id) {
+                    chatRoom.__messages__ = [message];
+                    chatRoom.unReadCount = chatRoom.unReadCount + 1;
+                  }
+                  return;
+                });
+              });
+            }),
+            false,
+          );
+        }
+      })
+      .on('chatJoin-event', () => {
+        console.log(userJoin);
+        if (!userJoin) {
+          getSocket.emit('chat-current-user-emit');
+        }
+        setUserJoin(true);
+        mutateMessage(
+          produce((messages) => {
+            messages?.[0].forEach((msg: IMessage) => {
+              msg.is_read = true;
+            });
+          }),
+        );
+      })
+      .on('chatLeave-event', () => {
+        setUserJoin(false);
+      });
+    return () => {
+      getSocket.emit('chat-current-user-emit');
+      getSocket?.off('push-message');
+      getSocket?.off('chatJoin-event');
+      getSocket?.off('chatLeave-event');
+    };
+  }, [getSocket, id, userJoin, userChatsData]);
 
   return (
     <div className="flex gap-8 h-full">
-      {roomListData && <MessageRoomList />}
+      {typeof id === 'string' && <MessageRoomList currentRoomId={parseInt(id)} />}
       <div className="flex-1 flex flex-col">
         <div className="flex-1 overflow-y-scroll">
           <MessageList chatSections={chatSections} ref={scrollbarRef} isReachingEnd={isReachingEnd} setSize={setSize} />
