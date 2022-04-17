@@ -8,16 +8,29 @@ import fetcher from '@lib/api/fetcher';
 import client from '@lib/api/client';
 import DayPicker from './DayPicker';
 import { Scheduler } from '@aldabil/react-scheduler';
+import ScheduluePicker from '@react-components/SchedulePicker';
+
+export interface ILessonForm {
+  name: string;
+  introduce: string;
+  // 레슨 길이 (분 단위) e.g. 60 = 1시간, 30 = 30분
+  length: number;
+  price: number;
+  type: string;
+  day: number[];
+  time: string[][];
+}
 
 const CreateLessons = () => {
-  const { data: lessonData, mutate } = useSWR<Lesson[]>('http://localhost:4000/api/lessons', fetcher);
+  const { data: lessonData, mutate } = useSWR<Lesson[]>('/lessons', fetcher);
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<Lesson>();
+    watch,
+  } = useForm<ILessonForm>();
 
   const [timeList, setTimeList] = useState<TimeList>();
 
@@ -63,7 +76,7 @@ const CreateLessons = () => {
   };
 
   return (
-    <div>
+    <div className="container mx-auto">
       <ul>
         <h1 className="pb-8">Create Lessons</h1>
         <div>
@@ -133,14 +146,19 @@ const CreateLessons = () => {
               <label className="input-group input-group-vertical">레슨 시간</label>
               <input type="time" step="2" {...register('time')} />
             </div> */}
-            <DayPicker />
             <label className="input-group input-group-vertical">레슨 진행 시간</label>
             <input
-              type="datetime"
+              // type="datetime"
               placeholder="length"
-              {...register('length')}
+              {...register('length', {
+                value: 60,
+                min: 30,
+              })}
               className="input input-bordered w-full max-w-xs"
             />
+            <ScheduluePicker step={watch('length')} onClickTimeButton={() => {}} />
+            <DayPicker />
+
             <label className="input-group input-group-vertical">소개</label>
             <textarea
               className="w-full max-w-xs textarea textarea-bordered h-24"

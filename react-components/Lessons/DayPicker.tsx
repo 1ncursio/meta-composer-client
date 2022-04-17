@@ -17,7 +17,7 @@ const DayPicker = () => {
           weekStartOn: 1,
           startHour: 9,
           endHour: 21,
-          step: 60,
+          step: 45,
         }}
         events={[
           {
