@@ -1,4 +1,5 @@
 import Header from '@react-components/Header';
+import MainPage from '@react-components/MainPage';
 import { NextComponentType, NextPage } from 'next';
 import { appWithTranslation } from 'next-i18next';
 import type { AppContext, AppInitialProps, AppLayoutProps } from 'next/app';
@@ -24,6 +25,7 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
       <Header />
       <main className="container mx-auto flex-1">
         <Component {...pageProps} />
+        <MainPage />
       </main>
     </>
   );
