@@ -142,29 +142,6 @@ export default function useKeyParams() {
         }),
       );
 
-      let referencePositionX = -0.024 * 14;
-      for (let register = 1; register <= 7; register++) {
-        keyParamsFor88Key.push(
-          ...keyParams.map((key, i) => ({
-            ...key,
-            register,
-            referencePositionX,
-          })),
-        );
-        referencePositionX += 0.024 * 7;
-      }
-      keyParamsFor88Key.push({
-        type: 'white',
-        note: 'C',
-        topWidth: 0.023,
-        bottomWidth: 0.023,
-        topPositionX: 0,
-        wholePositionX: -0.024 * 6,
-        register: 8,
-        referencePositionX: 0.84,
-        key: keyParamsFor88Key.length + 21,
-      });
-
       return () => {
         setKeyParamsFor88Key([]);
       };

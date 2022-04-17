@@ -16,19 +16,9 @@ export interface IChatForm {
 }
 
 const ChatsIndexPage = () => {
-  const { register, handleSubmit, resetField } = useForm<IChatForm>();
-  const {
-    data: messagesData,
-    mutate: mutateMessage,
-    setSize,
-  } = useSWRInfinite<IMessage[]>((index) => `/chats?perPage=20&page=${index + 1}`, fetcher);
-  // const { data: roomListData } = useSWR<IChatRoom[]>('/chat/roomList', fetcher);
-  // const {data}
-  const { data: userData } = useUserSWR();
-
   return (
     <div className="flex gap-8 h-full">
-      <MessageRoomList />
+      <MessageRoomList currentRoomId={null} />
       <div className="flex-1 flex flex-col">
         <div className="flex-1 overflow-y-scroll"></div>
       </div>

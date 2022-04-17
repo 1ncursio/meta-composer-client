@@ -1,8 +1,11 @@
 import { Box, Entity, Plane } from '@belivvr/aframe-react';
 import type { PositionProps } from '@belivvr/aframe-react/types/components/position';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import useKeyParams, { IKey } from '@hooks/useKeyParams';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { IKey } from '@hooks/useKeyParams';
 import useStore from '@store/useStore';
+import { blackKeyWidth, getKeyX, getRenderInfoByTrackMap, getYForTime, whiteKeyWidth } from '@lib/midi/Render';
+import Player from '@lib/midi/Player';
+import keyParamsFor88Key from '@lib/midi/keyParams';
 
 export interface PianoProps {
   position: PositionProps;
@@ -10,9 +13,8 @@ export interface PianoProps {
 
 const Piano: FC<PianoProps> = ({ position }) => {
   const [rendered, setRendered] = useState<boolean>(false);
-  const { pressedKeys } = useStore((state) => state.piano);
-
-  const { keyParamsFor88Key } = useKeyParams();
+  const { pressedKeys, renderInfoByTrackMap, setRenderInfoByTrackMap } = useStore((state) => state.piano);
+  const requestRef = useRef<number | null>(null);
 
   const buildKey = useCallback((props: IKey) => {
     const { register, referencePositionX, topWidth, bottomWidth, topPositionX, wholePositionX, type, note } = props;
@@ -48,13 +50,14 @@ const Piano: FC<PianoProps> = ({ position }) => {
           material={{
             shader: 'standard',
           }}
-          height={0.015}
-          depth={0.045}
+          height={0.025}
+          depth={0.07}
+          // depth={0.045}
           className={`raycastable piano-key key-${key}`}
         >
           <Box
             width={topWidth}
-            height={0.015}
+            height={0.025}
             depth={0.05}
             white-key
             material={{
@@ -69,7 +72,7 @@ const Piano: FC<PianoProps> = ({ position }) => {
       return (
         <Box
           width={0.014}
-          height={0.02}
+          height={0.035}
           depth={0.05}
           position={{
             x: referencePositionX + wholePositionX,
@@ -234,6 +237,25 @@ const Piano: FC<PianoProps> = ({ position }) => {
     };
   }, [rendered, pressedKeys]);
 
+  const [noteArray, setNoteArray] = useState([1, 2, 3, 4, 5]);
+
+  // getRenderInfoByTrackMap
+
+  function render() {
+    if (Player.getInstance().song && !Player.getInstance().paused) {
+      // const renderInfoByTrackMap = getRenderInfoByTrackMap(Player.getInstance().getState());
+      setRenderInfoByTrackMap(getRenderInfoByTrackMap(Player.getInstance().getState()));
+
+      // console.log({ renderInfoByTrackMap });
+    }
+    requestRef.current = requestAnimationFrame(render);
+  }
+
+  useEffect(() => {
+    requestRef.current = requestAnimationFrame(render);
+    return () => cancelAnimationFrame(requestRef.current as number);
+  }, []);
+
   if (!rendered) {
     return <>loading</>;
   }
@@ -259,7 +281,75 @@ const Piano: FC<PianoProps> = ({ position }) => {
             y: 0,
             z: 0,
           }}
-        />
+        >
+          {/* {Array.from(noteArray).map((item, i) => (
+            <Box
+              key={i}
+              position={{
+                x: 0.01 + i * 0.04,
+                y: 0,
+                z: 0,
+              }}
+              width={0.02}
+              height={0.5}
+              depth={0.01}
+              material={{}}
+              className={`note-${i}`}
+            />
+          ))} */}
+          {Object.keys(renderInfoByTrackMap).map((trackIndex) => {
+            const whiteNotes = renderInfoByTrackMap[parseInt(trackIndex)].white.map((whiteNote) => {
+              // console.log({ x: whiteNote.x, y: whiteNote.y, h: whiteNote.h, i: whiteNote.noteNumber });
+              // {x: -0.7525000000000002, y: -277.7876081458332, z: 0.009999999999999787, i: 55}
+              return (
+                <Box
+                  key={whiteNote.noteId}
+                  position={{
+                    // x: getKeyX(whiteNote.noteNumber),
+                    x: whiteNote.x,
+                    y: whiteNote.y,
+                    // y: 0,
+                    z: 0,
+                  }}
+                  width={whiteKeyWidth}
+                  height={whiteNote.h}
+                  depth={0.005}
+                  material={{
+                    color: whiteNote.fillStyle,
+                    shader: 'flat',
+                  }}
+                />
+              );
+            });
+
+            const blackNotes = renderInfoByTrackMap[parseInt(trackIndex)].black.map((blackNote) => (
+              <Box
+                key={blackNote.noteId}
+                position={{
+                  // x: getKeyX(blackNote.noteNumber),
+                  x: blackNote.x,
+                  // y: blackNote.y,
+                  y: blackNote.y,
+                  z: 0,
+                }}
+                width={blackKeyWidth}
+                height={blackNote.h}
+                depth={0.005}
+                material={{
+                  color: blackNote.fillStyle,
+                  shader: 'flat',
+                }}
+              />
+            ));
+
+            return (
+              <>
+                {whiteNotes}
+                {blackNotes}
+              </>
+            );
+          })}
+        </Plane>
         <Box
           material={{
             color: '#000000',
@@ -267,7 +357,7 @@ const Piano: FC<PianoProps> = ({ position }) => {
           }}
           width={1.28}
           height={0.03}
-          depth={0.12}
+          depth={0.14}
           position={{
             x: 0.083,
             y: -0.02,

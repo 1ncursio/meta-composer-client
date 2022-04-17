@@ -43,7 +43,7 @@ const createXRSlice: AppSlice<XRSlice> = (set, get) => ({
         }),
       );
     },
-    isOpenSettings: false,
+    isOpenSettings: true,
     openSettings: () => {
       set(
         produce((state: AppState) => {

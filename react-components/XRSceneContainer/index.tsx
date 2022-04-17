@@ -23,74 +23,51 @@ import '@primitives/label';
 import '@primitives/rounded';
 import '@primitives/slider';
 import '@primitives/vertical-slider';
-import { Vector3 } from 'three';
 import { Assets, Entity, Light, Mixin, Plane, Scene, Sky } from '@belivvr/aframe-react';
-import { coordStr, styleStr } from '@utils/aframeUtils';
-import React from 'react';
+import { styleStr } from '@utils/aframeUtils';
+import React, { useState } from 'react';
 import SheetContainer from '@react-components/SheetContainer';
 import PianoContainer from '@components/PianoContainer';
 import useStore from '@store/useStore';
-
-window.handlePianoX = (e: CustomEvent, percent: number) => {
-  const piano = document.querySelector('#piano');
-  const { x, y, z }: Vector3 = piano.getAttribute('position');
-
-  // percent가 0~1 일때, x를 x-2 ~ x+2 사이로 조정해줌.
-  const newX = x + (percent - 0.5) * 4;
-
-  piano.setAttribute('position', coordStr({ x: newX, y, z }));
-};
-
-window.handlePianoY = (e: CustomEvent, percent: number) => {
-  const piano = document.querySelector('#piano');
-  const { x, y, z }: Vector3 = piano.getAttribute('position');
-
-  // percent가 0~1 일때, y를 y-2 ~ y+2 사이로 조정해줌.
-  const newY = y + (percent - 0.5) * 4;
-  piano.setAttribute('position', coordStr({ x, y: newY, z }));
-};
-
-window.handlePianoZ = (e: CustomEvent, percent: number) => {
-  const piano = document.querySelector('#piano');
-  const { x, y, z }: Vector3 = piano.getAttribute('position');
-
-  // percent가 0~1 일때, z를 z-2 ~ z+2 사이로 조정해줌.
-  const newZ = z + (percent - 0.5) * 4;
-
-  piano.setAttribute('position', coordStr({ x, y, z: newZ }));
-};
+import XRToolbar from '@react-components/XRToolbar';
+import SheetSearchContainer from '@react-components/SheetSearchContainer';
 
 const XRSceneContainer = () => {
+  const [isOpenSheet, setIsOpenSheet] = useState(false);
   const { offsetX, offsetY, offsetZ } = useStore((state) => state.xr);
+
   return (
     <>
-      {/* <Script src="https://unpkg.com/aframe-environment-component@1.3.1/dist/aframe-environment-component.min.js" /> */}
-      <Scene
-        inspector={{
-          url: new URL('https://cdn.jsdelivr.net/gh/aframevr/aframe-inspector@master/dist/aframe-inspector.min.js'),
-        }}
-        cursor={styleStr({ rayOrigin: 'mouse', fuse: false })}
-        raycaster={styleStr({ objects: ['.raycastable', '[gui-interactable]'] })}
-        stats
-        // background={{
-        //   transparent: true,
-        // }}
-      >
-        {/* <Entity environment /> */}
-        <Assets>
-          <img id="button" src="/assets/hud/button.9.png" alt="button" />
-          <img id="mute_on" src="/assets/hud/mute_on.png" alt="button" />
-          <img id="action-button" src="/assets/hud/action_button.9.png" alt="action-button" />
-          <img id="sky-texture" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/sechelt.jpg" />
-          <img id="ground-texture" src="https://cdn.aframe.io/a-painter/images/floor.jpg" />
-          <SheetContainer id="sheet" />
-        </Assets>
-        {/* <Camera
+      <div className="flex flex-col h-full">
+        <div className="flex-[9]">
+          <Scene
+            inspector={{
+              url: new URL('https://cdn.jsdelivr.net/gh/aframevr/aframe-inspector@master/dist/aframe-inspector.min.js'),
+            }}
+            cursor={styleStr({ rayOrigin: 'mouse', fuse: false })}
+            raycaster={styleStr({ objects: ['.raycastable', '[gui-interactable]'] })}
+            stats
+            embedded
+            // className="w-full h-[90%]"
+            // background={{
+            //   transparent: true,
+            // }}
+          >
+            {/* <Entity environment /> */}
+            <Assets>
+              <img id="button" src="/assets/hud/button.9.png" alt="button" />
+              <img id="mute_on" src="/assets/hud/mute_on.png" alt="button" />
+              <img id="action-button" src="/assets/hud/action_button.9.png" alt="action-button" />
+              <img id="sky-texture" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/sechelt.jpg" />
+              <img id="ground-texture" src="https://cdn.aframe.io/a-painter/images/floor.jpg" />
+              <SheetContainer id="sheet" />
+            </Assets>
+            {/* <Camera
     lookControls={{
       enabled: true,
     }}
   > */}
-        {/* <Cursor
+            {/* <Cursor
     cursor={{
       rayOrigin: 'mouse',
       mouseCursorStylesEnabled: true,
@@ -101,22 +78,22 @@ const XRSceneContainer = () => {
       objects: '.raycastable',
     }}
   /> */}
-        {/* </Camera> */}
-        {/* <Piano
+            {/* </Camera> */}
+            {/* <Piano
           position={{
             x: 0,
             y: 0.75,
             z: -0.4,
           }}
         /> */}
-        <PianoContainer
-          position={{
-            x: 0 + offsetX,
-            y: 0.75 + offsetY,
-            z: -0.4 + offsetZ,
-          }}
-        />
-        {/* <Text
+            <PianoContainer
+              position={{
+                x: 0 + offsetX,
+                y: 0.75 + offsetY,
+                z: -0.4 + offsetZ,
+              }}
+            />
+            {/* <Text
           position={{
             x: 0,
             y: 1,
@@ -129,7 +106,7 @@ const XRSceneContainer = () => {
           shader="msdf"
           width={2}
         /> */}
-        {/* <Entity
+            {/* <Entity
     position={{
       x: 0,
       y: 1,
@@ -141,7 +118,7 @@ const XRSceneContainer = () => {
   >
     <Text align="center" value="unmute" shader="msdf" width={2} />
   </Entity> */}
-        {/* <Entity
+            {/* <Entity
           position={{
             x: 0,
             y: 1,
@@ -159,31 +136,31 @@ const XRSceneContainer = () => {
             }}
           />
         </Entity> */}
-        <Mixin
-          id="rounded-action-button"
-          slice9={styleStr({
-            width: 0.2,
-            height: 0.2,
-            left: 64,
-            top: 64,
-            right: 66,
-            bottom: 66,
-            transparent: false,
-            alphaTest: 0.1,
-            src: '#action-button',
-          })}
-        />
-        <Plane
-          rotation={{ x: -90, y: 0, z: 0 }}
-          width={30}
-          height={30}
-          src="#ground-texture"
-          // repeat={{
-          //   x: 10,
-          //   y: 10,
-          // }}
-        />
-        {/* <a-mixin
+            <Mixin
+              id="rounded-action-button"
+              slice9={styleStr({
+                width: 0.2,
+                height: 0.2,
+                left: 64,
+                top: 64,
+                right: 66,
+                bottom: 66,
+                transparent: false,
+                alphaTest: 0.1,
+                src: '#action-button',
+              })}
+            />
+            <Plane
+              rotation={{ x: -90, y: 0, z: 0 }}
+              width={30}
+              height={30}
+              src="#ground-texture"
+              // repeat={{
+              //   x: 10,
+              //   y: 10,
+              // }}
+            />
+            {/* <a-mixin
     id="rounded-twitter-text-action-button"
     text-button="
                 textHoverColor: #fff;
@@ -202,78 +179,77 @@ const XRSceneContainer = () => {
                 alphaTest: 0.1;
                 src: #button"
   ></a-mixin> */}
-        <Sky src="#sky-texture" />
-        <Light type="ambient" color="#445451" />
-        <Light
-          type="point"
-          intensity={2}
-          position={{
-            x: 2,
-            y: 4,
-            z: 4,
-          }}
-        />
-        {/* <a-entity geometry-merger="preserveOriginal: false" material="color: #AAA">
+            <Sky src="#sky-texture" />
+            <Light type="ambient" color="#445451" />
+            <Light
+              type="point"
+              intensity={2}
+              position={{
+                x: 2,
+                y: 4,
+                z: 4,
+              }}
+            />
+            {/* <a-entity geometry-merger="preserveOriginal: false" material="color: #AAA">
     <a-entity geometry="primitive: box; buffer: false" position="-1 0.5 -2"></a-entity>
     <a-entity geometry="primitive: sphere; buffer: false" position="0 0.5 -2"></a-entity>
     <a-entity geometry="primitive: cylinder; buffer: false" position="1 0.5 -2" scale="0.5 0.5 05"></a-entity>
   </a-entity> */}
-        <Entity
-          id="left-hand"
-          oculus-controller
-          handTrackingControls={{
-            hand: 'left',
-            modelColor: '#fbceb1',
-          }}
-          laserControls={{
-            hand: 'left',
-          }}
-          oculusTouchControls={{
-            hand: 'left',
-          }}
-          raycaster={{
-            far: 100,
-            objects: '.raycastable',
-          }}
-        />
-        <Entity
-          id="right-hand"
-          oculus-controller
-          handTrackingControls={{
-            hand: 'right',
-            modelColor: '#fbceb1',
-          }}
-          laserControls={{
-            hand: 'right',
-          }}
-          oculusTouchControls={{
-            hand: 'right',
-          }}
-          raycaster={{
-            far: 100,
-            objects: '.raycastable',
-          }}
-        />
-        <Mixin
-          id="rounded-text-button"
-          text-button={styleStr({
-            textHoverColor: '#fff',
-            textColor: '#fff',
-            backgroundColor: '#1da1f2',
-            backgroundHoverColor: '#2db1ff',
-          })}
-          slice9={styleStr({
-            color: '#0F40A9',
-            width: 0.8,
-            height: 0.2,
-            left: 64,
-            top: 64,
-            right: 66,
-            bottom: 66,
-            src: '#button',
-          })}
-        />
-      </Scene>
+            <Entity
+              // id="left-hand"
+              // oculus-controller
+              handTrackingControls={{
+                hand: 'left',
+                modelColor: '#fbceb1',
+              }}
+            />
+            <Entity
+              laserControls={{
+                hand: 'left',
+              }}
+              raycaster={{
+                lineColor: '#f59f0a',
+              }}
+            />
+            <Entity
+              // oculus-controller
+              handTrackingControls={{
+                hand: 'right',
+                modelColor: '#fbceb1',
+              }}
+            />
+            <Entity
+              laserControls={{
+                hand: 'right',
+              }}
+              raycaster={{
+                lineColor: '#f59f0a',
+              }}
+            />
+            <Mixin
+              id="rounded-text-button"
+              text-button={styleStr({
+                textHoverColor: '#fff',
+                textColor: '#fff',
+                backgroundColor: '#1da1f2',
+                backgroundHoverColor: '#2db1ff',
+              })}
+              slice9={styleStr({
+                color: '#0F40A9',
+                width: 0.8,
+                height: 0.2,
+                left: 64,
+                top: 64,
+                right: 66,
+                bottom: 66,
+                src: '#button',
+              })}
+            />
+          </Scene>
+        </div>
+        <XRToolbar onOpenSheet={() => setIsOpenSheet(true)} />
+      </div>
+      {isOpenSheet && <SheetSearchContainer onCloseSheet={() => setIsOpenSheet(false)} />}
     </>
   );
 };
