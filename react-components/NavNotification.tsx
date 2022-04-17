@@ -8,7 +8,14 @@ import { BsBell } from 'react-icons/bs';
 import NotificationDropdown from './AvatarDropdown/NotificationDropdown';
 import { INotification } from '@typings/INotification';
 import useSocket from '@hooks/useSocket';
+import useSWR from 'swr';
+import fetcher from '@lib/api/fetcher';
+import produce from 'immer';
 
+export interface NotificaitonSWR {
+  notifitionData: INotification[];
+  notifitionCount: number;
+}
 export interface NavNoptificationProps {
   user?: IUser;
   onClick?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
@@ -18,35 +25,44 @@ export interface NavNoptificationProps {
 const NavNoptification: FC<NavNoptificationProps> = ({ user, onClick, hasDropdown }) => {
   const [socket] = useSocket('notification');
   const [color, setColor] = useState<string>();
+  const { data: notificationList, mutate: mutateNotification } = useSWR<NotificaitonSWR>(
+    '/notification/list?perPage=5&page=1',
+    fetcher,
+  );
+  useEffect(() => {
+    console.log(notificationList?.notifitionCount);
+  }, [notificationList]);
 
   useEffect(() => {
     socket?.on('notification', (msg: INotification) => {
-      console.log(msg);
-      setColor('red');
-      // for (let i = 0; i < 10; i++) {
-      //   if (i % 2 == 0) {
-      //     setTimeout(() => {
-      //       setColor('red');
-      //     }, 1000);
-      //   } else {
-      //     setTimeout(() => {
-      //       setColor('');
-      //     }, 1000);
-
-      //   }
-      // }
+      mutateNotification(
+        produce(({ notifitionData, notifitionCount }) => {
+          notifitionData = [msg].concat(...notifitionData.slice(1, 5));
+          notifitionCount = notifitionCount + 1;
+          return { notifitionData, notifitionCount };
+        }),
+        false,
+      );
     });
   }, [socket]);
+
   if (!user) {
     return <div>loading</div>;
   }
 
   if (!hasDropdown) {
-    return <BsBell size={40} />;
+    return (
+      <div>
+        <BsBell size={40} />{' '}
+        <div className="rounded-full w-5 h-5 bg-red-500 inline-flex justify-center items-center text-sm font-light text-white">
+          {notificationList?.notifitionCount}
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="dropdown dropdown-end dropdown-hover ">
+    <div className="dropdown dropdown-end dropdown-hover flex flex-row">
       <Link href="/notifications">
         <a>
           <div tabIndex={0} className="avatar">
@@ -56,7 +72,12 @@ const NavNoptification: FC<NavNoptificationProps> = ({ user, onClick, hasDropdow
           </div>
         </a>
       </Link>
-      {hasDropdown && <NotificationDropdown />}
+      {notificationList && notificationList?.notifitionCount > 0 && (
+        <div className="rounded-full w-5 h-5 bg-red-500 inline-flex justify-center items-center text-sm font-light text-white">
+          {notificationList?.notifitionCount}
+        </div>
+      )}
+      {hasDropdown && <NotificationDropdown notifitionData={notificationList?.notifitionData} />}
     </div>
   );
 };

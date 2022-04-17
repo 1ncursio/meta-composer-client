@@ -50,8 +50,8 @@ const MessageRoomList: FC<MessageRoomListProps> = ({ currentRoomId }) => {
             <div
               key={chat.id}
               className="my-5 w-5/6"
-              onMouseOver={() => setIsListHover(chat.id)}
-              onMouseOut={() => setIsListHover(-1)}
+              onMouseEnter={() => setIsListHover(chat.id)}
+              onMouseLeave={() => setIsListHover(-1)}
             >
               <div className="flex flex-row bg-white shadow-lg rounded w-full p-5 mx-auto ">
                 <Link href={'/chats/' + chat.id}>
@@ -92,47 +92,47 @@ const MessageRoomList: FC<MessageRoomListProps> = ({ currentRoomId }) => {
           <div className="text-base-content  font-bold ">학생과의 채팅</div>
           {lessonChatsData?.map((lesson) => (
             <div key={lesson.id}>
-              <div className="bg-gray-100 p-2">
-                <div className="text-center">{lesson.name}</div>
+              {/* <div className="bg-gray-100 p-2"> */}
+              <div className="text-center">{lesson.name.slice(0, 10)}</div>
 
-                {lesson.chatRooms &&
-                  lesson.chatRooms.map((chat) => (
-                    <div
-                      key={chat.id}
-                      className="my-5 w-full"
-                      onMouseOver={() => setIsListHover(chat.id)}
-                      onMouseOut={() => setIsListHover(-1)}
-                    >
-                      <div className="flex flex-row bg-white shadow-lg rounded w-full p-5 mx-auto ">
-                        <Link href={'/chats/' + chat.id}>
-                          <div className="odd:bg-gray-50 flex gap-3 items-center font-semibold text-gray-800 p-3 hover:bg-gray-100 rounded-md hover:cursor-pointer w-full">
-                            {/* <img className="w-10 h-10 rounded-full" src="https://randomuser.me/api/portraits/women/24.jpg" alt="Rebecca Burke"/> */}
-                            <div className="flex flex-col">
-                              <div>{chat.user.username}</div>
-                              {/* <div className="text-gray-400 text-sm font-normal">
+              {lesson.chatRooms &&
+                lesson.chatRooms.map((chat) => (
+                  <div
+                    key={chat.id}
+                    className="my-5 w-full"
+                    onMouseEnter={() => setIsListHover(chat.id)}
+                    onMouseLeave={() => setIsListHover(-1)}
+                  >
+                    <div className="flex flex-row bg-white shadow-lg rounded w-full p-5 mx-auto ">
+                      <Link href={'/chats/' + chat.id}>
+                        <div className="odd:bg-gray-50 flex gap-3 items-center font-semibold text-gray-800 p-3 hover:bg-gray-100 rounded-md hover:cursor-pointer w-full">
+                          {/* <img className="w-10 h-10 rounded-full" src="https://randomuser.me/api/portraits/women/24.jpg" alt="Rebecca Burke"/> */}
+                          <div className="flex flex-col">
+                            <div>{chat.user.username.slice(0, 10)}</div>
+                            {/* <div className="text-gray-400 text-sm font-normal">
                             {chat.__messages__[0]?.image
                               ? '이미지 파일'
                               : chat.__messages__[0]
                               ? chat.__messages__[0].message.slice(0, 10) + '..'
                               : '채팅을 시작해 보세요!'}
                           </div> */}
-                            </div>
-                            {chat.unReadCount > 0 ? (
-                              <div className="rounded-full w-5 h-5 bg-red-500 inline-flex justify-center items-center text-sm font-light text-white">
-                                {chat.unReadCount}
-                              </div>
-                            ) : (
-                              <div></div>
-                            )}
                           </div>
-                        </Link>
-                        <button onClick={onclicks(chat.id)}>
-                          {isListHover === chat.id ? <AiFillDelete size={30} className="mx-auto w-10" /> : <div></div>}
-                        </button>
-                      </div>
+                          {chat.unReadCount > 0 ? (
+                            <div className="rounded-full w-5 h-5 bg-red-500 inline-flex justify-center items-center text-sm font-light text-white">
+                              {chat.unReadCount}
+                            </div>
+                          ) : (
+                            <div></div>
+                          )}
+                        </div>
+                      </Link>
+                      <button onClick={onclicks(chat.id)}>
+                        {isListHover === chat.id ? <AiFillDelete size={30} className="mx-auto w-10" /> : <div></div>}
+                      </button>
                     </div>
-                  ))}
-              </div>
+                  </div>
+                ))}
+              {/* </div> */}
             </div>
           ))}
         </div>
