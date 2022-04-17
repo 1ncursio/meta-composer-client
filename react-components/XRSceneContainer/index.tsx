@@ -196,39 +196,34 @@ const XRSceneContainer = () => {
     <a-entity geometry="primitive: cylinder; buffer: false" position="1 0.5 -2" scale="0.5 0.5 05"></a-entity>
   </a-entity> */}
             <Entity
-              id="left-hand"
-              oculus-controller
+              // id="left-hand"
+              // oculus-controller
               handTrackingControls={{
                 hand: 'left',
                 modelColor: '#fbceb1',
-              }}
-              laserControls={{
-                hand: 'left',
-              }}
-              oculusTouchControls={{
-                hand: 'left',
-              }}
-              raycaster={{
-                far: 100,
-                objects: '.raycastable',
               }}
             />
             <Entity
-              id="right-hand"
-              oculus-controller
+              laserControls={{
+                hand: 'left',
+              }}
+              raycaster={{
+                lineColor: '#f59f0a',
+              }}
+            />
+            <Entity
+              // oculus-controller
               handTrackingControls={{
                 hand: 'right',
                 modelColor: '#fbceb1',
               }}
+            />
+            <Entity
               laserControls={{
                 hand: 'right',
               }}
-              oculusTouchControls={{
-                hand: 'right',
-              }}
               raycaster={{
-                far: 100,
-                objects: '.raycastable',
+                lineColor: '#f59f0a',
               }}
             />
             <Mixin

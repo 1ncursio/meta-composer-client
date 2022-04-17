@@ -71,7 +71,7 @@ const XRLayoutContainer = () => {
         scale={coordStr({
           x: 0.1,
           y: 0.1,
-          z: 0.5,
+          z: 1,
         })}
       >
         {/* offset X container */}
@@ -213,7 +213,7 @@ const XRLayoutContainer = () => {
           scale={coordStr({
             x: 1,
             y: 1,
-            z: 0.2,
+            z: 0.4,
           })}
           height={1}
           icon="58"
@@ -271,7 +271,7 @@ const XRLayoutContainer = () => {
           scale={coordStr({
             x: 1,
             y: 1,
-            z: 0.2,
+            z: 0.4,
           })}
           height={1}
           onclick=""
@@ -307,7 +307,7 @@ const XRLayoutContainer = () => {
           scale={coordStr({
             x: 1,
             y: 1,
-            z: 0.2,
+            z: 0.4,
           })}
           height={1}
           onclick=""
@@ -322,7 +322,7 @@ const XRLayoutContainer = () => {
           scale={coordStr({
             x: 1,
             y: 1,
-            z: 0.2,
+            z: 0.4,
           })}
           height={1}
           icon={playOrPauseIconUnicode}
@@ -333,13 +333,14 @@ const XRLayoutContainer = () => {
           toggle
           toggle-state={false}
           onClick={onTogglePlay}
+          className="raycastable"
         />
         {/* forward-step 아이콘 */}
         <a-gui-icon-button
           scale={coordStr({
             x: 1,
             y: 1,
-            z: 0.2,
+            z: 0.4,
           })}
           height={1}
           onclick=""
@@ -354,7 +355,7 @@ const XRLayoutContainer = () => {
           scale={coordStr({
             x: 1,
             y: 1,
-            z: 0.2,
+            z: 0.4,
           })}
           height={1}
           icon={micIconUnicode}
@@ -371,7 +372,7 @@ const XRLayoutContainer = () => {
           scale={coordStr({
             x: 1,
             y: 1,
-            z: 0.2,
+            z: 0.4,
           })}
           height={1}
           icon="f013"
@@ -386,7 +387,7 @@ const XRLayoutContainer = () => {
           scale={coordStr({
             x: 1,
             y: 1,
-            z: 0.2,
+            z: 0.4,
           })}
           height={1}
           icon="f518"
@@ -400,7 +401,7 @@ const XRLayoutContainer = () => {
           scale={coordStr({
             x: 1,
             y: 1,
-            z: 0.2,
+            z: 0.4,
           })}
           width={1.5}
           height={1}
@@ -414,7 +415,7 @@ const XRLayoutContainer = () => {
           margin="0 0 0.05 0"
         /> */}
       </a-gui-flex-container>
-      <a-gui-flex-container
+      {/* <a-gui-flex-container
         is-top-container
         flex-direction="column"
         justify-content="center"
@@ -438,7 +439,7 @@ const XRLayoutContainer = () => {
           focus-color="#ccc"
           background-color="#fff"
         />
-      </a-gui-flex-container>
+      </a-gui-flex-container> */}
     </>
   );
 };

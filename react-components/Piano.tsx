@@ -50,13 +50,14 @@ const Piano: FC<PianoProps> = ({ position }) => {
           material={{
             shader: 'standard',
           }}
-          height={0.015}
-          depth={0.045}
+          height={0.025}
+          depth={0.07}
+          // depth={0.045}
           className={`raycastable piano-key key-${key}`}
         >
           <Box
             width={topWidth}
-            height={0.015}
+            height={0.025}
             depth={0.05}
             white-key
             material={{
@@ -71,7 +72,7 @@ const Piano: FC<PianoProps> = ({ position }) => {
       return (
         <Box
           width={0.014}
-          height={0.02}
+          height={0.035}
           depth={0.05}
           position={{
             x: referencePositionX + wholePositionX,
@@ -356,7 +357,7 @@ const Piano: FC<PianoProps> = ({ position }) => {
           }}
           width={1.28}
           height={0.03}
-          depth={0.12}
+          depth={0.14}
           position={{
             x: 0.083,
             y: -0.02,
