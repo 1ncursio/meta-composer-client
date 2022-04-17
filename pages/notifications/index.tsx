@@ -7,7 +7,6 @@ import { INotification } from '@typings/INotification';
 import { GetStaticProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
 import useSWR from 'swr';
 import useSWRInfinite from 'swr/infinite';
 import client from '@lib/api/client';
