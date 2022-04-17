@@ -70,6 +70,30 @@ const Header = () => {
                 <a>테스트</a>
               </Link>
             </li>
+            <li tabIndex={1}>
+              <Link href="/concours">
+                <a>
+                  콩쿠르
+                  <svg
+                    className="fill-current"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+                  </svg>
+                </a>
+              </Link>
+              <ul className="p-2">
+                <li>
+                  <a href="/concours">전체 콩쿠르 보기</a>
+                </li>
+                <li>
+                  <a href="/concours/result">콩쿠르 결과</a>
+                </li>
+              </ul>
+            </li>
           </ul>
         </div>
         <div className="navbar-end gap-2">
