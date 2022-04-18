@@ -34,6 +34,10 @@ const NotificationsIndexPage = () => {
     setNotifitionInfo(noti);
     mutateNotification();
   };
+  const movePage = (notification: INotification) => async () => {
+    await client.get(`/notification/${notification.id}/info`);
+    window.location.href = window.location.origin + notification.url;
+  };
   const clear = () => {
     setNotifitionInfo(null);
   };
@@ -82,9 +86,9 @@ const NotificationsIndexPage = () => {
           {notifitionlist &&
             notifitionlist[currentPage]?.notifitionData.map((noti) => (
               <div key={noti.id} className="flex flex-row h-full max-h-20">
-                <label htmlFor="my-modal" onClick={test(noti.id)} className="w-3/4">
+                <div onClick={movePage(noti)} className="w-3/4">
                   <Notificaiton key={noti.id} notification={noti} />
-                </label>
+                </div>
                 <div className="flex items-center">
                   <AiFillDelete size={30} className="m-auto w-10" onClick={remove(noti.id)} />
                 </div>

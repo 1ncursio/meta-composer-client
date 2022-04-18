@@ -44,8 +44,10 @@ const LessonSignup = () => {
       //     buyer_email: '22',
       //     check: true,
       //   };
-      console.log(data);
-      //   signupLoad(test);
+      if (typeof lessonId === 'string') {
+        console.log(typeof parseInt(lessonId));
+        signupLoad({ data, lessonId: parseInt(lessonId) });
+      }
     },
     [lessonId],
   );
