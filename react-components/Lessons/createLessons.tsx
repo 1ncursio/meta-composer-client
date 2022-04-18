@@ -31,7 +31,7 @@ const CreateLessons = () => {
   const { days, times, onClickTimeButton, setTimeTableList, timeTableList } = useSchedulePicker();
 
   const [thumbnailImageSrc, setThumbnailImageSrc] = useState<string>('');
-  const [thumbnailImageFile, setThumbnailImageFile] = useState<File>(null);
+  const [thumbnailImageFile, setThumbnailImageFile] = useState<File | null>(null);
 
   const saveFileImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -46,6 +46,11 @@ const CreateLessons = () => {
   };
 
   const onSubmit = (data: ILessonForm) => {
+    if (!thumbnailImageFile) {
+      console.log('썸네일 이미지 파일이 없습니다.');
+      return;
+    }
+
     const { name, introduce, length, price, type } = data;
     console.log(data);
 

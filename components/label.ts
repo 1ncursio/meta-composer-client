@@ -19,6 +19,7 @@ export default AFRAME.registerComponent('gui-label', {
     const data = this.data;
     const el = this.el;
     const guiItem = el.getAttribute('gui-item');
+    // @ts-ignore
     this.guiItem = guiItem;
 
     el.setAttribute('geometry', `primitive: plane; height: ${guiItem.height}; width: ${guiItem.width};`);
@@ -43,9 +44,12 @@ export default AFRAME.registerComponent('gui-label', {
     // }
   },
   update(oldData) {
+    // @ts-ignore
     if (this.textEntity) {
+      // @ts-ignore
       console.log('has textEntity: ' + this.textEntity);
 
+      // @ts-ignore
       const oldEntity = this.textEntity;
       oldEntity.parentNode.removeChild(oldEntity);
 
@@ -56,6 +60,7 @@ export default AFRAME.registerComponent('gui-label', {
   },
   setText(newText: string) {
     const textEntity = document.createElement('a-entity');
+    // @ts-ignore
     this.textEntity = textEntity;
     textEntity.setAttribute(
       'troika-text',
@@ -70,6 +75,7 @@ export default AFRAME.registerComponent('gui-label', {
         font: this.data.fontFamily,
         fontSize: this.data.fontSize,
         depthOffset: 1,
+        // @ts-ignore
         maxWidth: this.guiItem.width / 1.05,
       }),
     );

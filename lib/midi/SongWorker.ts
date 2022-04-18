@@ -161,8 +161,10 @@ const setNotesBySecond = (track: ActiveTrack) => {
   track.notes.forEach((note) => {
     const second = Math.floor(note.timestamp / 1000);
     if (track.notesBySeconds.hasOwnProperty(second)) {
+      // @ts-ignore
       track.notesBySeconds[second].push(note);
     } else {
+      // @ts-ignore
       track.notesBySeconds[second] = [note];
     }
   });

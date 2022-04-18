@@ -16,6 +16,7 @@ const user = {
 const messages: IMessage[] = [
   {
     id: 1,
+    // @ts-ignore
     user: {
       id: 123,
       email: 'asd@naver.com',
@@ -61,6 +62,7 @@ export const handlers = [
       createdAt: new Date(),
     };
 
+    // @ts-ignore
     messages.unshift(newMessage);
 
     return res(

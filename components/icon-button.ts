@@ -65,6 +65,7 @@ export default AFRAME.registerComponent('gui-icon-button', {
     buttonEntity.setAttribute('rotation', '90 0 0');
     buttonEntity.setAttribute('position', '0 0 0.02');
     el.appendChild(buttonEntity);
+    // @ts-ignore
     this.buttonEntity = buttonEntity;
 
     this.setIcon(data.icon);
@@ -104,6 +105,7 @@ export default AFRAME.registerComponent('gui-icon-button', {
       console.log('has iconEntity: ' + this.iconEntity);
 
       const oldEntity = this.iconEntity;
+      // @ts-ignore
       oldEntity.parentNode.removeChild(oldEntity);
 
       this.setIcon(this.data.icon);
@@ -116,9 +118,11 @@ export default AFRAME.registerComponent('gui-icon-button', {
     this.data.toggleState = activeState;
     if (!activeState) {
       console.log('not active, about to set background color');
+      // @ts-ignore
       this.buttonEntity.setAttribute('material', 'color', this.data.backgroundColor);
     } else {
       console.log('active, about to set active color');
+      // @ts-ignore
       this.buttonEntity.setAttribute('material', 'color', this.data.activeColor);
     }
   },
@@ -127,6 +131,7 @@ export default AFRAME.registerComponent('gui-icon-button', {
     const char = String.fromCharCode(hex);
 
     const iconEntity = document.createElement('a-entity');
+    // @ts-ignore
     this.iconEntity = iconEntity;
     iconEntity.setAttribute(
       'troika-text',
@@ -135,7 +140,9 @@ export default AFRAME.registerComponent('gui-icon-button', {
         align: 'center',
         anchor: 'center',
         baseline: 'center',
+        // @ts-ignore
         lineHeight: this.guiItem.height,
+        // @ts-ignore
         maxWidth: this.guiItem.width,
         color: this.data.fontColor,
         font: this.data.iconFont,

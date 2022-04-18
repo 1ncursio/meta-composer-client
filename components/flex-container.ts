@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /*  //trying to figure out global styles that customize gui items
 const styles = StyleSheet.create({
     fontFamily: {

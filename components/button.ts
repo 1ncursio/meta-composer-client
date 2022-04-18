@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { key_grey, key_grey_dark, key_offwhite, key_orange, key_orange_light } from './vars';
 
 export default AFRAME.registerComponent('gui-button', {
