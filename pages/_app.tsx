@@ -17,6 +17,7 @@ if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
 }
 import ReactModal from 'react-modal';
 import { INotification } from '@typings/INotification';
+import Script from 'next/script';
 export type NextPageWithLayout = NextPage & { getLayout: (page: ReactElement) => ReactElement };
 
 const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
@@ -60,6 +61,8 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
       <main className="container mx-auto flex-1">
         <Component {...pageProps} />
       </main>
+      <Script src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js" />
+      <Script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" />
     </>
   );
 
