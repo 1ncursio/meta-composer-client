@@ -13,18 +13,18 @@ const LessonComponent: FC<LessonProps> = ({ lesson, show }) => {
   useEffect(() => {
     const a = Math.floor(Math.random() * 5);
     const arr = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 4; i++) {
       arr.push(false);
     }
     arr[a] = true;
     setStart(arr);
   }, []);
   return (
-    <div className=" relative flex flex-col items-center w-full h-3/4   ">
+    <div className=" relative flex flex-col items-center w-full h-3/4  ">
       {/* <a href="#"> */}
       <div className="avatar w-3/5  ">
         <div className="rounded-xl ">
-          <img src={lesson?.imageURL} className="object-cover" />
+          <img src={lesson?.imageURL} className="object-cover " />
         </div>
       </div>
       {/* <img src={lesson.imageURL} className="rounded-t-lg  w-2/5" /> */}
@@ -35,11 +35,11 @@ const LessonComponent: FC<LessonProps> = ({ lesson, show }) => {
         <p className="text-blue-600 text-lg font-bold ">₩{lesson.price}</p>
         <div className="rating rating-sm">
           <input type="radio" className="mask mask-star-2 bg-orange-400" />
-          {start?.map((start) => {
+          {start?.map((start, index) => {
             if (start) {
-              return <input type="radio" className="mask mask-star-2 bg-orange-400" checked />;
+              return <input key={index} type="radio" className="mask mask-star-2 bg-orange-400" checked readOnly />;
             } else {
-              return <input type="radio" className="mask mask-star-2 bg-orange-400" />;
+              return <input key={index} type="radio" className="mask mask-star-2 bg-orange-400" />;
             }
           })}
         </div>

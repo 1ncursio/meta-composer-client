@@ -37,7 +37,7 @@ const LessonPage = () => {
             </div>
           </div>
           <div className="flex flex-col ml-8">
-            <p className="text-sm font-semibold text-white mb-4">type:{lessonData?.type}</p>
+            <p className="text-sm font-semibold text-white mb-4">{lessonData?.type}</p>
             <p className="text-2xl font-extrabold text-white mb-10">{lessonData?.name}</p>
             <div className="rating rating-sm mb-4">
               <input type="radio" className="mask mask-star-2 bg-orange-400" />
@@ -93,7 +93,9 @@ const LessonPage = () => {
                   <span className="text-sm">Shooting Guard</span>
                 </div>
                 <div className="text-center p-2">
-                  <button className="rounded-xl  w-full bg-green-500  py-2 text-white">수강신청 하기</button>
+                  <Link href={`/lessons/${lessonData?.id}/signup`}>
+                    <button className="rounded-xl  w-full bg-green-500  py-2 text-white">수강신청 하기</button>
+                  </Link>
                 </div>
                 <div className="text-center p-2">
                   <button className="rounded-xl  w-full border-2  py-2 text-black">바구니에 담기</button>

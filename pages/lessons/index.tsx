@@ -16,7 +16,9 @@ const LessonsIndexPage = () => {
   const [isListHover, setIsListHover] = useState<number>(-1);
 
   const [current, setCurrent] = useState<number>(1);
-
+  useCallback(() => {
+    console.log(LessonDataList);
+  }, [LessonDataList]);
   const onPage = useCallback(
     (page: number, current) => () => {
       if (current + page == 0) return;
@@ -33,7 +35,7 @@ const LessonsIndexPage = () => {
   );
 
   return (
-    <div className="relative h-full">
+    <div className="relative h-full ">
       <div className=" grid grid-cols-4 grid-rows-2 grid-flow-col h-full   m-10   ">
         {LessonDataList &&
           LessonDataList[current - 1]?.map((lesson) => {

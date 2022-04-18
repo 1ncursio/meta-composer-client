@@ -29,7 +29,6 @@ const createMessageSlice: AppSlice<MessageSlice> = (set, get) => ({
       try {
         const user = get().user.userData;
         if (!user) return;
-        console.log(userJoin, 'jheee;wkf;lefd;');
         mutate(
           produce((messages) => {
             messages?.[0].unshift({
