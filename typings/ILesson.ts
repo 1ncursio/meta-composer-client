@@ -8,4 +8,7 @@ export default interface ILesson {
   name: string;
   type: string;
   teacher: ITeacher;
+  difficulty: string;
+  weLearnThis: string;
+  checkPlease: string;
 }
