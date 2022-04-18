@@ -25,7 +25,7 @@ import fetcher from '@lib/api/fetcher';
 //   withCredentials: true,
 // });
 
-const update = () => {
+const ConcoursUpdatePage = () => {
   const router = useRouter();
 
   const { data: concours } = useSWR<Concours>(`/concours/${router.query.id}`, fetcher);
@@ -33,4 +33,4 @@ const update = () => {
   return <div>{concours ? <ConcourUpdate concours={concours} /> : <span>정보가 없습니다</span>}</div>;
 };
 
-export default update;
+export default ConcoursUpdatePage;

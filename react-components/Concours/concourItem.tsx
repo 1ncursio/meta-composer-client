@@ -5,6 +5,7 @@ import Concours from '@store/concours';
 import client from '../../lib/api/client';
 import Router from 'next/router';
 import useUserSWR from '@hooks/swr/useUserSWR';
+import Link from 'next/link';
 
 const ConcourItem = ({ concours }: { concours: Concours }) => {
   const targetPage = '/concours';
@@ -56,7 +57,9 @@ const ConcourItem = ({ concours }: { concours: Concours }) => {
                   <a href={`/concours/update?id=${concours.id}`}>수정하기</a>
                 </button>
                 <button className="btn btn-primary">
-                  <a href="/concours">목록으로</a>
+                  <Link href="/concours">
+                    <a>목록으로</a>
+                  </Link>
                 </button>
               </div>
             </div>
