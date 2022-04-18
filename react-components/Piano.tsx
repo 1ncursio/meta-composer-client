@@ -1,11 +1,11 @@
 import { Box, Entity, Plane } from '@belivvr/aframe-react';
 import type { PositionProps } from '@belivvr/aframe-react/types/components/position';
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { IKey } from '@hooks/useKeyParams';
-import useStore from '@store/useStore';
-import { blackKeyWidth, getKeyX, getRenderInfoByTrackMap, getYForTime, whiteKeyWidth } from '@lib/midi/Render';
-import Player from '@lib/midi/Player';
 import keyParamsFor88Key from '@lib/midi/keyParams';
+import Player from '@lib/midi/Player';
+import { blackKeyWidth, getRenderInfoByTrackMap, whiteKeyWidth } from '@lib/midi/Render';
+import useStore from '@store/useStore';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export interface PianoProps {
   position: PositionProps;
@@ -14,7 +14,9 @@ export interface PianoProps {
 const Piano: FC<PianoProps> = ({ position }) => {
   const [rendered, setRendered] = useState<boolean>(false);
   const { pressedKeys, renderInfoByTrackMap, setRenderInfoByTrackMap } = useStore((state) => state.piano);
-  const requestRef = useRef<number | null>(null);
+  const { xrSession } = useStore((state) => state.xr);
+  const windowRequestRef = useRef<number | null>(null);
+  const XrSessionRequestRef = useRef<number | null>(null);
 
   const buildKey = useCallback((props: IKey) => {
     const { register, referencePositionX, topWidth, bottomWidth, topPositionX, wholePositionX, type, note } = props;
@@ -248,13 +250,25 @@ const Piano: FC<PianoProps> = ({ position }) => {
 
       // console.log({ renderInfoByTrackMap });
     }
-    requestRef.current = requestAnimationFrame(render);
+
+    if (xrSession) {
+      XrSessionRequestRef.current = xrSession.requestAnimationFrame(render);
+    }
+    windowRequestRef.current = window.requestAnimationFrame(render);
   }
 
   useEffect(() => {
-    requestRef.current = requestAnimationFrame(render);
-    return () => cancelAnimationFrame(requestRef.current as number);
-  }, []);
+    if (xrSession) {
+      XrSessionRequestRef.current = xrSession.requestAnimationFrame(render);
+    }
+    windowRequestRef.current = window.requestAnimationFrame(render);
+    return () => {
+      cancelAnimationFrame(windowRequestRef.current as number);
+      if (xrSession) {
+        xrSession.cancelAnimationFrame(XrSessionRequestRef.current as number);
+      }
+    };
+  }, [xrSession]);
 
   if (!rendered) {
     return <>loading</>;

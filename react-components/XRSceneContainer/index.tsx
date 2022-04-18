@@ -25,7 +25,7 @@ import '@primitives/slider';
 import '@primitives/vertical-slider';
 import { Assets, Entity, Light, Mixin, Plane, Scene, Sky } from '@belivvr/aframe-react';
 import { styleStr } from '@utils/aframeUtils';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SheetContainer from '@react-components/SheetContainer';
 import PianoContainer from '@components/PianoContainer';
 import useStore from '@store/useStore';
@@ -35,7 +35,11 @@ import { isDev } from '@utils/getEnv';
 
 const XRSceneContainer = () => {
   const [isOpenSheet, setIsOpenSheet] = useState(false);
-  const { offsetX, offsetY, offsetZ } = useStore((state) => state.xr);
+  const { offsetX, offsetY, offsetZ, initXrSession } = useStore((state) => state.xr);
+
+  useEffect(() => {
+    initXrSession();
+  }, []);
 
   return (
     <>

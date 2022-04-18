@@ -1,10 +1,13 @@
 import produce from 'immer';
 import { AppSlice, AppState } from './useStore';
+import type { XRSession, XRSystem } from 'webxr';
 
 export const ONCLICK_HANDLER = 'onClickHandler';
 
 export interface XRSlice {
   xr: {
+    xrSession: XRSession | null;
+    initXrSession: () => void;
     [ONCLICK_HANDLER]: (e: any, a: any) => void;
     isMicMuted: boolean;
     toggleMuteMic: () => Promise<void>;
@@ -25,6 +28,17 @@ export interface XRSlice {
 
 const createXRSlice: AppSlice<XRSlice> = (set, get) => ({
   xr: {
+    xrSession: null,
+    initXrSession: () => {
+      const xr = (navigator as any)?.xr as XRSystem;
+      xr.requestSession('immersive-vr').then((session) => {
+        set(
+          produce((draft: AppState) => {
+            draft.xr.xrSession = session;
+          }),
+        );
+      });
+    },
     [ONCLICK_HANDLER](e, a) {
       console.log({ e, a });
     },

@@ -1,3 +1,4 @@
+import useStore from '@store/useStore';
 import AudioNote from './AudioNote';
 import { AudioPlayer } from './AudioPlayer';
 import MidiLoader from './MidiLoader';
@@ -499,7 +500,12 @@ export default class Player {
   // }
 
   requestNextTick() {
+    const { xrSession } = useStore.getState().xr;
+    // if (xrSession) {
+    // xrSession.requestAnimationFrame(() => this.playTick());
+    // } else {
     window.requestAnimationFrame(() => this.playTick());
+    // }
   }
 
   isInputKeyPressed(noteNumber: number) {
