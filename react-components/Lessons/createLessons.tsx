@@ -17,6 +17,9 @@ export interface ILessonForm {
   length: number;
   price: number;
   type: string;
+  difficulty: string;
+  weLearnThis: string;
+  checkPlease: string;
 }
 
 const CreateLessons = () => {
@@ -77,13 +80,13 @@ const CreateLessons = () => {
       .post('lessons', formData)
       .then((res) => {
         console.log({ res });
-        mutate();
+        // mutate();
         // produce((draft) => {
         //   draft.push(res.data.payload);
         //   console.log(res.data.payload);
         // }),
         // false,
-        Router.push('/lessons');
+        Router.push(`/lessons/${res.data.payload.id}`);
       })
       .catch((error) => {
         console.log(error);
@@ -104,50 +107,85 @@ const CreateLessons = () => {
       <ul>
         <h1 className="pb-8">Create Lessons</h1>
         <div>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <label className="input-group input-group-vertical">레슨 이름</label>
-            <input
-              type="text"
-              placeholder="name"
-              {...register('name')}
-              autoComplete="off"
-              className="input input-bordered w-full max-w-xs"
-            />
-            <br />
-            <label>이미지 첨부</label>
-            <table>
-              <tbody>
-                <tr>
-                  <td>
-                    <div id="image">
-                      {thumbnailImageSrc && <img alt="sample" src={thumbnailImageSrc} style={{ margin: 'auto' }} />}
-                      <div
-                        style={{
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        <input id="image" name="imgUpload" type="file" accept="image/*" onChange={saveFileImage} />
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
+            <div>
+              <label className="input-group input-group-vertical">레슨 이름</label>
+              <input
+                type="text"
+                placeholder="name"
+                {...register('name')}
+                autoComplete="off"
+                className="input input-bordered w-full max-w-xs"
+              />
+            </div>
+            <div>
+              <label>이미지 첨부</label>
+              <table>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div id="image">
+                        {thumbnailImageSrc && <img alt="sample" src={thumbnailImageSrc} style={{ margin: 'auto' }} />}
+                        <div
+                          style={{
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <input id="image" name="imgUpload" type="file" accept="image/*" onChange={saveFileImage} />
 
-                        <button className="btn" onClick={() => deleteFileImage()}>
-                          삭제
-                        </button>
+                          <button className="btn" onClick={() => deleteFileImage()}>
+                            삭제
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <label className="input-group input-group-vertical">난이도</label>
+              <select
+                id="lessonType"
+                {...register('difficulty')}
+                className="input input-sm input-bordered w-full max-w-xs"
+              >
+                <option value="beginner">입문자</option>
+                <option value="intermediate">중급자</option>
+                <option value="advanced">숙련자</option>
+              </select>
+            </div>
+            <div>
+              <label className="input-group input-group-vertical">이런 걸 배워요!</label>
+              <input
+                type="text"
+                placeholder="이런 걸 배워요!"
+                {...register('weLearnThis')}
+                className="input input-bordered w-full max-w-xs"
+              />
+            </div>
+            <div>
+              <label className="input-group input-group-vertical">확인 사항</label>
+              <input
+                type="text"
+                placeholder="확인 사항"
+                {...register('checkPlease')}
+                className="input input-bordered w-full max-w-xs"
+              />
+            </div>
             <label className="input-group input-group-vertical">가격</label>
             <input
               type="number"
-              placeholder="price"
-              {...register('price')}
+              placeholder="숫자만 입력하세요"
+              {...register('price', {
+                valueAsNumber: true,
+              })}
               className="input input-bordered w-full max-w-xs"
             />
             <br />
             <label className="input-group input-group-vertical">레슨 타입</label>
-            <select id="lessonType" {...register('type')} className="input input-bordered w-full max-w-xs">
+            <select id="lessonType" {...register('type')} className="input input-sm input-bordered w-full max-w-xs">
               <option value="Sonata">Sonata</option>
               <option value="Etudes">Etudes</option>
               <option value="Waltzes">Waltzes</option>
