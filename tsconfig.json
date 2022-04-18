@@ -12,6 +12,7 @@
       "@lib/*": ["lib/*"],
       "@hooks/*": ["hooks/*"],
       "@typings/*": ["typings/*"],
+      "types": ["iamport-typings"],
       "~/*": ["*"]
     },
     "target": "es5",

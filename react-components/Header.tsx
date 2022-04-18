@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import { BsBell } from 'react-icons/bs';
+import { BsBell, BsFillFileMusicFill } from 'react-icons/bs';
 import { FaFacebookF } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import Avatar from './Avatar';
@@ -40,11 +40,43 @@ const Header = () => {
           </Link>
         </div>
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal p-0">
-            <li>
-              <Link href="/lessons">
-                <a>Item 1</a>
+          <ul className="menu menu-horizontal p-0 hover:z-50   ">
+            <li tabIndex={1}>
+              <Link href={`/lessons`}>
+                <div>
+                  레슨
+                  <svg
+                    className="fill-current"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+                  </svg>
+                </div>
               </Link>
+              <ul className="p-2 bg-white">
+                <li>
+                  <Link href={`/lessons`}>Sonata</Link>
+                </li>
+                <li>
+                  <BsFillFileMusicFill size={20} />
+                  <Link href={`/lessons`}>Etudes</Link>
+                </li>
+                <li>
+                  <BsFillFileMusicFill />
+                  <Link href={`/lessons`}>Waltzes</Link>
+                </li>
+                <li>
+                  <BsFillFileMusicFill />
+                  <Link href={`/lessons`}>Nocturnes</Link>
+                </li>
+                <li>
+                  <BsFillFileMusicFill />
+                  <Link href={`/lessons`}>Marches</Link>
+                </li>
+              </ul>
             </li>
             <li tabIndex={0}>
               <a>
