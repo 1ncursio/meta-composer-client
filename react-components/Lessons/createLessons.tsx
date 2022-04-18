@@ -2,6 +2,7 @@ import { useSchedulePicker } from '@hooks/useSchedulePicker';
 import client from '@lib/api/client';
 import fetcher from '@lib/api/fetcher';
 import ScheduluePicker from '@react-components/SchedulePicker';
+import dayjs from 'dayjs';
 import produce from 'immer';
 import Router from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -54,15 +55,23 @@ const CreateLessons = () => {
     const { name, introduce, length, price, type } = data;
     console.log(data);
 
+    const hour = Math.floor(length / 60);
+    const minute = length % 60;
+
+    console.log({ hour, minute });
+
     const formData = new FormData();
     formData.append('name', name);
     formData.append('introduce', introduce);
-    formData.append('length', length.toString());
+    formData.append('length', dayjs(`2000-01-01 ${hour}:${minute}:00`).format('HH:mm:ss'));
     formData.append('price', price.toString());
     formData.append('type', type);
     formData.append('image', thumbnailImageFile);
     formData.append('day', JSON.stringify(days));
     formData.append('time', JSON.stringify(times));
+
+    // console.log({ formData: formData.get('length') });
+    // return;
 
     client
       .post('lessons', formData)
