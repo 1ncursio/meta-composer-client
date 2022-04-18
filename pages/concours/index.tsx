@@ -1,6 +1,5 @@
 import React from 'react';
 import ConcourList from '@react-components/Concours/concourList';
-import Button from '@react-components/Button';
 
 const concours = () => {
   return (
