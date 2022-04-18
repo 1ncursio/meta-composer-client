@@ -38,14 +38,16 @@ const LessonSignup = () => {
 
   const pay = useCallback(
     async (data: ISignupForm) => {
-      //   const test: ISignupForm = {
-      //     buyer_name: '@',
-      //     buyer_tel: '@323',
-      //     buyer_email: '22',
-      //     check: true,
-      //   };
-      console.log(data);
-      //   signupLoad(test);
+      if (typeof lessonId === 'string') {
+        console.log(typeof parseInt(lessonId));
+        signupLoad({ data, lessonId: parseInt(lessonId) });
+      }
+      // const test: ISignupForm = {
+      //   buyer_name: '@',
+      //   buyer_tel: '@323',
+      //   buyer_email: '22',
+      //   check: true,
+      // };
     },
     [lessonId],
   );

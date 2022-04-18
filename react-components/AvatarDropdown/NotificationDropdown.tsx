@@ -21,6 +21,11 @@ const NotificationDropdown: FC<NotificaitonProps> = ({ notifitionData }) => {
   const { t } = useTranslation('common');
   const { tab, selectTab } = useTabs();
 
+  const movePage = (notification: INotification) => async () => {
+    await client.get(`/notification/${notification.id}/info`);
+    window.location.href = window.location.origin + notification.url;
+  };
+
   // const [notifitionInfo, setNotifitionInfo] = useState<INotification | null>();
   // const showNotification = (id: number) => async () => {
   //   const data = await client.get(`/notification/${id}/info`);
@@ -42,7 +47,7 @@ const NotificationDropdown: FC<NotificaitonProps> = ({ notifitionData }) => {
         {notifitionData &&
           notifitionData.map((noti) => (
             <li key={noti.id} className="flex flex-row items-center">
-              <Link href={noti.url}>
+              <div onClick={movePage(noti)}>
                 <p className="flex-1">
                   <AiTwotoneSound size={24} />
                   {noti.content}
@@ -52,7 +57,7 @@ const NotificationDropdown: FC<NotificaitonProps> = ({ notifitionData }) => {
                     </div>
                   )}
                 </p>
-              </Link>
+              </div>
             </li>
           ))}
       </ul>
