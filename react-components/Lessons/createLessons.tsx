@@ -8,7 +8,6 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import useSWR from 'swr';
 import { Lesson } from '.';
-import DayPicker from './DayPicker';
 
 export interface ILessonForm {
   name: string;
@@ -17,12 +16,10 @@ export interface ILessonForm {
   length: number;
   price: number;
   type: string;
-  day: number[];
-  time: string[][];
 }
 
 const CreateLessons = () => {
-  const { data: lessonData, mutate } = useSWR<Lesson[]>('/lessons', fetcher);
+  const { data: lessonData, mutate } = useSWR<Lesson[]>('/lessons?perPage=8&page=1', fetcher);
 
   const {
     register,
@@ -33,32 +30,46 @@ const CreateLessons = () => {
   } = useForm<ILessonForm>();
   const { days, times, onClickTimeButton, setTimeTableList, timeTableList } = useSchedulePicker();
 
-  const [fileImage, setFileImage] = useState('');
+  const [thumbnailImageSrc, setThumbnailImageSrc] = useState<string>('');
+  const [thumbnailImageFile, setThumbnailImageFile] = useState<File>(null);
 
-  const saveFileImage = (e: any) => {
-    setFileImage(URL.createObjectURL(e.target.files[0]));
+  const saveFileImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    const a = e.target.files[0];
+    setThumbnailImageFile(a);
+    setThumbnailImageSrc(URL.createObjectURL(e.target.files[0]));
   };
 
   const deleteFileImage = () => {
-    URL.revokeObjectURL(fileImage);
-    setFileImage('');
+    URL.revokeObjectURL(thumbnailImageSrc);
+    setThumbnailImageSrc('');
   };
 
-  const onSubmit = (data: Lesson) => {
-    const { name, introduce, length, price, type, day, time } = data;
+  const onSubmit = (data: ILessonForm) => {
+    const { name, introduce, length, price, type } = data;
     console.log(data);
 
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('introduce', introduce);
+    formData.append('length', length.toString());
+    formData.append('price', price.toString());
+    formData.append('type', type);
+    formData.append('image', thumbnailImageFile);
+    formData.append('day', JSON.stringify(days));
+    formData.append('time', JSON.stringify(times));
+
     client
-      .post('lessons', { name, introduce, length, price, type, day, time }, { withCredentials: true })
+      .post('lessons', formData)
       .then((res) => {
-        mutate(
-          produce((draft) => {
-            draft.push(res.data.payload);
-            console.log(res.data.payload);
-          }),
-          false,
-        );
-        return Router.push('/lessons');
+        console.log({ res });
+        mutate();
+        // produce((draft) => {
+        //   draft.push(res.data.payload);
+        //   console.log(res.data.payload);
+        // }),
+        // false,
+        Router.push('/lessons');
       })
       .catch((error) => {
         console.log(error);
@@ -85,6 +96,7 @@ const CreateLessons = () => {
               type="text"
               placeholder="name"
               {...register('name')}
+              autoComplete="off"
               className="input input-bordered w-full max-w-xs"
             />
             <br />
@@ -94,7 +106,7 @@ const CreateLessons = () => {
                 <tr>
                   <td>
                     <div id="image">
-                      {fileImage && <img alt="sample" src={fileImage} style={{ margin: 'auto' }} />}
+                      {thumbnailImageSrc && <img alt="sample" src={thumbnailImageSrc} style={{ margin: 'auto' }} />}
                       <div
                         style={{
                           alignItems: 'center',
@@ -162,9 +174,7 @@ const CreateLessons = () => {
               setTimeTableList={setTimeTableList}
               days={days}
               times={times}
-              readonly
             />
-            <DayPicker />
 
             <label className="input-group input-group-vertical">소개</label>
             <textarea
