@@ -8,7 +8,7 @@ const client = axios.create({
   withCredentials: true,
 });
 
-const registerForm = () => {
+const ConcoursRegisterForm = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -127,4 +127,4 @@ const registerForm = () => {
   );
 };
 
-export default registerForm;
+export default ConcoursRegisterForm;

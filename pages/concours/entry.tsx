@@ -5,7 +5,7 @@ import Concours from '@store/concours';
 import { useRouter } from 'next/router';
 import EntryConcours from '@react-components/Concours/entryConcours';
 
-const entry = () => {
+const Entry = () => {
   const router = useRouter();
   const { data: concours } = useSWR<Concours>(`/concours/${router.query.id}`, fetcher);
 
@@ -17,4 +17,4 @@ const entry = () => {
   );
 };
 
-export default entry;
+export default Entry;

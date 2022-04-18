@@ -1,15 +1,20 @@
 import React from 'react';
 import ConcourList from '@react-components/Concours/concourList';
 
-const concours = () => {
+import Link from 'next/link';
+
+
+const ConcoursPage = () => {
   return (
     <div className="flex flex-col gap-8">
       <h1 className="m-auto">concours page</h1>
-      <a href="/concours/register" className="place-self-center">
-        <button className=" btn btn-primary">등록하기</button>
-      </a>
+      <Link href="/concours/register">
+        <a className="place-self-center">
+          <button className=" btn btn-primary">등록하기</button>
+        </a>
+      </Link>
       <ConcourList />
     </div>
   );
 };
-export default concours;
+export default ConcoursPage;

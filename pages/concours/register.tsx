@@ -1,7 +1,7 @@
 import React from 'react';
 import RegisterForm from '@react-components/Concours/registerForm';
 
-const register = () => {
+const RegisterConcoursPage = () => {
   return (
     <div className="flex flex-col gap-8">
       <h1 className="mx-auto">Register Conours</h1>
@@ -10,4 +10,4 @@ const register = () => {
   );
 };
 
-export default register;
+export default RegisterConcoursPage;
