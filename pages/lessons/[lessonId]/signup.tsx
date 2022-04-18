@@ -13,6 +13,10 @@ import { RequestPayParams, RequestPayResponse } from 'iamport-typings';
 import useUserSWR from '@hooks/swr/useUserSWR';
 import { useForm } from 'react-hook-form';
 import useStore from '@store/useStore';
+import { useSchedulePicker } from '@hooks/useSchedulePicker';
+import ScheduluePicker from '@react-components/SchedulePicker';
+import produce from 'immer';
+import dayjs from 'dayjs';
 export interface ISignupForm {
   buyer_name: string;
   buyer_tel: string;
@@ -30,6 +34,42 @@ const LessonSignup = () => {
     shouldUseNativeValidation: true,
   });
   const { signupLoad } = useStore((state) => state.signup);
+  const { days, times, setTimeTableList, timeTableList } = useSchedulePicker();
+
+  const onClickTimeButton = useCallback(
+    (day: number, time: dayjs.Dayjs) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      setTimeTableList(
+        produce((draft) => {
+          draft.forEach((item) => {
+            if (item.time.isSame(time) && item.isAvailableByWeekDays[day - 1]) {
+              console.log('!!');
+            }
+          });
+        }),
+      );
+    },
+    [setTimeTableList],
+  );
+
+  const WeekDay = ['Sun', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+
+  useEffect(() => {
+    if (!lessonData) return;
+    setTimeTableList(
+      produce((draft) => {
+        draft.forEach((item) => {
+          // console.log(item.time);
+          lessonData.timeTables.forEach((time) => {
+            if (item.time.isSame(dayjs(`2022-4-19 ${time.time}`))) {
+              item.isAvailableByWeekDays[WeekDay.indexOf(time.day)] =
+                !item.isAvailableByWeekDays[WeekDay.indexOf(time.day)];
+            }
+          });
+        });
+      }),
+    );
+  }, [lessonData]);
+
   useEffect(() => {
     if (!userData) return;
     setValue('buyer_name', userData.username);
@@ -81,6 +121,19 @@ const LessonSignup = () => {
               <div className="rounded-lg border-2 font-bold  sm:text-xs w-full">위시리스트 추가</div>
 
               {/* <div className="badge badge-outline font-lg md:font-xm">위시리스트로 이동</div> */}
+            </div>
+          </div>
+          <div className="w-3/4 flex flex-col items-center ">
+            <p className="text-center m-2 font-bold text-lg border-2 p-2 rounded-md bg-gray-200">레슨 시간 선택</p>
+            <div className="border-2 w-full">
+              <ScheduluePicker
+                step={120}
+                onClickTimeButton={onClickTimeButton}
+                timeTableList={timeTableList}
+                setTimeTableList={setTimeTableList}
+                days={days}
+                times={times}
+              />
             </div>
           </div>
         </div>

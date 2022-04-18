@@ -6,6 +6,7 @@ import * as styles from './styles';
 export interface TimeTable {
   time: dayjs.Dayjs;
   isAvailableByWeekDays: boolean[];
+  isSelectDays?: boolean[];
 }
 
 export interface ScheduluePickerProps {
@@ -50,6 +51,7 @@ const ScheduluePicker: FC<ScheduluePickerProps> = ({
       result.push({
         time: startTime,
         isAvailableByWeekDays: weekDays.map((day) => false),
+        isSelectDays: weekDays.map((day) => false),
       });
 
       // step의 최소값은 30이라 그 미만이 들어오면 30으로 처리
