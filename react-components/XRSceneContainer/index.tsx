@@ -31,6 +31,7 @@ import PianoContainer from '@components/PianoContainer';
 import useStore from '@store/useStore';
 import XRToolbar from '@react-components/XRToolbar';
 import SheetSearchContainer from '@react-components/SheetSearchContainer';
+import { isDev } from '@utils/getEnv';
 
 const XRSceneContainer = () => {
   const [isOpenSheet, setIsOpenSheet] = useState(false);
@@ -41,12 +42,18 @@ const XRSceneContainer = () => {
       <div className="flex flex-col h-full">
         <div className="flex-[9]">
           <Scene
-            inspector={{
-              url: new URL('https://cdn.jsdelivr.net/gh/aframevr/aframe-inspector@master/dist/aframe-inspector.min.js'),
-            }}
+            inspector={
+              isDev()
+                ? {
+                    url: new URL(
+                      'https://cdn.jsdelivr.net/gh/aframevr/aframe-inspector@master/dist/aframe-inspector.min.js',
+                    ),
+                  }
+                : undefined
+            }
             cursor={styleStr({ rayOrigin: 'mouse', fuse: false })}
             raycaster={styleStr({ objects: ['.raycastable', '[gui-interactable]'] })}
-            stats
+            stats={isDev()}
             embedded
             // className="w-full h-[90%]"
             // background={{
