@@ -1,77 +1,29 @@
 import dayjs from 'dayjs';
-import produce from 'immer';
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo } from 'react';
 import * as styles from './styles';
-
-// const days = ['일', '월', '화', '수', '목', '금', '토'];
-
-// const data = {
-//   // 1부터 일, 월, 화, 수, 목, 금, 토
-//   weekDays: [1, 2, 3, 4, 5, 6, 7],
-//   // 시작 시간
-//   startHour: 9,
-//   // 끝 시간
-//   endHour: 21,
-//   // 시간 단위 e.g. 60 = 1시간
-//   step: 60,
-//   schedule: [{}],
-// };
-
-export interface ScheduluePickerProps {
-  weekDays?: number[];
-  startHour?: number;
-  endHour?: number;
-  step?: number;
-  readonly?: boolean;
-  onClickTimeButton: () => void;
-}
-
-// 레슨을 생성한다
-// {
-// "introduce": "레슨 샘플입니다.",
-// "length": "00:30:00",
-// "price": 200000,
-// "name": "레슨제목 입니다.",
-// "type": "Sonata",
-// "day": ["1","2","5","6","7"],
-// //요일, 1부터 일요일 7은 토요일
-// "time":[
-// ["11:00:00"],
-// ["08:00:00","10:00:00","18:00:00"],
-// ["08:00:00","10:00:00"],
-// ["08:00:00","10:00:00","13:00:00","14:00:00"],
-// ["08:00:00","10:00:00","13:00:00"]
-// ]
-// //시간 양식을 지켜주세요.
-// }
-// 의 양식으로 데이터 보내야함.
-// var sss = {
-//   weekDays: [
-//     {
-//       day: 1,
-//       time: [
-//         {
-//           start: '08:00:00',
-//           isAvailable: true,
-//         },
-//         {
-//           start: '10:00:00',
-//           isAvailable: true,
-//         },
-//       ],
-//     },
-//   ],
-//   startHour: 9,
-//   endHour: 21,
-//   step: 60,
-//   readonly: false,
-// };
 
 // 레슨 등록할 때, 강사가 가능한 시간의 타임 테이블
 export interface TimeTable {
-  //   formattedTime: string;
   time: dayjs.Dayjs;
   isAvailableByWeekDays: boolean[];
+}
+
+export interface ScheduluePickerProps {
+  // 1부터 일, 월, 화, 수, 목, 금, 토
+  weekDays?: number[];
+  // 24시 중 가능한 시작 시간, default 9
+  startHour?: number;
+  // 24시 중 가능한 끝 시간, default 21
+  endHour?: number;
+  // 시간 단위 e.g. 60 = 1시간
+  step?: number;
+  readonly?: boolean;
+  // 시간 버튼을 눌렀을 때
+  onClickTimeButton: (day: number, time: dayjs.Dayjs) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  timeTableList: TimeTable[];
+  setTimeTableList: React.Dispatch<React.SetStateAction<TimeTable[]>>;
+  days: string[];
+  times: string[][];
 }
 
 const ScheduluePicker: FC<ScheduluePickerProps> = ({
@@ -80,8 +32,13 @@ const ScheduluePicker: FC<ScheduluePickerProps> = ({
   endHour = 21,
   step = 60,
   readonly = false,
+  onClickTimeButton,
+  timeTableList,
+  setTimeTableList,
+  days,
+  times,
 }) => {
-  const [timeTableList, setTimeTable] = useState<TimeTable[]>([]);
+  //   const [timeTableList, setTimeTableList] = useState<TimeTable[]>([]);
 
   const timeList = useCallback(() => {
     let startTime = dayjs().hour(startHour).minute(0).second(0).millisecond(0);
@@ -100,8 +57,8 @@ const ScheduluePicker: FC<ScheduluePickerProps> = ({
     }
 
     console.log({ result });
-    setTimeTable(result);
-  }, [startHour, endHour, step, weekDays]);
+    setTimeTableList(result);
+  }, [startHour, endHour, step, weekDays, setTimeTableList]);
 
   const weekDaysToString = useMemo(() => {
     const map = {
@@ -118,49 +75,17 @@ const ScheduluePicker: FC<ScheduluePickerProps> = ({
     return weekDays.map((day) => map[day]);
   }, [weekDays]);
 
-  const onClickTimeButton = useCallback(
-    (day: number, time: dayjs.Dayjs) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      setTimeTable(
-        produce((draft) => {
-          draft.forEach((item) => {
-            if (item.time.isSame(time)) {
-              item.isAvailableByWeekDays[day - 1] = !item.isAvailableByWeekDays[day - 1];
-            }
-          });
-        }),
-      );
-    },
-    [setTimeTable],
-  );
-
   const onClickCheckData = () => {
-    const daySet = new Set<string>();
-    const time: string[][] = [];
-    timeTableList.forEach((timeTable) => {
-      timeTable.isAvailableByWeekDays.forEach((isAvailable, index) => {
-        if (isAvailable) {
-          //   day.push(weekDaysToString[index]);
-          daySet.add(weekDaysToString[index]);
-          time.push([timeTable.time.format('HH:mm:ss')]);
-        }
-      });
-    });
-    console.log({ daySet, time });
-    // console.log({ timeTableList });
+    console.log({ days, times });
   };
 
   useEffect(() => {
     timeList();
-
-    // return () => {
-    //   setTimeTable([]);
-    // };
   }, [step]);
 
   return (
     <div className="text-sm">
       <div className="flex flex-row">
-        {/* <div className="flex-1 h-12 inline-flex justify-center items-center"></div> */}
         <div className="flex-1 h-12 inline-flex justify-center items-center border-b border-b-base-300 border-r border-r-base-300" />
         {weekDaysToString.map((day) => (
           <div key={day} className="flex-1 h-12 inline-flex justify-center items-center border-b border-b-base-300">
@@ -168,7 +93,6 @@ const ScheduluePicker: FC<ScheduluePickerProps> = ({
           </div>
         ))}
       </div>
-      {/* <div className="flex flex-row">{dayjs().hour(startHour).format('HH:mm A')}</div> */}
       <div className="flex flex-col">
         {timeTableList.map((timeTable) => (
           <div key={timeTable.time.format('HH:mm A')} className="flex">
@@ -178,20 +102,31 @@ const ScheduluePicker: FC<ScheduluePickerProps> = ({
             >
               {timeTable.time.format('HH:mm A')}
             </div>
-            {weekDays.map((day) => (
-              <button
-                type="button"
-                key={day}
-                onClick={onClickTimeButton(day, timeTable.time)}
-                className={styles.timeTableButton(timeTable.isAvailableByWeekDays[day - 1])}
-              ></button>
-            ))}
+            {weekDays.map((day) =>
+              readonly ? (
+                <div
+                  className={styles.timeTableButton({
+                    isChecked: timeTable.isAvailableByWeekDays[day - 1],
+                    readonly: true,
+                  })}
+                />
+              ) : (
+                <button
+                  type="button"
+                  key={day}
+                  onClick={onClickTimeButton(day, timeTable.time)}
+                  className={styles.timeTableButton({
+                    isChecked: timeTable.isAvailableByWeekDays[day - 1],
+                    readonly: false,
+                  })}
+                />
+              ),
+            )}
           </div>
         ))}
       </div>
-
       <button type="button" onClick={onClickCheckData}>
-        콘솔찍기
+        콘솔 찍기
       </button>
     </div>
   );

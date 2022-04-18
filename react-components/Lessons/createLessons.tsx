@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import { useSchedulePicker } from '@hooks/useSchedulePicker';
+import client from '@lib/api/client';
+import fetcher from '@lib/api/fetcher';
+import ScheduluePicker from '@react-components/SchedulePicker';
+import produce from 'immer';
 import Router from 'next/router';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import useSWR from 'swr';
-import { Lesson, TimeList } from '.';
-import produce from 'immer';
-import fetcher from '@lib/api/fetcher';
-import client from '@lib/api/client';
+import { Lesson } from '.';
 import DayPicker from './DayPicker';
-import { Scheduler } from '@aldabil/react-scheduler';
-import ScheduluePicker from '@react-components/SchedulePicker';
 
 export interface ILessonForm {
   name: string;
@@ -31,8 +31,7 @@ const CreateLessons = () => {
     formState: { errors },
     watch,
   } = useForm<ILessonForm>();
-
-  const [timeList, setTimeList] = useState<TimeList>();
+  const { days, times, onClickTimeButton, setTimeTableList, timeTableList } = useSchedulePicker();
 
   const [fileImage, setFileImage] = useState('');
 
@@ -156,7 +155,15 @@ const CreateLessons = () => {
               })}
               className="input input-bordered w-full max-w-xs"
             />
-            <ScheduluePicker step={watch('length')} onClickTimeButton={() => {}} />
+            <ScheduluePicker
+              step={watch('length')}
+              onClickTimeButton={onClickTimeButton}
+              timeTableList={timeTableList}
+              setTimeTableList={setTimeTableList}
+              days={days}
+              times={times}
+              readonly
+            />
             <DayPicker />
 
             <label className="input-group input-group-vertical">소개</label>

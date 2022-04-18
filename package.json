@@ -15,11 +15,7 @@
     "worker:build": "tsc lib/midi/SongWorker.ts --module es2015 --target es5 --lib es2015 --outDir public/assets/js/workers/SongWorker.js"
   },
   "dependencies": {
-    "@aldabil/react-scheduler": "^2.2.1",
     "@belivvr/aframe-react": "^0.4.1",
-    "@devexpress/dx-react-core": "^3.0.2",
-    "@devexpress/dx-react-scheduler": "^3.0.2",
-    "@devexpress/dx-react-scheduler-material-ui": "^3.0.2",
     "@emotion/react": "^11.8.1",
     "@emotion/styled": "^11.8.1",
     "@react-midi/hooks": "^1.0.2",
