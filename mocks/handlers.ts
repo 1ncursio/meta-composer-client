@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { IMessage } from '@typings/IMessage';
 import { getBackEndUrl } from '@utils/getEnv';
 import { rest } from 'msw';
