@@ -16,7 +16,7 @@ import { IMessage } from '@typings/IMessage';
 if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
   require('../mocks');
 }
-import ReactModal from 'react-modal';
+// import ReactModal from 'react-modal';
 import { INotification } from '@typings/INotification';
 export type NextPageWithLayout = NextPage & { getLayout: (page: ReactElement) => ReactElement };
 
@@ -60,7 +60,6 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
       <Header />
       <main className="container mx-auto flex-1">
         <Component {...pageProps} />
-        <MainPage />
       </main>
     </>
   );
