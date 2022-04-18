@@ -15,6 +15,8 @@ export interface WebRTCSlice {
     addAfterMakePeer: (userId: IUser['id'], initiator: boolean, socket: Socket, isOculus: boolean) => Peer.Instance;
     linkState: 'idle' | 'connecting' | 'connected' | 'disconnected';
     setLinkState: (state: WebRTCSlice['webRTC']['linkState']) => void;
+    myStream: MediaStream | null;
+    initMyStream: () => Promise<MediaStream>;
   };
 }
 
@@ -145,6 +147,18 @@ const createWebRTCSlice: AppSlice<WebRTCSlice> = (set, get) => ({
           state.webRTC.linkState = linkState;
         }),
       );
+    },
+    myStream: null,
+    initMyStream: async () => {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      set(
+        produce((state: AppState) => {
+          state.webRTC.myStream = stream;
+        }),
+      );
+
+      return stream;
     },
   },
 });

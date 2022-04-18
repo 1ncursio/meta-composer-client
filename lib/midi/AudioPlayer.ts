@@ -28,12 +28,11 @@ export class AudioPlayer {
 
     // TODO: setting 설정 추가하면 주석 삭제
     // if (getSetting('enableReverb')) {
-    //   this.reverbEnabled = true;
-    //   this.setReverb();
+    this.reverbEnabled = true;
+    this.setReverb();
     // } else {
     //   this.reverbEnabled = false;
     // }
-    this.reverbEnabled = false;
 
     this.wasSuspended = false;
 
@@ -46,7 +45,7 @@ export class AudioPlayer {
     // setSettingCallback('enableReverb', () => {
     //   this.reverbEnabled = getSetting('enableReverb');
     //   if (this.reverbEnabled) {
-    // this.getConvolver().buffer = null;
+    this.getConvolver().buffer = null;
     // this.setReverb();
     //   } else {
     // this.getConvolver().disconnect();
@@ -70,14 +69,19 @@ export class AudioPlayer {
 
   setReverb() {
     // TODO: setting 바꾸면 수정
-    let reverb = 'SteinmanHall';
-    // let reverb = getSetting('reverbImpulseResponse');
-    this.loadImpulseBuffer('../../Reverb/' + reverb + '.wav').then((result) => {
-      this.getConvolver().buffer = result;
-      this.getConvolver().connect(this.context.destination);
-    });
+    const reverb = 'SteinmanHall';
+    // const reverb = getSetting('reverbImpulseResponse');
+    this.loadImpulseBuffer('/assets/audio/reverb/' + reverb + '.wav')
+      .then((result) => {
+        console.log({ result });
+        this.getConvolver().buffer = result;
+        console.log({ destination: this.context.destination });
+        this.getConvolver().connect(this.context.destination);
+      })
+      .catch((err) => console.error(err));
   }
 
+  // context가 play 된 후로는 pause, stop을 해도 시간이 멈추지 않음
   getContextTime() {
     return this.context.currentTime;
   }
@@ -87,11 +91,17 @@ export class AudioPlayer {
   }
 
   isRunning() {
-    return this.context.state == 'running';
+    return this.context.state === 'running';
   }
 
   resume() {
-    this.context.resume();
+    this.context
+      .resume()
+      .then((d) => {
+        console.log('Audio Resume');
+        console.log(this.getContext());
+      })
+      .catch((err) => console.error(err));
   }
 
   suspend() {
@@ -134,7 +144,7 @@ export class AudioPlayer {
       this.context.resume();
     }
 
-    let audioNote = createContinuousAudioNote(
+    const audioNote = createContinuousAudioNote(
       this.context,
       getBufferForNote(this.getSoundfontName(instrument), instrument, noteNumber),
       volume / 100,
@@ -166,7 +176,7 @@ export class AudioPlayer {
     // }
     const buffer = getBufferForNote(this.getSoundfontName(instrument), instrument, note.noteNumber);
 
-    let audioNote = createCompleteAudioNote(
+    const audioNote = createCompleteAudioNote(
       note,
       currentTime,
       playbackSpeed,
@@ -241,8 +251,8 @@ export class AudioPlayer {
       this.buffers[this.soundfontName] = {};
     }
 
-    let instrumentsOfSong = currentSong.getAllInstruments();
-    let instrumentSoundfontMap: { [instrument: string]: string } = {};
+    const instrumentsOfSong = currentSong.getAllInstruments();
+    const instrumentSoundfontMap: { [instrument: string]: string } = {};
     instrumentsOfSong.forEach((instrument) => {
       instrumentSoundfontMap[instrument] = this.soundfontName;
     });
@@ -250,7 +260,7 @@ export class AudioPlayer {
     instrumentSoundfontMap['acoustic_grand_piano'] = this.soundfontName;
 
     //get instruments from custom track instruments
-    let tracks = getTracks();
+    const tracks = getTracks();
     Object.keys(tracks)
       .map((trackId) => tracks[parseInt(trackId)])
       .filter((track) => track.hasOwnProperty('overwrittenInstrument'))
@@ -266,7 +276,7 @@ export class AudioPlayer {
     // }
 
     //filter instruments we've loaded already and directly map onto promise
-    let neededInstruments = Object.entries(instrumentSoundfontMap)
+    const neededInstruments = Object.entries(instrumentSoundfontMap)
       .filter((entry) => !this.isInstrumentLoaded(entry[0]))
       .map((entry) => SoundfontLoader.loadInstrument(entry[0], entry[1]));
     if (neededInstruments.length == 0) {

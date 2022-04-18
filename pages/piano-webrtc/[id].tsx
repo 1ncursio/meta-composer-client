@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useMIDI, useMIDIMessage } from '@react-midi/hooks';
 import MIDImessage from 'midimessage';
 import { useRouter } from 'next/router';
@@ -6,7 +8,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import Peer, { SignalData } from 'simple-peer';
 import client from '@lib/api/client';
 import useStore from '@store/useStore';
-import PusherParse from '@typings/PuherPaser';
 import Rtc from '@typings/Rtc';
 
 const PianoWebRTCPage = () => {
@@ -123,7 +124,7 @@ const PianoWebRTCPage = () => {
 
     const channel = pusher.subscribe('chat');
 
-    channel.bind('event', function (event: PusherParse) {
+    channel.bind('event', function (event) {
       const offerData: Rtc = event.data;
       if (offerData.userId === id) {
         const peer = gett(false, id === '1' ? 2 : 1);

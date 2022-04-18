@@ -11,11 +11,14 @@ export interface ContextTimes {
 export default class AudioNote {
   source: AudioBufferSourceNode;
   deleteAt: number;
-  gainNodeController?: GainNodeController;
+  gainNodeController: GainNodeController | null;
 
   constructor(context: AudioContext, buffer: AudioBuffer) {
     this.source = context.createBufferSource();
     this.source.buffer = buffer;
+    // createContinuousAudioNote, createCompleteAudioNote 에서 넣어주므로 여기서는 안넣어줌.
+    // 생성할 때 무조건 넣어주므로, 없어서 에러나는 일은 없음.
+    this.gainNodeController = null;
     this.deleteAt = 0;
   }
 
@@ -54,7 +57,7 @@ export const createContinuousAudioNote = (
   volume: number,
   destination: AudioNode,
 ) => {
-  let audioNote = new AudioNote(context, buffer);
+  const audioNote = new AudioNote(context, buffer);
 
   audioNote.gainNodeController = createContinuousGainNode(context, context.currentTime, volume);
 
@@ -73,7 +76,7 @@ export const createCompleteAudioNote = (
   buffer: AudioBuffer,
   destination: AudioNode,
 ) => {
-  let audioNote = new AudioNote(context, buffer);
+  const audioNote = new AudioNote(context, buffer);
   const gainValue = getNoteGain(note, volume);
   if (gainValue == 0) {
     return audioNote;

@@ -10,6 +10,7 @@ const useSocket = (workspace?: string): [Socket | undefined, () => void] => {
   console.log('rerender', workspace);
 
   const disconnect = useCallback(() => {
+    console.log('heelow2');
     if (workspace) {
       sockets[workspace].disconnect();
       delete sockets[workspace];

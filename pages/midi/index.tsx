@@ -1,12 +1,9 @@
-import MidiLoader from '@lib/midi/MidiLoader';
 import Player from '@lib/midi/Player';
-import React, { useCallback, useEffect } from 'react';
-import useAudioPlayer from '~/hooks/useAudioPlayer';
+import React, { useCallback, useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
+const SheetContainer = dynamic(() => import('@react-components/SheetContainer'), { ssr: false });
 
 const MIDIPage = () => {
-  const { context, metronomSound1, metronomSound2 } = useAudioPlayer();
-  //   const player = new Player();
-
   const readMIDIFile = useCallback((file: File) => {
     const reader = new FileReader();
     const { name: fileName } = file;
@@ -32,17 +29,31 @@ const MIDIPage = () => {
     [readMIDIFile],
   );
 
-  useEffect(() => {
-    if (context) {
-      console.log('context', context);
-    }
-  }, [context]);
+  const onClickPlaySong = () => {
+    Player.getInstance().startPlay();
+  };
+
+  const onClickPauseSong = () => {
+    Player.getInstance().pause();
+  };
+
+  const onClickStopSong = () => {
+    Player.getInstance().stop();
+  };
+
+  const onClickGetVolume = () => {
+    console.log(Player.getInstance().volume);
+  };
 
   return (
     <div>
       <input type="file" onChange={onLoadMIDI} accept=".mid, .midi" />
-      <audio src="/assets/audio/metronome/1.wav" />
-      {JSON.stringify(context)}
+      {/* <audio src="/assets/audio/metronome/1.wav" /> */}
+      <button onClick={onClickPlaySong}>플레이</button>
+      <button onClick={onClickPauseSong}>일시정지</button>
+      <button onClick={onClickStopSong}>처음부터</button>
+      <button onClick={onClickGetVolume}>볼륨 얻기</button>
+      <SheetContainer />
     </div>
   );
 };

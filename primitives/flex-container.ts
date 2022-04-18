@@ -1,0 +1,27 @@
+export default AFRAME.registerPrimitive('a-gui-flex-container', {
+  defaultComponents: {
+    'gui-item': { type: 'flex-container' },
+    'gui-flex-container': {},
+  },
+  mappings: {
+    width: 'gui-item.width',
+    height: 'gui-item.height',
+    margin: 'gui-item.margin',
+    'flex-direction': 'gui-flex-container.flexDirection',
+    'justify-content': 'gui-flex-container.justifyContent',
+    'align-items': 'gui-flex-container.alignItems',
+    'item-padding': 'gui-flex-container.itemPadding',
+    opacity: 'gui-flex-container.opacity',
+    'is-top-container': 'gui-flex-container.isTopContainer',
+    'panel-color': 'gui-flex-container.panelColor',
+    'panel-rounded': 'gui-flex-container.panelRounded',
+    'font-family': 'gui-flex-container.styles.fontFamily',
+    'font-color': 'gui-flex-container.styles.fontColor',
+    'border-color': 'gui-flex-container.styles.borderColor',
+    'background-color': 'gui-flex-container.styles.backgroundColor',
+    'hover-color': 'gui-flex-container.styles.hoverColor',
+    'active-color': 'gui-flex-container.styles.activeColor',
+    'handle-color': 'gui-flex-container.styles.handleColor',
+    visible: 'gui-flex-container.visible',
+  },
+});

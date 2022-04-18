@@ -11,14 +11,23 @@ export interface MessageProps {
 const Message: FC<MessageProps> = ({ message }) => {
   const { data: userData } = useUserSWR();
 
-  const isOwnMessage = useMemo(() => userData?.id === message.user.id, [userData, message.user.id]);
-
+  const isOwnMessage = useMemo(() => userData?.id === message.senderId, [userData, message.senderId]);
+  const isReadMessage = useMemo(() => {
+    if (isOwnMessage) {
+      if (message.is_read) {
+        return '읽음';
+      } else {
+        return '안읽음';
+      }
+    }
+  }, [isOwnMessage, message.is_read]);
   if (!userData) return null;
 
   return (
     <div className={styles.messageRow(isOwnMessage)}>
       <div className={styles.messageRowContent(isOwnMessage)}>{message.message}</div>
-      <div className="text-base-content select-none">{dayjs(message.createdAt).format('A HH:mm')}</div>
+      <div className="text-base-content select-none">{dayjs(message.created_at).format('A HH:mm')}</div>
+      <div>{isReadMessage}</div>
     </div>
   );
 };

@@ -2,6 +2,7 @@ import { classnames } from 'tailwindcss-classnames';
 
 export const dashboardLink = (bool: boolean) =>
   classnames(
+    // @ts-ignore
     'btn',
     'btn-ghost',
     'btn-block',

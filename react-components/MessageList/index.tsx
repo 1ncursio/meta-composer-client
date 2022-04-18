@@ -1,4 +1,5 @@
 import Message from '@react-components/Message';
+import ImageMessage from '@react-components/Message/imageMessage';
 import { IMessage } from '@typings/IMessage';
 import React, { forwardRef, MutableRefObject, useCallback } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
@@ -32,9 +33,13 @@ const MessageList = forwardRef<Scrollbars, MessageListProps>(({ chatSections, se
         //   border-top: 1px solid #eee;
         <div key={date} className="mt-6 border-t border-base-content flex flex-col gap-2">
           <div className="text-base-content font-light">{date}</div>
-          {messages.map((message) => (
-            <Message key={message.id} message={message} />
-          ))}
+          {messages.map((message) =>
+            message.image ? (
+              <ImageMessage key={message.id} message={message} />
+            ) : (
+              <Message key={message.id} message={message} />
+            ),
+          )}
         </div>
       ))}
     </Scrollbars>
