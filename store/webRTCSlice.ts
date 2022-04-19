@@ -104,9 +104,11 @@ const createWebRTCSlice: AppSlice<WebRTCSlice> = (set, get) => ({
           // console.log(data);
           switch (data.type) {
             case 'noteOn':
+              console.log({ message: 'WebRTC noteOn 신호 왔음', data });
               get().piano.addPressedKey(data.note);
               break;
             case 'noteOff':
+              console.log({ message: 'WebRTC noteOff 신호 왔음', data });
               get().piano.removePressedKey(data.note);
               break;
             default:

@@ -56,8 +56,10 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
     [setLinkState, setWorkspaceName],
   );
 
+  // 실행 X
   const onPlayNoteInput = useCallback(
     (keyNumber: number) => {
+      console.log('onPlayNoteInput');
       if (!userData || linkState !== 'connected' || !peers[userData.id]) return;
 
       // 노트에 넣고 피어 이벤트 발생
@@ -67,13 +69,17 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
         type: 'noteOn',
         note: keyNumber,
       };
+
+      console.log({ data });
       peers[userData.id].send(JSON.stringify(data));
     },
     [addPressedKey, userData, peers, linkState],
   );
 
+  // 실행 X
   const onStopNoteInput = useCallback(
     (keyNumber: number) => {
+      console.log('onStopNoteInput');
       if (!userData || linkState !== 'connected' || !peers[userData.id]) return;
 
       // 노트에서 삭제하고 피어 이벤트 발생
@@ -85,6 +91,7 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
           velocity: 127,
         };
 
+        console.log({ data });
         peers[userData.id].send(JSON.stringify(data));
       }
     },
@@ -99,16 +106,36 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
 
   /* midimessage 발생했을 때 실행 */
   useEffect(() => {
-    if (message) {
+    // 로그인해야 미디이벤트 받을 수 있음
+    if (message && userData) {
       const midiMessage = new MIDImessage(message);
 
       switch (midiMessage.messageType) {
         case 'noteon':
           addPressedKey(midiMessage.key);
+
+          const data: INoteEvent = {
+            type: 'noteOn',
+            note: midiMessage.key,
+            velocity: midiMessage.velocity,
+          };
+
+          console.log(data);
+          peers[userData.id].send(JSON.stringify(data));
+
           break;
         case 'noteoff':
           if (pressedKeys.has(midiMessage.key)) {
             removePressedKey(midiMessage.key);
+
+            const data: INoteEvent = {
+              type: 'noteOff',
+              note: midiMessage.key,
+              velocity: midiMessage?.velocity ?? 0,
+            };
+
+            console.log(data);
+            peers[userData.id].send(JSON.stringify(data));
           }
           break;
         default:
@@ -161,21 +188,25 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
         <AiOutlineDesktop size={128} className={styles.icon(!isOculus)} />
         <BsBadgeVr size={128} className={styles.icon(isOculus)} />
       </div>
-      <select
-        onChange={handleChangeSelect}
-        value={selected}
-        className="select select-primary select-bordered focus:outline-none select-sm w-full rounded-sm max-w-xs"
-      >
-        {inputs.length > 0 ? (
-          inputs.map((input, index) => (
-            <option key={index} value={index}>
-              {`🎹 ${input.name}`}
-            </option>
-          ))
-        ) : (
-          <option>No MIDI devices found</option>
-        )}
-      </select>
+      {!isOculus ? (
+        <select
+          onChange={handleChangeSelect}
+          value={selected}
+          className="select select-primary select-bordered focus:outline-none select-sm w-full rounded-sm max-w-xs"
+        >
+          {inputs.length > 0 ? (
+            inputs.map((input, index) => (
+              <option key={index} value={index}>
+                {`🎹 ${input.name}`}
+              </option>
+            ))
+          ) : (
+            <option>No MIDI devices found</option>
+          )}
+        </select>
+      ) : (
+        <div />
+      )}
       <VRLinkButton state={linkState} onClick={onClickLink} />
       {canStartXR && (
         <button type="button" onClick={onEnterWebXR} className="btn btn-accent">
