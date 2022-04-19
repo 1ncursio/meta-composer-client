@@ -133,9 +133,9 @@ const ScheduluePicker: FC<ScheduluePickerProps> = ({
           </div>
         ))}
       </div>
-      <button type="button" onClick={onClickCheckData}>
+      {/* <button type="button" onClick={onClickCheckData}>
         콘솔 찍기
-      </button>
+      </button> */}
     </div>
   );
 };
