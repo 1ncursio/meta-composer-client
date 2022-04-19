@@ -12,10 +12,20 @@ export default interface ILesson {
   teacherId: number;
   __teacher__: ITeacher;
   comments: Comment[];
+  timeTables: TimeTables[];
 }
 export interface Comment {
   contents: string;
   created_at: Date;
   id: number;
   rating: number;
+}
+export interface TimeTables {
+  IsEmpty: boolean;
+  created_at: Date;
+  day: string;
+  id: number;
+  lessonId: number;
+  time: Date;
+  updated_at: Date;
 }

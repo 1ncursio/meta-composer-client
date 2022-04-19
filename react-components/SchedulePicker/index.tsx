@@ -6,6 +6,8 @@ import * as styles from './styles';
 export interface TimeTable {
   time: dayjs.Dayjs;
   isAvailableByWeekDays: boolean[];
+  //select 하나더 추가
+  isSelectDays: boolean[];
 }
 
 export interface ScheduluePickerProps {
@@ -50,6 +52,8 @@ const ScheduluePicker: FC<ScheduluePickerProps> = ({
       result.push({
         time: startTime,
         isAvailableByWeekDays: weekDays.map((day) => false),
+        //전부다 false 로 세팅 정세
+        isSelectDays: weekDays.map((day) => false),
       });
 
       // step의 최소값은 30이라 그 미만이 들어오면 30으로 처리
@@ -106,6 +110,8 @@ const ScheduluePicker: FC<ScheduluePickerProps> = ({
               readonly ? (
                 <div
                   className={styles.timeTableButton({
+                    //check 되면 다시 색깔바꿈 정세
+                    isSelect: timeTable.isSelectDays[day - 1],
                     isChecked: timeTable.isAvailableByWeekDays[day - 1],
                     readonly: true,
                   })}
@@ -116,6 +122,8 @@ const ScheduluePicker: FC<ScheduluePickerProps> = ({
                   key={day}
                   onClick={onClickTimeButton(day, timeTable.time)}
                   className={styles.timeTableButton({
+                    isSelect: timeTable.isSelectDays[day - 1],
+                    //check 되면 다시 색깔바꿈 정세
                     isChecked: timeTable.isAvailableByWeekDays[day - 1],
                     readonly: false,
                   })}
