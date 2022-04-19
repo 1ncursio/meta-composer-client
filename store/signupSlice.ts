@@ -2,17 +2,25 @@ import produce from 'immer';
 import { AppSlice, AppState } from './useStore';
 import client from '@lib/api/client';
 import IUser from '@typings/IUser';
-import { ISignupForm } from '@pages/lessons/[lessonId]/signup';
+import { ISignupForm, SumitDays } from '@pages/lessons/[lessonId]/signup';
 
 export interface SignSlice {
   signup: {
-    signupLoad: ({ data, lessonId }: { data: ISignupForm; lessonId: number }) => Promise<void>;
+    signupLoad: ({
+      data,
+      lessonId,
+      sumitDays,
+    }: {
+      data: ISignupForm;
+      lessonId: number;
+      sumitDays: SumitDays[];
+    }) => Promise<void>;
   };
 }
 
 const createSignSlice: AppSlice<SignSlice> = (set, get) => ({
   signup: {
-    signupLoad: async ({ data, lessonId }) => {
+    signupLoad: async ({ data, lessonId, sumitDays }) => {
       const { IMP } = window;
       IMP?.init('imp85545116');
 
@@ -23,14 +31,12 @@ const createSignSlice: AppSlice<SignSlice> = (set, get) => ({
 
       if (check.data === '결제취소') return;
 
-      const Lday = 'MON';
-      const Lmonth = 1;
-      const Ltime = '00:00:00';
-      const Lstartdate = Date.now();
+      const Lday = sumitDays[0].Lday;
+      const Lmonth = sumitDays[0].Lmonth;
+      const Ltime = sumitDays[0].Ltime;
+      const Lstartdate = sumitDays[0].Lstartdate;
 
       event?.preventDefault();
-
-      console.log(Lday, Lmonth, Ltime, Lstartdate);
 
       await IMP?.request_pay(
         {

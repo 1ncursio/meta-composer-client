@@ -5,7 +5,7 @@ import LessonReview from '@react-components/lessonComponents/review';
 import ILesson from '@typings/ILesson';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { MouseEventHandler, useCallback, useEffect, useState } from 'react';
+import React, { MouseEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { BsFillPersonFill } from 'react-icons/bs';
 import useSWR from 'swr';
@@ -17,11 +17,21 @@ import { useSchedulePicker } from '@hooks/useSchedulePicker';
 import ScheduluePicker from '@react-components/SchedulePicker';
 import produce from 'immer';
 import dayjs from 'dayjs';
+import { json } from 'stream/consumers';
 export interface ISignupForm {
   buyer_name: string;
   buyer_tel: string;
   buyer_email: string;
   check: boolean;
+}
+// export interface SumitResult {
+
+// }
+export interface SumitDays {
+  Lday: string;
+  Ltime: string;
+  Lmonth: number;
+  Lstartdate: Date;
 }
 
 const LessonSignup = () => {
@@ -35,14 +45,38 @@ const LessonSignup = () => {
   });
   const { signupLoad } = useStore((state) => state.signup);
   const { days, times, setTimeTableList, timeTableList } = useSchedulePicker();
+  const WeekDay = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  const test2 = () => {
+    console.log(sumitDays);
+  };
+  const sumitDays = useMemo(() => {
+    const result: SumitDays[] = [];
+    timeTableList.forEach((Ctime) => {
+      Ctime.isSelectDays.forEach((day, index2) => {
+        if (day) {
+          result.push({
+            Lday: WeekDay[index2],
+            Ltime: Ctime.time.hour() > 11 ? `${Ctime.time.hour()}:00:00` : `0${Ctime.time.hour()}:00:00`,
+            Lmonth: 1,
+            Lstartdate: new Date(),
+          });
+        }
+      });
+    });
+    return result;
+  }, [timeTableList]);
 
   const onClickTimeButton = useCallback(
     (day: number, time: dayjs.Dayjs) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      if (!setTimeTableList) return;
       setTimeTableList(
         produce((draft) => {
           draft.forEach((item) => {
             if (item.time.isSame(time) && item.isAvailableByWeekDays[day - 1]) {
-              console.log('!!');
+              if (item.isSelectDays) {
+                item.isSelectDays[day - 1] = !item.isSelectDays[day - 1];
+              }
             }
           });
         }),
@@ -50,8 +84,6 @@ const LessonSignup = () => {
     },
     [setTimeTableList],
   );
-
-  const WeekDay = ['Sun', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
   useEffect(() => {
     if (!lessonData) return;
@@ -78,15 +110,9 @@ const LessonSignup = () => {
 
   const pay = useCallback(
     async (data: ISignupForm) => {
-      //   const test: ISignupForm = {
-      //     buyer_name: '@',
-      //     buyer_tel: '@323',
-      //     buyer_email: '22',
-      //     check: true,
-      //   };
       if (typeof lessonId === 'string') {
         console.log(typeof parseInt(lessonId));
-        signupLoad({ data, lessonId: parseInt(lessonId) });
+        signupLoad({ data, lessonId: parseInt(lessonId), sumitDays });
       }
     },
     [lessonId],
@@ -119,6 +145,7 @@ const LessonSignup = () => {
             <div className="p-2 flex-col items-center ">
               <p className=" font-bold text-lg text-right">₩{lessonData?.price}</p>
               <div className="rounded-lg border-2 font-bold  sm:text-xs w-full">위시리스트 추가</div>
+              <button onClick={test2}>test</button>
 
               {/* <div className="badge badge-outline font-lg md:font-xm">위시리스트로 이동</div> */}
             </div>
