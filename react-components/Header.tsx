@@ -1,10 +1,10 @@
 import useUserSWR from '@hooks/swr/useUserSWR';
-import { getBackEndUrl } from '@utils/getEnv';
+import { getBackEndUrl, isDev } from '@utils/getEnv';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import { BsBell, BsFillFileMusicFill } from 'react-icons/bs';
+import { BsFillFileMusicFill } from 'react-icons/bs';
 import { FaFacebookF } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import Avatar from './Avatar';
@@ -43,7 +43,7 @@ const Header = () => {
           <ul className="menu menu-horizontal p-0 hover:z-50   ">
             <li tabIndex={1}>
               <Link href={`/lessons`}>
-                <div>
+                <a>
                   레슨
                   <svg
                     className="fill-current"
@@ -54,31 +54,41 @@ const Header = () => {
                   >
                     <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
                   </svg>
-                </div>
+                </a>
               </Link>
               <ul className="p-2 bg-white">
                 <li>
-                  <Link href={`/lessons`}>Sonata</Link>
+                  <Link href={`/lessons`}>
+                    <a>Sonata</a>
+                  </Link>
                 </li>
                 <li>
                   <BsFillFileMusicFill size={20} />
-                  <Link href={`/lessons`}>Etudes</Link>
+                  <Link href={`/lessons`}>
+                    <a>Etudes</a>
+                  </Link>
                 </li>
                 <li>
                   <BsFillFileMusicFill />
-                  <Link href={`/lessons`}>Waltzes</Link>
+                  <Link href={`/lessons`}>
+                    <a>Waltzes</a>
+                  </Link>
                 </li>
                 <li>
                   <BsFillFileMusicFill />
-                  <Link href={`/lessons`}>Nocturnes</Link>
+                  <Link href={`/lessons`}>
+                    <a>Nocturnes</a>
+                  </Link>
                 </li>
                 <li>
                   <BsFillFileMusicFill />
-                  <Link href={`/lessons`}>Marches</Link>
+                  <Link href={`/lessons`}>
+                    <a>Marches</a>
+                  </Link>
                 </li>
               </ul>
             </li>
-            <li tabIndex={0}>
+            {/* <li tabIndex={0}>
               <a>
                 Parent
                 <svg
@@ -99,12 +109,14 @@ const Header = () => {
                   <a>Submenu 2</a>
                 </li>
               </ul>
-            </li>
-            <li>
-              <Link href="/tests">
-                <a>테스트</a>
-              </Link>
-            </li>
+            </li> */}
+            {isDev() && (
+              <li>
+                <Link href="/tests">
+                  <a>테스트</a>
+                </Link>
+              </li>
+            )}
             <li tabIndex={1}>
               <Link href="/concours">
                 <a>
@@ -150,9 +162,9 @@ const Header = () => {
               <input type="checkbox" id="my-modal" className="modal-toggle" />
               <div className="modal">
                 <div className="modal-box max-w-md">
-                  <h3 className="font-bold text-lg">간편 로그인</h3>
-                  <p className="py-4">로그인 모달</p>
-                  <div className="flex gap-2">
+                  <h3 className="font-bold text-lg text-center">간편 로그인</h3>
+                  {/* <p className="py-4">로그인 모달</p> */}
+                  <div className="flex gap-2 p-2 py-8 justify-evenly">
                     <button
                       onClick={onClickLogin('facebook')}
                       className="btn btn-circle bg-[#2374e1] border-none hover:bg-[#2374e1]"
@@ -167,7 +179,7 @@ const Header = () => {
                     </button>
                   </div>
                   <div className="modal-action">
-                    <label htmlFor="my-modal" className="btn">
+                    <label htmlFor="my-modal" className="btn btn-accent">
                       닫기
                     </label>
                   </div>

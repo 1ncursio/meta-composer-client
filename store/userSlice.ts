@@ -8,6 +8,7 @@ export interface UserSlice {
     userData?: IUser;
     accessToken: string;
     setUserData: (userData?: IUser) => void;
+    resetUserData: () => void;
     getAccessToken: () => string;
     setAccessToken: (accessToken?: string) => void;
   };
@@ -21,6 +22,13 @@ const createUserSlice: AppSlice<UserSlice> = (set, get) => ({
       set(
         produce((state: AppState) => {
           state.user.userData = userData;
+        }),
+      );
+    },
+    resetUserData: () => {
+      set(
+        produce((state: AppState) => {
+          state.user.userData = undefined;
         }),
       );
     },
