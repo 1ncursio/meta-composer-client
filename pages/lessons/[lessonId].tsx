@@ -34,7 +34,7 @@ const LessonPage = () => {
         <div className="flex flex-row">
           <div className="avatar ">
             <div className="ml-28 w-80 h-52 rounded-xl">
-              <img src={optimizeImage(lessonData?.imageURL)} />
+              <img src={optimizeImage(lessonData?.imageURL ?? '')} />
             </div>
           </div>
           <div className="flex flex-col ml-8">
