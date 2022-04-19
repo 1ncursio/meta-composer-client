@@ -1,4 +1,5 @@
 import Header from '@react-components/Header';
+import MainPage from '@react-components/MainPage';
 import { NextComponentType, NextPage } from 'next';
 import { appWithTranslation } from 'next-i18next';
 import type { AppContext, AppInitialProps, AppLayoutProps } from 'next/app';
@@ -15,7 +16,7 @@ import { IMessage } from '@typings/IMessage';
 if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
   require('../mocks');
 }
-import ReactModal from 'react-modal';
+// import ReactModal from 'react-modal';
 import { INotification } from '@typings/INotification';
 import Script from 'next/script';
 export type NextPageWithLayout = NextPage & { getLayout: (page: ReactElement) => ReactElement };
