@@ -1,7 +1,8 @@
 import ILesson from '@typings/ILesson';
+import { getBackEndUrl } from '@utils/getEnv';
 import { randomInt } from 'crypto';
 import Link from 'next/link';
-import { FC, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 
 export interface LessonProps {
   lesson: ILesson;
@@ -10,6 +11,16 @@ export interface LessonProps {
 
 const LessonComponent: FC<LessonProps> = ({ lesson, show }) => {
   const [start, setStart] = useState<boolean[]>();
+
+  const optimizeImage = (src: string) => {
+    // https 로 시작하면 그대로 리턴, 아니면 https 붙여서 리턴
+    if (src.startsWith('https')) {
+      return src;
+    }
+
+    return `${getBackEndUrl()}/${src}`;
+  };
+
   useEffect(() => {
     const a = Math.floor(Math.random() * 5);
     const arr = [];
@@ -24,7 +35,7 @@ const LessonComponent: FC<LessonProps> = ({ lesson, show }) => {
       {/* <a href="#"> */}
       <div className="avatar w-3/5  ">
         <div className="rounded-xl ">
-          <img src={lesson?.imageURL} className="object-cover " />
+          <img src={optimizeImage(lesson?.imageURL)} className="object-cover " />
         </div>
       </div>
       {/* <img src={lesson.imageURL} className="rounded-t-lg  w-2/5" /> */}
