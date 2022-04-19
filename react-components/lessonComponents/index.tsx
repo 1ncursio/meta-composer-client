@@ -1,5 +1,6 @@
 import ILesson from '@typings/ILesson';
 import { getBackEndUrl } from '@utils/getEnv';
+import optimizeImage from '@utils/optimizeImage';
 import { randomInt } from 'crypto';
 import Link from 'next/link';
 import { FC, useCallback, useEffect, useState } from 'react';
@@ -11,15 +12,6 @@ export interface LessonProps {
 
 const LessonComponent: FC<LessonProps> = ({ lesson, show }) => {
   const [start, setStart] = useState<boolean[]>();
-
-  const optimizeImage = (src: string) => {
-    // https 로 시작하면 그대로 리턴, 아니면 https 붙여서 리턴
-    if (src.startsWith('https')) {
-      return src;
-    }
-
-    return `${getBackEndUrl()?.replace('/api', '')}/${src}`;
-  };
 
   useEffect(() => {
     const a = Math.floor(Math.random() * 5);

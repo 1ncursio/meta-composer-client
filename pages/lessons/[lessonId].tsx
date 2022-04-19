@@ -2,6 +2,7 @@ import fetcher from '@lib/api/fetcher';
 import LessonIntoroduce from '@react-components/lessonComponents/introduce';
 import LessonReview from '@react-components/lessonComponents/review';
 import ILesson from '@typings/ILesson';
+import optimizeImage from '@utils/optimizeImage';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -33,7 +34,7 @@ const LessonPage = () => {
         <div className="flex flex-row">
           <div className="avatar ">
             <div className="ml-28 w-80 h-52 rounded-xl">
-              <img src={lessonData?.imageURL} />
+              <img src={optimizeImage(lessonData?.imageURL)} />
             </div>
           </div>
           <div className="flex flex-col ml-8">
