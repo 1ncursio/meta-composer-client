@@ -10,6 +10,9 @@ const HeroItem = () => {
   const moveRouter = () => {
     Router.push('/lessons');
   };
+  const moveConcours = () => {
+    Router.push('/concours');
+  };
   return (
     <div>
       <div className="hero-content flex-col lg:flex-row-reverse">
@@ -20,9 +23,14 @@ const HeroItem = () => {
         <div>
           <h1 className="text-5xl font-bold">메타컴포저와 함께해요.</h1>
           <p className="py-6">입문자인 당신도 피아노 고수가 될 수 있습니다.</p>
-          <button onClick={moveRouter} className="btn btn-primary">
-            레슨 페이지로
-          </button>
+          <div className="">
+            <button onClick={moveRouter} className="btn btn-primary m-5">
+              레슨 페이지로&nbsp;&gt;
+            </button>
+            <button onClick={moveConcours} className="btn btn-primary">
+              콩쿠를 페이지로&nbsp;&gt;
+            </button>
+          </div>
         </div>
       </div>
     </div>

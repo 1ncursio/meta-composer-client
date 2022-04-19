@@ -20,7 +20,7 @@ const LessonComponent: FC<LessonProps> = ({ lesson, show }) => {
     setStart(arr);
   }, []);
   return (
-    <div className=" relative flex flex-col items-center w-full h-3/4   ">
+    <div className=" relative flex flex-col items-center w-full">
       {/* <a href="#"> */}
       <div className="avatar w-3/5  ">
         <div className="rounded-xl ">
@@ -58,7 +58,7 @@ const LessonComponent: FC<LessonProps> = ({ lesson, show }) => {
               <p className="text-white">{lesson.name}</p>
               <br></br>
               <p className=" lg:text-lg md:text-xs text-cyan-200">
-                {lesson.introduce.length > 50 ? lesson.introduce.slice(0, 50) + '...' : lesson.introduce}
+                {lesson.introduce.length > 100 ? lesson.introduce.slice(0, 100) + '...' : lesson.introduce}
               </p>
               <br />
               <div className="badge badge-ghost">{lesson.type}</div>

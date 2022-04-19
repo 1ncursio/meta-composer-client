@@ -6,10 +6,10 @@ import useSWR from 'swr';
 import Carousel from './Carousel';
 
 import useSWRInfinite from 'swr/infinite';
-import LessonComponent from '@react-components/lessonComponents';
 import CardItem from './CardItem';
 import TypeLessonCard from './TypeLessonCard';
 import HeroItem from './HeroItem';
+import ConcourComponent from './ConcourComponent';
 
 const MainPage = () => {
   const perPage = 4;
@@ -76,7 +76,13 @@ const MainPage = () => {
       <HeroItem />
       <br />
       <br />
-
+      <h1 className="text-2xl font-bold">
+        콩쿠르 참가하러 가기&nbsp;
+        <div className="badge badge-error">GO</div>&nbsp;&gt;
+      </h1>
+      <div className="overflow-x-scroll">
+        <ConcourComponent />
+      </div>
       <br />
       <br />
       <footer className="footer p-10 bg-base-300 text-base-content">
