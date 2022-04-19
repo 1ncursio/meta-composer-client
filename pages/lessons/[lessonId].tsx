@@ -70,8 +70,10 @@ const LessonPage = () => {
         <Link href={`/lessons/${lessonId}?current=review`}>
           <p className="tab text-black font-bold">수강평</p>
         </Link>
-        <Link href={`/lessons/${lessonId}`}>
-          <p className="tab text-black font-bold">수강전 문의</p>
+        <Link href={'/chats/'}>
+          <a>
+            <p className="tab text-black font-bold">문의 하기</p>
+          </a>
         </Link>
         {/* <p className="tab tab-active">Tab 2</p>
         <p className="tab">Tab 3</p> */}
