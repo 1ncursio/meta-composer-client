@@ -55,7 +55,7 @@ const CreateLessons = () => {
       return;
     }
 
-    const { name, introduce, length, price, type } = data;
+    const { name, introduce, length, price, type, checkPlease, difficulty, weLearnThis } = data;
     console.log(data);
 
     const hour = Math.floor(length / 60);
@@ -72,6 +72,9 @@ const CreateLessons = () => {
     formData.append('image', thumbnailImageFile);
     formData.append('day', JSON.stringify(days));
     formData.append('time', JSON.stringify(times));
+    formData.append('checkPlease', checkPlease);
+    formData.append('difficulty', difficulty);
+    formData.append('weLearnThis', weLearnThis);
 
     // console.log({ formData: formData.get('length') });
     // return;
