@@ -71,7 +71,7 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
       };
 
       console.log({ data });
-      peers[userData.id].send(JSON.stringify(data));
+      peers[userData.id]?.send(JSON.stringify(data));
     },
     [addPressedKey, userData, peers, linkState],
   );
@@ -92,7 +92,7 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
         };
 
         console.log({ data });
-        peers[userData.id].send(JSON.stringify(data));
+        peers[userData.id]?.send(JSON.stringify(data));
       }
     },
     [removePressedKey, userData, peers, linkState, pressedKeys],
@@ -121,7 +121,7 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
           };
 
           console.log(data);
-          peers[userData.id].send(JSON.stringify(data));
+          peers[userData.id]?.send(JSON.stringify(data));
 
           break;
         case 'noteoff':
@@ -135,7 +135,7 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
             };
 
             console.log(data);
-            peers[userData.id].send(JSON.stringify(data));
+            peers[userData.id]?.send(JSON.stringify(data));
           }
           break;
         default:
