@@ -1,4 +1,5 @@
 import ILesson from '@typings/ILesson';
+import optimizeImage from '@utils/optimizeImage';
 import { randomInt } from 'crypto';
 import Link from 'next/link';
 import { FC, useEffect, useState } from 'react';
@@ -12,7 +13,7 @@ const CarouselItem: FC<LessonProps> = ({ lesson }) => {
   return (
     <div className="hero-content flex-col lg:flex-row">
       {/* <a href="#"> */}
-      <img src={lesson?.imageURL} className="max-w-sm rounded-lg shadow-2xl pr-4" />
+      <img src={optimizeImage(lesson?.imageURL ?? '')} className="max-w-sm rounded-lg shadow-2xl pr-4" />
       {/* <img src={lesson.imageURL} className="rounded-t-lg  w-2/5" /> */}
       {/* </a> */}
       <div>
