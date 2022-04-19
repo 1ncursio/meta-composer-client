@@ -111,11 +111,11 @@ const LessonSignup = () => {
   const pay = useCallback(
     async (data: ISignupForm) => {
       if (typeof lessonId === 'string') {
-        console.log(typeof parseInt(lessonId));
+        // console.log(sumitDays);
         signupLoad({ data, lessonId: parseInt(lessonId), sumitDays });
       }
     },
-    [lessonId],
+    [lessonId, sumitDays],
   );
 
   return (
