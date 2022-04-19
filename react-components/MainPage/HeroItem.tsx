@@ -28,7 +28,7 @@ const HeroItem = () => {
               레슨 페이지로&nbsp;&gt;
             </button>
             <button onClick={moveConcours} className="btn btn-primary">
-              콩쿠를 페이지로&nbsp;&gt;
+              콩쿠르 페이지로&nbsp;&gt;
             </button>
           </div>
         </div>
