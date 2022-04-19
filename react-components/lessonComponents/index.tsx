@@ -18,7 +18,7 @@ const LessonComponent: FC<LessonProps> = ({ lesson, show }) => {
       return src;
     }
 
-    return `${getBackEndUrl()}/${src}`;
+    return `${getBackEndUrl()?.replace('/api', '')}/${src}`;
   };
 
   useEffect(() => {
