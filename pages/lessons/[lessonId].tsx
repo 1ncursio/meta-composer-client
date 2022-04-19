@@ -1,3 +1,4 @@
+import client from '@lib/api/client';
 import fetcher from '@lib/api/fetcher';
 import LessonIntoroduce from '@react-components/lessonComponents/introduce';
 import LessonReview from '@react-components/lessonComponents/review';
@@ -5,7 +6,7 @@ import ILesson from '@typings/ILesson';
 import optimizeImage from '@utils/optimizeImage';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { BsFillPersonFill } from 'react-icons/bs';
 import useSWR from 'swr';
 
@@ -27,6 +28,10 @@ const LessonPage = () => {
     arr[a] = true;
     setStart(arr);
   }, []);
+  const moveChatRoom = useCallback(async () => {
+    const chatroom = await client.post(`/chat/${lessonId}/chatRoom`);
+    window.location.href = window.location.origin + '/chats';
+  }, [lessonData]);
   return (
     <div className=" w-full h-full">
       <div className="h-72 w-100 bg-gray-700  pt-12 pl-4">
@@ -70,11 +75,11 @@ const LessonPage = () => {
         <Link href={`/lessons/${lessonId}?current=review`}>
           <p className="tab text-black font-bold">수강평</p>
         </Link>
-        <Link href={'/chats/'}>
+        <button onClick={moveChatRoom}>
           <a>
             <p className="tab text-black font-bold">문의 하기</p>
           </a>
-        </Link>
+        </button>
         {/* <p className="tab tab-active">Tab 2</p>
         <p className="tab">Tab 3</p> */}
       </div>
