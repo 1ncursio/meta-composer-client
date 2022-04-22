@@ -10,7 +10,6 @@ import { SWRDevTools } from 'swr-devtools';
 import { themeChange } from 'theme-change';
 import '../styles/globals.css';
 import useSocket from '@hooks/useSocket';
-import usePushNotification from '@hooks/useNotification';
 import ICurrentTarget from '@typings/IEvent';
 import { IMessage } from '@typings/IMessage';
 if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {

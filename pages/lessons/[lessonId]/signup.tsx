@@ -18,20 +18,21 @@ import ScheduluePicker from '@react-components/SchedulePicker';
 import produce from 'immer';
 import dayjs from 'dayjs';
 import { json } from 'stream/consumers';
+import Cdatjs from 'dayjs/plugin/customParseFormat';
 export interface ISignupForm {
   buyer_name: string;
   buyer_tel: string;
   buyer_email: string;
   check: boolean;
+  Lmonth: number;
+  Lstartdate: Date;
+  submitDays: SumitDays[];
+  PaymentAmount: number;
 }
-// export interface SumitResult {
 
-// }
 export interface SumitDays {
   Lday: string;
   Ltime: string;
-  Lmonth: number;
-  Lstartdate: Date;
 }
 
 const LessonSignup = () => {
@@ -39,18 +40,15 @@ const LessonSignup = () => {
   const { lessonId } = router.query;
   const { data: lessonData, mutate: mutateLessonData } = useSWR<ILesson>('/lessons/' + lessonId, fetcher);
   const { data: userData } = useUserSWR();
-  const { register, handleSubmit, setValue } = useForm<ISignupForm>({
+  const { register, handleSubmit, setValue, watch } = useForm<ISignupForm>({
     reValidateMode: 'onSubmit',
     shouldUseNativeValidation: true,
   });
   const { signupLoad } = useStore((state) => state.signup);
   const { days, times, setTimeTableList, timeTableList } = useSchedulePicker();
   const WeekDay = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-  const test2 = () => {
-    console.log(sumitDays);
-  };
-  const sumitDays = useMemo(() => {
+  const [check, setCheck] = useState(true);
+  const submitDays = useMemo(() => {
     const result: SumitDays[] = [];
     timeTableList.forEach((Ctime) => {
       Ctime.isSelectDays.forEach((day, index2) => {
@@ -58,8 +56,6 @@ const LessonSignup = () => {
           result.push({
             Lday: WeekDay[index2],
             Ltime: Ctime.time.hour() > 11 ? `${Ctime.time.hour()}:00:00` : `0${Ctime.time.hour()}:00:00`,
-            Lmonth: 1,
-            Lstartdate: new Date(),
           });
         }
       });
@@ -87,12 +83,12 @@ const LessonSignup = () => {
 
   useEffect(() => {
     if (!lessonData) return;
+    if (!check) return;
     setTimeTableList(
       produce((draft) => {
         draft.forEach((item) => {
-          // console.log(item.time);
           lessonData.timeTables.forEach((time) => {
-            if (item.time.isSame(dayjs(`2022-4-19 ${time.time}`))) {
+            if (item.time.isSame(dayjs(`${dayjs().format('YYYY-MM-DD')} ${time.time}`))) {
               item.isAvailableByWeekDays[WeekDay.indexOf(time.day)] =
                 !item.isAvailableByWeekDays[WeekDay.indexOf(time.day)];
             }
@@ -100,23 +96,36 @@ const LessonSignup = () => {
         });
       }),
     );
-  }, [lessonData]);
+    setCheck(false);
+  }, [lessonData, check]);
 
   useEffect(() => {
     if (!userData) return;
     setValue('buyer_name', userData.username);
     setValue('buyer_email', userData.email);
+    setValue('Lmonth', 1);
   }, [userData]);
 
   const pay = useCallback(
     async (data: ISignupForm) => {
-      if (typeof lessonId === 'string') {
-        // console.log(sumitDays);
-        signupLoad({ data, lessonId: parseInt(lessonId), sumitDays });
+      if (typeof lessonId === 'string' && lessonData) {
+        if (submitDays.length < 1) {
+          return alert('선택된 시간이 없습니다');
+        }
+        data.submitDays = submitDays;
+        data.PaymentAmount = submitDays.length * lessonData?.price * watch('Lmonth');
+        data.Lstartdate = new Date();
+        signupLoad({ data, lessonId: parseInt(lessonId), router });
       }
     },
-    [lessonId, sumitDays],
+    [lessonId, submitDays, lessonData],
   );
+
+  const lessonLength = useMemo(() => {
+    if (!lessonData) return 60;
+    dayjs.extend(Cdatjs);
+    return dayjs(lessonData.length, 'HH:mm:ss').hour() * 60;
+  }, [lessonData]);
 
   return (
     <div className="container w-full flex flex-col p-10 ">
@@ -145,16 +154,28 @@ const LessonSignup = () => {
             <div className="p-2 flex-col items-center ">
               <p className=" font-bold text-lg text-right">₩{lessonData?.price}</p>
               <div className="rounded-lg border-2 font-bold  sm:text-xs w-full">위시리스트 추가</div>
-              <button onClick={test2}>test</button>
 
               {/* <div className="badge badge-outline font-lg md:font-xm">위시리스트로 이동</div> */}
             </div>
           </div>
-          <div className="w-3/4 flex flex-col items-center ">
+          <div className="w-3/4 flex flex-col items-center gap-y-2">
             <p className="text-center m-2 font-bold text-lg border-2 p-2 rounded-md bg-gray-200">레슨 시간 선택</p>
+            <div className="flex flex-row-reverse w-full">
+              <select {...register('Lmonth')} className="select select-bordered w-24">
+                <option selected value={1}>
+                  1개월
+                </option>
+                <option value={2}>2개월</option>
+                <option value={3}>3개월</option>
+                <option value={4}>4개월</option>
+                <option value={5}>5개월</option>
+                <option value={6}>6개월</option>
+              </select>
+            </div>
+
             <div className="border-2 w-full">
               <ScheduluePicker
-                step={120}
+                step={lessonLength}
                 onClickTimeButton={onClickTimeButton}
                 timeTableList={timeTableList}
                 setTimeTableList={setTimeTableList}
@@ -170,8 +191,12 @@ const LessonSignup = () => {
           className="fixed  lg:flex  top-48  border-2  w-60 left-2/3 flex flex-col rounded-md"
         >
           <div className="flex flex-row  justify-between text-xl font-bold p-2">
-            <p>총계</p>
-            <p>₩53,900</p>
+            <div className="flex flex-row items-end">
+              <p>총계</p>
+
+              <p className="text-xs">{watch('Lmonth')}개월</p>
+            </div>
+            <p>₩{lessonData && submitDays.length * lessonData?.price * watch('Lmonth')}</p>
           </div>
           <div className="p-2 text-sm">
             <p>이름</p>
