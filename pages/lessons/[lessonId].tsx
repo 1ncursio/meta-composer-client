@@ -6,10 +6,10 @@ import ILesson from '@typings/ILesson';
 import optimizeImage from '@utils/optimizeImage';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BsFillPersonFill } from 'react-icons/bs';
 import useSWR from 'swr';
-
+const scrollToRef = (ref: any) => window.scrollTo({ top: ref.current.offsetTop, behavior: 'smooth' });
 const LessonPage = () => {
   const router = useRouter();
   const { lessonId, current } = router.query;
@@ -18,23 +18,37 @@ const LessonPage = () => {
     fetcher,
   );
   const [start, setStart] = useState<boolean[]>();
-  useEffect(() => {
-    console.log(lessonData);
+
+  const Evaluation = useMemo(() => {
+    if (!lessonData) return 1;
+    const result = lessonData.comments.reduce((sum, com) => {
+      return sum + com.rating;
+    }, 0);
+    const avg = Math.round((result / lessonData.comments.length) * 10) / 10.0;
+    return result < 1 ? 0 : avg;
   }, [lessonData]);
 
   useEffect(() => {
     const a = Math.floor(Math.random() * 5);
     const arr = [];
     for (let i = 0; i < 4; i++) {
-      arr.push(false);
+      if (i + 1 < Evaluation) {
+        arr.push(true);
+      } else {
+        arr.push(false);
+      }
     }
-    arr[a] = true;
+
     setStart(arr);
-  }, []);
+  }, [Evaluation]);
+
   const moveChatRoom = useCallback(async () => {
     const chatroom = await client.post(`/chat/${lessonId}/chatRoom`);
     window.location.href = window.location.origin + '/chats';
   }, [lessonData]);
+
+  const myRef = useRef(null);
+  const executeScroll = () => scrollToRef(myRef);
 
   return (
     <div className=" w-full h-full">
@@ -53,9 +67,9 @@ const LessonPage = () => {
               <input type="radio" className="mask mask-star-2 bg-orange-400" />
               {start?.map((start, index) => {
                 if (start) {
-                  return <input key={index} type="radio" className="mask mask-star-2 bg-orange-400" checked readOnly />;
+                  return <div key={index} className="mask mask-star-2 bg-orange-400  w-4" />;
                 } else {
-                  return <input key={index} type="radio" className="mask mask-star-2 bg-orange-400" readOnly />;
+                  return <div key={index} className="mask mask-star-2 bg-orange-100  w-4" />;
                 }
               })}
             </div>
@@ -72,13 +86,17 @@ const LessonPage = () => {
           </div>
         </div>
       </div>
-      <div className="tabs border-b-2  mt-2  pl-20 ">
+      <div className="tabs border-b-2  mt-2   ">
         <Link href={`/lessons/${lessonId}`}>
           <p className="tab ml-16 text-black font-bold">강의 소개</p>
         </Link>
-        <Link href={`/lessons/${lessonId}?current=review`}>
+        {/* <Link href={`/lessons/${lessonId}?current=review`}>
           <p className="tab text-black font-bold">수강평</p>
-        </Link>
+        </Link> */}
+        <button onClick={executeScroll} className="tab text-black font-bold">
+          {' '}
+          수강평{' '}
+        </button>
         <button onClick={moveChatRoom}>
           <a>
             <p className="tab text-black font-bold">문의 하기</p>
@@ -87,14 +105,14 @@ const LessonPage = () => {
         {/* <p className="tab tab-active">Tab 2</p>
         <p className="tab">Tab 3</p> */}
       </div>
-      <div className="flex w-full justify-start  pl-20">
+      <div className="flex w-full justify-start  pl-16">
         {lessonData && current === 'review' ? (
-          <LessonReview commnets={lessonData.comments} />
+          <LessonReview commnets={lessonData.comments} start={start} Evaluation={Evaluation} />
         ) : (
           <div>
             <LessonIntoroduce lesson={lessonData} />
-            <div id="1">
-              <LessonReview commnets={lessonData?.comments} />
+            <div ref={myRef}>
+              <LessonReview commnets={lessonData?.comments} start={start} Evaluation={Evaluation} />
             </div>
           </div>
         )}

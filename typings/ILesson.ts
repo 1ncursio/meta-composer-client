@@ -1,4 +1,5 @@
 import ITeacher from './ITeacher';
+import IUser from './IUser';
 
 /* 레슨 */
 export default interface ILesson {
@@ -19,6 +20,7 @@ export interface Comment {
   created_at: Date;
   id: number;
   rating: number;
+  user: IUser;
 }
 export interface TimeTables {
   IsEmpty: boolean;

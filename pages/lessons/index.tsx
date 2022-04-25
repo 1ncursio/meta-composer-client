@@ -3,24 +3,36 @@ import fetcher from '@lib/api/fetcher';
 import LessonComponent from '@react-components/lessonComponents';
 import ILesson from '@typings/ILesson';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react';
 import useSWR from 'swr';
 
 import useSWRInfinite from 'swr/infinite';
 const LessonsIndexPage = () => {
+  const router = useRouter();
+  const { searchKeyword } = router.query;
+
   // const { data: LessonData } = useSWR<ILesson[]>('/lessons', fetcher);
   const { data: userData } = useUserSWR();
   const {
     data: LessonDataList,
     mutate: mutateLessonData,
     setSize,
-  } = useSWRInfinite<ILesson[]>((index) => `/lessons?perPage=8&page=${index + 1}`, fetcher);
+  } = useSWRInfinite<ILesson[]>(
+    (index) =>
+      searchKeyword
+        ? `/lessons/search?searchKeyword=${searchKeyword}&perPage=8&page=${index + 1}`
+        : `/lessons?perPage=8&page=${index + 1}`,
+    fetcher,
+  );
   const [isListHover, setIsListHover] = useState<number>(-1);
 
   const [current, setCurrent] = useState<number>(1);
-  useCallback(() => {
+
+  useEffect(() => {
     console.log(LessonDataList);
   }, [LessonDataList]);
+
   const onPage = useCallback(
     (page: number, current) => () => {
       if (current + page == 0) return;
@@ -37,7 +49,7 @@ const LessonsIndexPage = () => {
   );
 
   return (
-    <div className="relative h-full ">
+    <div className="relative ">
       <div className="flex flex-col items-end mt-4">
         {userData?.teacher && (
           <Link href="/lessons/createLesson">
@@ -45,19 +57,60 @@ const LessonsIndexPage = () => {
           </Link>
         )}
       </div>
-      <div className=" grid grid-cols-4 grid-rows-2 grid-flow-col h-full   m-10   ">
-        {LessonDataList &&
-          LessonDataList[current - 1]?.map((lesson) => {
-            return (
-              <div
-                key={lesson.id}
-                onMouseEnter={() => setIsListHover(lesson.id)}
-                onMouseLeave={() => setIsListHover(-1)}
-              >
-                <LessonComponent lesson={lesson} show={lesson.id === isListHover} />
-              </div>
-            );
-          })}
+      <div className="flex h-screen p-4">
+        <div className="container    w-52 ">
+          <div className=" flex flex-col items-center border bg-gray-100">
+            <div className="p-2 text-md text-center font-normal border-b-2  w-full">
+              <Link href={`/lessons`}>
+                <a>전체보기 </a>
+              </Link>
+            </div>
+            <div className="p-2 text-md text-center font-normal border-b-2  w-full">
+              {' '}
+              <Link href={`/lessons?searchKeyword=Sonata`}>
+                <a>Sonata</a>
+              </Link>
+            </div>
+            <div className="p-2 text-md text-center font-normal border-b-2  w-full">
+              {' '}
+              <Link href={`/lessons?searchKeyword=Etudes`}>
+                <a>Etudes</a>
+              </Link>
+            </div>
+            <div className="p-2 text-md text-center font-normal  border-b-2    w-full">
+              {' '}
+              <Link href={`/lessons?searchKeyword=Waltzes`}>
+                <a>Waltzes</a>
+              </Link>
+            </div>
+            <div className="p-2 text-md text-center font-normal   w-full">
+              {' '}
+              <Link href={`/lessons?searchKeyword=Marches`}>
+                <a>Marches</a>
+              </Link>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col h-full w-4/5 gap-4">
+          <div className="w-full  border-b-2 p-2 flex flex-row-reverse	 items-center">
+            <button className="bg-yellow-400 h-full p-1 font-bold text-white ">검색</button>
+            <input type="text" className="border p-2 text-sm h-full" placeholder="레슨 검색하기" />
+          </div>
+          <div className="container grid grid-cols-4 grid-rows-2 grid-flow-col h-full w-full   ">
+            {LessonDataList &&
+              LessonDataList[current - 1]?.map((lesson) => {
+                return (
+                  <div
+                    key={lesson.id}
+                    onMouseEnter={() => setIsListHover(lesson.id)}
+                    onMouseLeave={() => setIsListHover(-1)}
+                  >
+                    <LessonComponent lesson={lesson} show={lesson.id === isListHover} />
+                  </div>
+                );
+              })}
+          </div>
+        </div>
       </div>
       <div className=" absolute bottom-30 w-full left-1/2">
         <div className="btn-group ">

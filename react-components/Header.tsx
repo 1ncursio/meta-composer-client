@@ -58,31 +58,27 @@ const Header = () => {
               </Link>
               <ul className="p-2 bg-white">
                 <li>
-                  <Link href={`/lessons`}>
+                  <Link href={`/lessons?searchKeyword=Sonata`}>
                     <a>Sonata</a>
                   </Link>
                 </li>
                 <li>
-                  <BsFillFileMusicFill size={20} />
-                  <Link href={`/lessons`}>
+                  <Link href={`/lessons?searchKeyword=Etudes`}>
                     <a>Etudes</a>
                   </Link>
                 </li>
                 <li>
-                  <BsFillFileMusicFill />
-                  <Link href={`/lessons`}>
+                  <Link href={`/lessons?searchKeyword=Waltzes`}>
                     <a>Waltzes</a>
                   </Link>
                 </li>
                 <li>
-                  <BsFillFileMusicFill />
-                  <Link href={`/lessons`}>
+                  <Link href={`/lessons?searchKeyword=Nocturnes`}>
                     <a>Nocturnes</a>
                   </Link>
                 </li>
                 <li>
-                  <BsFillFileMusicFill />
-                  <Link href={`/lessons`}>
+                  <Link href={`/lessons?searchKeyword=Marches`}>
                     <a>Marches</a>
                   </Link>
                 </li>

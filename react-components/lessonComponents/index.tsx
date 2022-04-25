@@ -33,9 +33,11 @@ const LessonComponent: FC<LessonProps> = ({ lesson, show }) => {
       {/* <img src={lesson.imageURL} className="rounded-t-lg  w-2/5" /> */}
       {/* </a> */}
       <div className="text-center rounded-b-lg  w-4/5 ">
-        <div className="text-gray-700 h-10 lg:text-lg t  font-bold md:text-xm ">{!show && lesson.name}</div>
-        <p className="text-gray-400 text-sm font-light ">{lesson.__teacher__?.user.username}</p>
-        <p className="text-blue-600 text-lg font-bold ">₩{lesson.price}</p>
+        <div className="flex flex-col gap-2">
+          <div className="text-gray-700 h-16  lg:text-lg  font-bold md:text-xm ">{!show && lesson.name}</div>
+          <p className="text-gray-400 text-sm font-light ">{lesson.__teacher__?.user.username}</p>
+          <p className="text-blue-600 text-lg font-bold ">₩{lesson.price}</p>
+        </div>
         <div className="rating rating-sm">
           <input type="radio" className="mask mask-star-2 bg-orange-400" />
           {start?.map((start, index) => {
