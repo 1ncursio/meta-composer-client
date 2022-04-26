@@ -4,15 +4,24 @@ import LessonComponent from '@react-components/lessonComponents';
 import ILesson from '@typings/ILesson';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { KeyboardEventHandler, useCallback, useEffect, useState } from 'react';
 import useSWR from 'swr';
 
 import useSWRInfinite from 'swr/infinite';
 const LessonsIndexPage = () => {
   const router = useRouter();
-  const { searchKeyword } = router.query;
+  const { searchKeyword, searchWord } = router.query;
 
-  // const { data: LessonData } = useSWR<ILesson[]>('/lessons', fetcher);
+  const [wordSearch, setWordSearch] = useState<string>();
+
+  const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('!!');
+    setWordSearch(e.target.value);
+  };
+  const onSearchSubmit = useCallback(() => {
+    router.push(`/lessons?searchWord=${wordSearch}`);
+  }, [wordSearch]);
+
   const { data: userData } = useUserSWR();
   const {
     data: LessonDataList,
@@ -21,17 +30,15 @@ const LessonsIndexPage = () => {
   } = useSWRInfinite<ILesson[]>(
     (index) =>
       searchKeyword
-        ? `/lessons/search?searchKeyword=${searchKeyword}&perPage=8&page=${index + 1}`
+        ? `/lessons/type?searchKeyword=${searchKeyword}&perPage=8&page=${index + 1}`
+        : searchWord
+        ? `/lessons/search?searchKeyword=${searchWord}&perPage=8&page=${index + 1}`
         : `/lessons?perPage=8&page=${index + 1}`,
     fetcher,
   );
   const [isListHover, setIsListHover] = useState<number>(-1);
 
   const [current, setCurrent] = useState<number>(1);
-
-  useEffect(() => {
-    console.log(LessonDataList);
-  }, [LessonDataList]);
 
   const onPage = useCallback(
     (page: number, current) => () => {
@@ -93,8 +100,10 @@ const LessonsIndexPage = () => {
         </div>
         <div className="flex flex-col h-full w-4/5 gap-4">
           <div className="w-full  border-b-2 p-2 flex flex-row-reverse	 items-center">
-            <button className="bg-yellow-400 h-full p-1 font-bold text-white ">검색</button>
-            <input type="text" className="border p-2 text-sm h-full" placeholder="레슨 검색하기" />
+            <button className="bg-yellow-400 h-full p-1 font-bold text-white " onClick={onSearchSubmit}>
+              검색
+            </button>
+            <input type="text" className="border p-2 text-sm h-full" onChange={onSearch} placeholder="레슨 검색하기" />
           </div>
           <div className="container grid grid-cols-4 grid-rows-2 grid-flow-col h-full w-full   ">
             {LessonDataList &&
