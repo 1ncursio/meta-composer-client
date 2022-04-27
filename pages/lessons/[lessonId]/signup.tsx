@@ -25,7 +25,7 @@ export interface ISignupForm {
   buyer_email: string;
   check: boolean;
   Lmonth: number;
-  Lstartdate: Date;
+  Lstartdate: string;
   submitDays: SumitDays[];
   PaymentAmount: number;
 }
@@ -38,7 +38,10 @@ export interface SumitDays {
 const LessonSignup = () => {
   const router = useRouter();
   const { lessonId } = router.query;
-  const { data: lessonData, mutate: mutateLessonData } = useSWR<ILesson>('/lessons/' + lessonId, fetcher);
+  const { data: lessonData, mutate: mutateLessonData } = useSWR<ILesson>(
+    lessonId ? '/lessons/' + lessonId : null,
+    fetcher,
+  );
   const { data: userData } = useUserSWR();
   const { register, handleSubmit, setValue, watch } = useForm<ISignupForm>({
     reValidateMode: 'onSubmit',
@@ -48,6 +51,7 @@ const LessonSignup = () => {
   const { days, times, setTimeTableList, timeTableList } = useSchedulePicker();
   const WeekDay = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const [check, setCheck] = useState(true);
+
   const submitDays = useMemo(() => {
     const result: SumitDays[] = [];
     timeTableList.forEach((Ctime) => {
@@ -114,7 +118,7 @@ const LessonSignup = () => {
         }
         data.submitDays = submitDays;
         data.PaymentAmount = submitDays.length * lessonData?.price * watch('Lmonth');
-        data.Lstartdate = new Date();
+        data.Lstartdate = dayjs().format('YYYY-MM-DD');
         signupLoad({ data, lessonId: parseInt(lessonId), router });
       }
     },

@@ -44,8 +44,8 @@ const NotificationDropdown: FC<NotificaitonProps> = ({ notifitionData }) => {
       {/* <div>{notificationList && JSON.stringify(notificationList.notifitionData)}</div> */}
       <ul className="menu">
         {notifitionData &&
-          notifitionData.map((noti) => (
-            <li key={noti.id} className="flex flex-row items-center">
+          notifitionData.map((noti, index) => (
+            <li key={index} className="flex flex-row items-center">
               <div onClick={movePage(noti)}>
                 <p className="flex-1">
                   <AiTwotoneSound size={24} />

@@ -109,6 +109,7 @@ const ScheduluePicker: FC<ScheduluePickerProps> = ({
             {weekDays.map((day) =>
               readonly ? (
                 <div
+                  key={day}
                   className={styles.timeTableButton({
                     //check 되면 다시 색깔바꿈 정세
                     isSelect: timeTable.isSelectDays[day - 1],

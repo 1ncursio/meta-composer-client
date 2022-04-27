@@ -14,14 +14,16 @@ const LessonComponent: FC<LessonProps> = ({ lesson, show }) => {
   const [start, setStart] = useState<boolean[]>();
 
   useEffect(() => {
-    const a = Math.floor(Math.random() * 5);
     const arr = [];
     for (let i = 0; i < 4; i++) {
-      arr.push(false);
+      if (i + 1 < lesson.rating) {
+        arr.push(true);
+      } else {
+        arr.push(false);
+      }
     }
-    arr[a] = true;
     setStart(arr);
-  }, []);
+  }, [lesson]);
   return (
     <div className=" relative flex flex-col items-center w-full h-3/4  ">
       {/* <a href="#"> */}
@@ -42,9 +44,9 @@ const LessonComponent: FC<LessonProps> = ({ lesson, show }) => {
           <input type="radio" className="mask mask-star-2 bg-orange-400" />
           {start?.map((start, index) => {
             if (start) {
-              return <input key={index} type="radio" className="mask mask-star-2 bg-orange-400" checked readOnly />;
+              return <div key={index} className="mask mask-star-2 bg-orange-400  w-4" />;
             } else {
-              return <input key={index} type="radio" className="mask mask-star-2 bg-orange-400" />;
+              return <div key={index} className="mask mask-star-2 bg-orange-100  w-4" />;
             }
           })}
         </div>

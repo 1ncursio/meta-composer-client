@@ -1,14 +1,19 @@
+import { useSchedulePicker } from '@hooks/useSchedulePicker';
 import client from '@lib/api/client';
 import fetcher from '@lib/api/fetcher';
 import LessonIntoroduce from '@react-components/lessonComponents/introduce';
 import LessonReview from '@react-components/lessonComponents/review';
+import ScheduluePicker from '@react-components/SchedulePicker';
 import ILesson from '@typings/ILesson';
 import optimizeImage from '@utils/optimizeImage';
+import dayjs from 'dayjs';
+import produce from 'immer';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BsFillPersonFill } from 'react-icons/bs';
 import useSWR from 'swr';
+
 const scrollToRef = (ref: any) => window.scrollTo({ top: ref.current.offsetTop, behavior: 'smooth' });
 const LessonPage = () => {
   const router = useRouter();
@@ -29,7 +34,6 @@ const LessonPage = () => {
   }, [lessonData]);
 
   useEffect(() => {
-    const a = Math.floor(Math.random() * 5);
     const arr = [];
     for (let i = 0; i < 4; i++) {
       if (i + 1 < Evaluation) {
@@ -50,10 +54,33 @@ const LessonPage = () => {
   const myRef = useRef(null);
   const executeScroll = () => scrollToRef(myRef);
 
+  const { days, times, setTimeTableList, timeTableList, onClickTimeButton } = useSchedulePicker();
+
+  const [check, setCheck] = useState(true);
+  const WeekDay = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  useEffect(() => {
+    if (!lessonData) return;
+    if (!check) return;
+    setTimeTableList(
+      produce((draft) => {
+        draft.forEach((item) => {
+          lessonData.timeTables.forEach((time) => {
+            if (item.time.isSame(dayjs(`${dayjs().format('YYYY-MM-DD')} ${time.time}`))) {
+              item.isAvailableByWeekDays[WeekDay.indexOf(time.day)] =
+                !item.isAvailableByWeekDays[WeekDay.indexOf(time.day)];
+            }
+          });
+        });
+      }),
+    );
+    setCheck(false);
+  }, [lessonData, check]);
+
   return (
-    <div className=" w-full h-full">
+    //이거 크기 조절 해보기
+    <div className="container w-3/4 h-full">
       <div className="h-72 w-100 bg-gray-700  pt-12 pl-4">
-        {/* <img src={lessonData?.imageURL} className="h-3/4 w-1/3"></img> */}
         <div className="flex flex-row">
           <div className="avatar ">
             <div className="ml-28 w-80 h-52 rounded-xl">
@@ -109,8 +136,22 @@ const LessonPage = () => {
         {lessonData && current === 'review' ? (
           <LessonReview commnets={lessonData.comments} start={start} Evaluation={Evaluation} />
         ) : (
-          <div>
+          <div className="w-full">
             <LessonIntoroduce lesson={lessonData} />
+            <p className="w-2/3 border-2 p-2 mt-10 border-gray-300 text-center font-bold text-lg  xl:text-2xl ">
+              수강 시간표
+            </p>
+            <div className="w-2/3  border mb-10">
+              <ScheduluePicker
+                step={120}
+                onClickTimeButton={onClickTimeButton}
+                readonly={true}
+                timeTableList={timeTableList}
+                setTimeTableList={setTimeTableList}
+                days={days}
+                times={times}
+              />
+            </div>
             <div ref={myRef}>
               <LessonReview commnets={lessonData?.comments} start={start} Evaluation={Evaluation} />
             </div>

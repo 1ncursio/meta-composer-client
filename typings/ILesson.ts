@@ -14,6 +14,7 @@ export default interface ILesson {
   __teacher__: ITeacher;
   comments: Comment[];
   timeTables: TimeTables[];
+  rating: number;
 }
 export interface Comment {
   contents: string;
