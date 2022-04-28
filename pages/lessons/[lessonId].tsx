@@ -69,6 +69,9 @@ const LessonPage = () => {
             if (item.time.isSame(dayjs(`${dayjs().format('YYYY-MM-DD')} ${time.time}`))) {
               item.isAvailableByWeekDays[WeekDay.indexOf(time.day)] =
                 !item.isAvailableByWeekDays[WeekDay.indexOf(time.day)];
+              if (!time.IsEmpty) {
+                item.isEmpty[WeekDay.indexOf(time.day)] = true;
+              }
             }
           });
         });
@@ -76,6 +79,11 @@ const LessonPage = () => {
     );
     setCheck(false);
   }, [lessonData, check]);
+
+  const wishListAdd = useCallback(async () => {
+    const res = await client.post(`/wishlists/${lessonId}`);
+    console.log(res);
+  }, [lessonId]);
 
   return (
     //이거 크기 조절 해보기
@@ -141,6 +149,16 @@ const LessonPage = () => {
             <p className="w-2/3 border-2 p-2 mt-10 border-gray-300 text-center font-bold text-lg  xl:text-2xl ">
               수강 시간표
             </p>
+            <div className="w-2/3 flex gap-2 flex-row-reverse mb-4">
+              <div className="flex flex-row items-center">
+                <div className="bg-red-700 h-4 w-4"></div>
+                <p className="text-sm font-bold">수강중</p>
+              </div>
+              <div className="flex flex-row items-center">
+                <div className="bg-primary h-4 w-4"></div>
+                <p className="text-sm font-bold">수강가능</p>
+              </div>
+            </div>
             <div className="w-2/3  border mb-10">
               <ScheduluePicker
                 step={120}
@@ -172,7 +190,9 @@ const LessonPage = () => {
                 </Link>
               </div>
               <div className="text-center p-2">
-                <button className="rounded-xl  w-full border-2  py-2 text-black">바구니에 담기</button>
+                <button onClick={wishListAdd} className="rounded-xl text-sm  w-full border-2  py-2 text-black">
+                  위시리스트 추가
+                </button>
               </div>
             </div>
             <hr />

@@ -7,6 +7,7 @@ export interface TimeTable {
   time: dayjs.Dayjs;
   isAvailableByWeekDays: boolean[];
   //select 하나더 추가
+  isEmpty: boolean[];
   isSelectDays: boolean[];
 }
 
@@ -54,6 +55,7 @@ const ScheduluePicker: FC<ScheduluePickerProps> = ({
         isAvailableByWeekDays: weekDays.map((day) => false),
         //전부다 false 로 세팅 정세
         isSelectDays: weekDays.map((day) => false),
+        isEmpty: weekDays.map((day) => false),
       });
 
       // step의 최소값은 30이라 그 미만이 들어오면 30으로 처리
@@ -114,6 +116,7 @@ const ScheduluePicker: FC<ScheduluePickerProps> = ({
                     //check 되면 다시 색깔바꿈 정세
                     isSelect: timeTable.isSelectDays[day - 1],
                     isChecked: timeTable.isAvailableByWeekDays[day - 1],
+                    isEmpty: timeTable.isEmpty[day - 1],
                     readonly: true,
                   })}
                 />
@@ -126,6 +129,7 @@ const ScheduluePicker: FC<ScheduluePickerProps> = ({
                     isSelect: timeTable.isSelectDays[day - 1],
                     //check 되면 다시 색깔바꿈 정세
                     isChecked: timeTable.isAvailableByWeekDays[day - 1],
+                    isEmpty: timeTable.isEmpty[day - 1],
                     readonly: false,
                   })}
                 />

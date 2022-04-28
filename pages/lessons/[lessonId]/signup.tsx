@@ -59,7 +59,7 @@ const LessonSignup = () => {
         if (day) {
           result.push({
             Lday: WeekDay[index2],
-            Ltime: Ctime.time.hour() > 11 ? `${Ctime.time.hour()}:00:00` : `0${Ctime.time.hour()}:00:00`,
+            Ltime: Ctime.time.hour() > 9 ? `${Ctime.time.hour()}:00:00` : `0${Ctime.time.hour()}:00:00`,
           });
         }
       });
@@ -73,7 +73,7 @@ const LessonSignup = () => {
       setTimeTableList(
         produce((draft) => {
           draft.forEach((item) => {
-            if (item.time.isSame(time) && item.isAvailableByWeekDays[day - 1]) {
+            if (item.time.isSame(time) && item.isAvailableByWeekDays[day - 1] && !item.isEmpty[day - 1]) {
               if (item.isSelectDays) {
                 item.isSelectDays[day - 1] = !item.isSelectDays[day - 1];
               }
@@ -88,6 +88,7 @@ const LessonSignup = () => {
   useEffect(() => {
     if (!lessonData) return;
     if (!check) return;
+    console.log(lessonData);
     setTimeTableList(
       produce((draft) => {
         draft.forEach((item) => {
@@ -95,6 +96,9 @@ const LessonSignup = () => {
             if (item.time.isSame(dayjs(`${dayjs().format('YYYY-MM-DD')} ${time.time}`))) {
               item.isAvailableByWeekDays[WeekDay.indexOf(time.day)] =
                 !item.isAvailableByWeekDays[WeekDay.indexOf(time.day)];
+              if (!time.IsEmpty) {
+                item.isEmpty[WeekDay.indexOf(time.day)] = true;
+              }
             }
           });
         });
@@ -119,7 +123,8 @@ const LessonSignup = () => {
         data.submitDays = submitDays;
         data.PaymentAmount = submitDays.length * lessonData?.price * watch('Lmonth');
         data.Lstartdate = dayjs().format('YYYY-MM-DD');
-        signupLoad({ data, lessonId: parseInt(lessonId), router });
+        console.log(submitDays);
+        // signupLoad({ data, lessonId: parseInt(lessonId), router });
       }
     },
     [lessonId, submitDays, lessonData],
@@ -164,6 +169,20 @@ const LessonSignup = () => {
           </div>
           <div className="w-3/4 flex flex-col items-center gap-y-2">
             <p className="text-center m-2 font-bold text-lg border-2 p-2 rounded-md bg-gray-200">레슨 시간 선택</p>
+            <div className="w-full flex gap-2 flex-row-reverse mb-4">
+              <div className="flex flex-row items-center">
+                <div className="bg-red-700 h-4 w-4"></div>
+                <p className="text-sm font-bold">수강중</p>
+              </div>
+              <div className="flex flex-row items-center">
+                <div className="bg-primary h-4 w-4"></div>
+                <p className="text-sm font-bold">수강가능</p>
+              </div>
+              <div className="flex flex-row items-center">
+                <div className="bg-red-400 h-4 w-4"></div>
+                <p className="text-sm font-bold">선택됨</p>
+              </div>
+            </div>
             <div className="flex flex-row-reverse w-full">
               <select {...register('Lmonth')} className="select select-bordered w-24">
                 <option selected value={1}>
