@@ -62,7 +62,7 @@ const LessonReview: FC<LessonnReviewProps> = ({ commnets, start, Evaluation }) =
         </div>
       </div>
       <div className="w-2/3  flex flex-col gap-y-2  py-5 mt-3 border-t border-black ">
-        {commnets && commnets?.length > 1 ? (
+        {commnets && commnets?.length > 0 ? (
           commnets.map((com) => {
             return (
               <div key={com.id} className="flex flex-col w-full gap-2 border-b-2 p-2">

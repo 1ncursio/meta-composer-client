@@ -12,6 +12,7 @@ import useSWRInfinite from 'swr/infinite';
 import client from '@lib/api/client';
 import { AiFillDelete } from 'react-icons/ai';
 import produce from 'immer';
+import { useRouter } from 'next/router';
 
 export interface NotificaitonSWR {
   notifitionData: INotification[];
@@ -26,7 +27,7 @@ const NotificationsIndexPage = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [notifitionInfo, setNotifitionInfo] = useState<INotification | null>();
-
+  const router = useRouter();
   const test = (id: number) => async () => {
     const data = await client.get(`/notification/${id}/info`);
     const noti: INotification = data.data.payload;
@@ -36,7 +37,7 @@ const NotificationsIndexPage = () => {
   };
   const movePage = (notification: INotification) => async () => {
     await client.get(`/notification/${notification.id}/info`);
-    window.location.href = window.location.origin + notification.url;
+    router.push(notification.url);
   };
   const clear = () => {
     setNotifitionInfo(null);

@@ -151,7 +151,7 @@ const LessonsIndexPage = () => {
                     onMouseEnter={() => setIsListHover(lesson.id)}
                     onMouseLeave={() => setIsListHover(-1)}
                   >
-                    <LessonComponent lesson={lesson} show={lesson.id === isListHover} />
+                    <LessonComponent lesson={lesson} show={lesson.id === isListHover} wordCount={100} />
                   </div>
                 );
               })}
