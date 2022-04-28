@@ -1,3 +1,4 @@
+import createNotificationSliceSlice, { NotificationSlice } from './notification';
 import { isDev } from '@utils/getEnv';
 import { enableMapSet } from 'immer';
 import { mountStoreDevtool } from 'simple-zustand-devtools';
@@ -11,7 +12,7 @@ import createXRSlice, { XRSlice } from './XRSlice';
 
 enableMapSet();
 
-export type AppState = UserSlice & PianoSlice & WebRTCSlice & MessageSlice & XRSlice & SignSlice;
+export type AppState = UserSlice & PianoSlice & WebRTCSlice & MessageSlice & XRSlice & SignSlice & NotificationSlice;
 
 export type AppSlice<T> = (set: SetState<AppState>, get: GetState<AppState>) => T;
 
@@ -25,6 +26,7 @@ const useStore = create<AppState>((set, get) => ({
   ...createMessageSlice(set, get),
   ...createXRSlice(set, get),
   ...createSignSlice(set, get),
+  ...createNotificationSliceSlice(set, get),
 }));
 
 if (isDev() && typeof window !== 'undefined') {

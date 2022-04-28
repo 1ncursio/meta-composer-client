@@ -9,13 +9,13 @@ export interface LessonnItoroduceProps {
 
 const LessonIntoroduce: FC<LessonnItoroduceProps> = ({ lesson }) => {
   return (
-    <div className="py-8 container mx-auto  ">
+    <div className="py-8 container mx-auto w-full  ">
       <div>
         <p className="font-bold text-xl text-black">[**] 를 위해 준비한 </p>
         <p className="font-bold text-xl text-black"> {lesson?.type} 레슨 입니다.</p>
       </div>
       <div className="py-8  w-2/3 ">
-        <p className="break-words font-bold ">{lesson?.introduce}</p>
+        <p className="w-full break-all font-bold">{lesson?.introduce}</p>
       </div>
       <div className="border-2 h-40 sm:h-48 rounded-xl flex flex-row p-4  w-2/3">
         <div className="flex flex-row items-center mr-6">

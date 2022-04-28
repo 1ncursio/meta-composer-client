@@ -1,5 +1,6 @@
 import client from '@lib/api/client';
 import { IMessage } from '@typings/IMessage';
+import dayjs from 'dayjs';
 import produce from 'immer';
 import { Socket } from 'socket.io-client';
 import { KeyedMutator } from 'swr';
@@ -35,7 +36,7 @@ const createMessageSlice: AppSlice<MessageSlice> = (set, get) => ({
               id: (messages[0][0]?.id || 0) + 1,
               message,
               user,
-              createdAt: new Date(),
+              created_at: Date.now(),
               senderId: user.id,
               is_read: userJoin,
             });

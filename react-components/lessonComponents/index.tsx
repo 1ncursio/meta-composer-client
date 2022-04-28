@@ -14,14 +14,16 @@ const LessonComponent: FC<LessonProps> = ({ lesson, show }) => {
   const [start, setStart] = useState<boolean[]>();
 
   useEffect(() => {
-    const a = Math.floor(Math.random() * 5);
     const arr = [];
     for (let i = 0; i < 4; i++) {
-      arr.push(false);
+      if (i + 1 < lesson.rating) {
+        arr.push(true);
+      } else {
+        arr.push(false);
+      }
     }
-    arr[a] = true;
     setStart(arr);
-  }, []);
+  }, [lesson]);
   return (
     <div className=" relative flex flex-col items-center w-full h-3/4  ">
       {/* <a href="#"> */}
@@ -33,16 +35,18 @@ const LessonComponent: FC<LessonProps> = ({ lesson, show }) => {
       {/* <img src={lesson.imageURL} className="rounded-t-lg  w-2/5" /> */}
       {/* </a> */}
       <div className="text-center rounded-b-lg  w-4/5 ">
-        <div className="text-gray-700 h-10 lg:text-lg t  font-bold md:text-xm ">{!show && lesson.name}</div>
-        <p className="text-gray-400 text-sm font-light ">{lesson.__teacher__?.user.username}</p>
-        <p className="text-blue-600 text-lg font-bold ">₩{lesson.price}</p>
+        <div className="flex flex-col gap-2">
+          <div className="text-gray-700 h-16  lg:text-lg  font-bold md:text-xm ">{!show && lesson.name}</div>
+          <p className="text-gray-400 text-sm font-light ">{lesson.__teacher__?.user.username}</p>
+          <p className="text-blue-600 text-lg font-bold ">₩{lesson.price}</p>
+        </div>
         <div className="rating rating-sm">
           <input type="radio" className="mask mask-star-2 bg-orange-400" />
           {start?.map((start, index) => {
             if (start) {
-              return <input key={index} type="radio" className="mask mask-star-2 bg-orange-400" checked readOnly />;
+              return <div key={index} className="mask mask-star-2 bg-orange-400  w-4" />;
             } else {
-              return <input key={index} type="radio" className="mask mask-star-2 bg-orange-400" />;
+              return <div key={index} className="mask mask-star-2 bg-orange-100  w-4" />;
             }
           })}
         </div>
