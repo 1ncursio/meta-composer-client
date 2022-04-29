@@ -24,11 +24,11 @@ export interface Comment {
   user: IUser;
 }
 export interface TimeTables {
-  IsEmpty: boolean;
   created_at: Date;
   day: string;
   id: number;
   lessonId: number;
   time: Date;
+  signupId: null | number;
   updated_at: Date;
 }

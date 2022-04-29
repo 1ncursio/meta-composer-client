@@ -5,6 +5,8 @@ import IUser from '@typings/IUser';
 import { ISignupForm, SumitDays } from '@pages/lessons/[lessonId]/signup';
 import { getBackEndUrl } from '@utils/getEnv';
 import { NextRouter } from 'next/router';
+import { KeyedMutator } from 'swr';
+import ILesson from '@typings/ILesson';
 
 export interface SignSlice {
   signup: {
@@ -64,15 +66,17 @@ const createSignSlice: AppSlice<SignSlice> = (set, get) => ({
           weekdays: Lday,
         },
       });
-      const signupsId = res.data.id;
-      console.log(res);
-      if (!signupsId) {
+      const { status } = res;
+      console.log(status);
+      if (status !== 201) {
         alert('수강을 할수 없습니다');
         return;
       }
+
       alert('결제가 완료 되었습니다');
       setTimeout(() => {
-        router.push(`/lessons/${lessonId}`);
+        // router.push(`/lessons/${lessonId}`);
+        window.location.href = window.location.origin + `/lessons/${lessonId}`;
       }, 1000);
 
       // const reRes = await client({
