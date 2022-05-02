@@ -126,8 +126,9 @@ const DashboardSideBar = () => {
         {paths.map(({ path, title, icon: { selected, unselected } }) => (
           <li key={path}>
             <Link href={path}>
-              <a className={styles.dashboardLink(pathname === path)}>
-                {pathname === path ? selected : unselected}
+              {/* 하위 있는것도 select 되게 함 정세 */}
+              <a className={styles.dashboardLink(pathname.includes(path))}>
+                {pathname.includes(path) ? selected : unselected}
                 {title}
               </a>
             </Link>
