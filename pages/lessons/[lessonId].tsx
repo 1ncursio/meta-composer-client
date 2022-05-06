@@ -14,6 +14,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { BsFillPersonFill } from 'react-icons/bs';
 import useSWR from 'swr';
 
+import Cdatjs from 'dayjs/plugin/customParseFormat';
 const scrollToRef = (ref: any) => window.scrollTo({ top: ref.current.offsetTop, behavior: 'smooth' });
 const LessonPage = () => {
   const router = useRouter();
@@ -23,6 +24,10 @@ const LessonPage = () => {
     fetcher,
   );
   const [start, setStart] = useState<boolean[]>();
+
+  useEffect(() => {
+    console.log(lessonData);
+  }, [lessonData]);
 
   const Evaluation = useMemo(() => {
     if (!lessonData) return 1;
@@ -59,6 +64,12 @@ const LessonPage = () => {
   const [check, setCheck] = useState(true);
   const WeekDay = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
+  const lessonLength = useMemo(() => {
+    if (!lessonData) return 60;
+    dayjs.extend(Cdatjs);
+    return dayjs(lessonData.length, 'HH:mm:ss').hour() * 60;
+  }, [lessonData]);
+
   useEffect(() => {
     if (!lessonData) return;
     if (!check) return;
@@ -69,7 +80,7 @@ const LessonPage = () => {
             if (item.time.isSame(dayjs(`${dayjs().format('YYYY-MM-DD')} ${time.time}`))) {
               item.isAvailableByWeekDays[WeekDay.indexOf(time.day)] =
                 !item.isAvailableByWeekDays[WeekDay.indexOf(time.day)];
-              if (!time.IsEmpty) {
+              if (time.signupId !== null) {
                 item.isEmpty[WeekDay.indexOf(time.day)] = true;
               }
             }
@@ -91,13 +102,13 @@ const LessonPage = () => {
       <div className="h-72 w-100 bg-gray-700  pt-12 pl-4">
         <div className="flex flex-row">
           <div className="avatar ">
-            <div className="ml-28 w-80 h-52 rounded-xl">
+            <div className="ml-12 w-40 lg:w-80  h-52 rounded-xl">
               <img src={optimizeImage(lessonData?.imageURL ?? '')} />
             </div>
           </div>
           <div className="flex flex-col ml-8">
-            <p className="text-sm font-semibold text-white mb-4">{lessonData?.type}</p>
-            <p className="text-2xl font-extrabold text-white mb-10">{lessonData?.name}</p>
+            <p className="text-sm  lg:text-md font-semibold text-white mb-4">{lessonData?.type}</p>
+            <p className="text-sx  lg:text-2xl font-extrabold text-white mb-10">{lessonData?.name}</p>
             <div className="rating rating-sm mb-4">
               <input type="radio" className="mask mask-star-2 bg-orange-400" />
               {start?.map((start, index) => {
@@ -108,7 +119,7 @@ const LessonPage = () => {
                 }
               })}
             </div>
-            <div className="flex flex-row gap-2 mb-5">
+            <div className="flex flex-row gap-2 mb-5  ">
               <BsFillPersonFill />
               <p className="text-xs font-semibold text-white">{lessonData?.__teacher__.user.username}</p>
             </div>
@@ -161,7 +172,7 @@ const LessonPage = () => {
             </div>
             <div className="w-2/3  border mb-10">
               <ScheduluePicker
-                step={120}
+                step={lessonLength}
                 onClickTimeButton={onClickTimeButton}
                 readonly={true}
                 timeTableList={timeTableList}

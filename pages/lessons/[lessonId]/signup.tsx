@@ -96,7 +96,7 @@ const LessonSignup = () => {
             if (item.time.isSame(dayjs(`${dayjs().format('YYYY-MM-DD')} ${time.time}`))) {
               item.isAvailableByWeekDays[WeekDay.indexOf(time.day)] =
                 !item.isAvailableByWeekDays[WeekDay.indexOf(time.day)];
-              if (!time.IsEmpty) {
+              if (time.signupId !== null) {
                 item.isEmpty[WeekDay.indexOf(time.day)] = true;
               }
             }
@@ -123,8 +123,7 @@ const LessonSignup = () => {
         data.submitDays = submitDays;
         data.PaymentAmount = submitDays.length * lessonData?.price * watch('Lmonth');
         data.Lstartdate = dayjs().format('YYYY-MM-DD');
-        console.log(submitDays);
-        // signupLoad({ data, lessonId: parseInt(lessonId), router });
+        signupLoad({ data, lessonId: parseInt(lessonId), router });
       }
     },
     [lessonId, submitDays, lessonData],
