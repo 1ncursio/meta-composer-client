@@ -2,9 +2,8 @@ import React from 'react';
 import CreateLessons from '@react-components/Lessons/createLessons';
 import { useRouter } from 'next/router';
 
-const CreateLesson = () => {
-  const router = useRouter();
+const CreateLessonPage = () => {
   return <CreateLessons />;
 };
 
-export default CreateLesson;
+export default CreateLessonPage;

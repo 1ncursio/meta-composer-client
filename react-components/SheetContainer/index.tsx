@@ -12,8 +12,8 @@ const SheetContainer: FC<SheetContainerProps> = ({ id }) => {
     if (canvasRef.current) {
       const VF = Vex.Flow;
       const renderer = new VF.Renderer(canvasRef.current!, VF.Renderer.Backends.CANVAS);
-      const width = 2400;
-      const height = 600;
+      const width = 1200;
+      const height = 300;
       renderer.resize(width, height);
       const context = renderer.getContext();
       context.setFont('Arial', 10, 600);

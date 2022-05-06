@@ -16,7 +16,17 @@ export interface WebRTCSlice {
     linkState: 'idle' | 'connecting' | 'connected' | 'disconnected';
     setLinkState: (state: WebRTCSlice['webRTC']['linkState']) => void;
     myStream: MediaStream | null;
-    initMyStream: () => Promise<MediaStream>;
+    getMedia: (videoElement: HTMLVideoElement, deviceId?: string) => Promise<void>;
+
+    // 마이크 상태
+    isMicMuted: boolean;
+    // 카메라 상태
+    isCameraOff: boolean;
+    // 마이크 상태 변경
+    toggleMicState: () => Promise<void>;
+    // 카메라 상태 변경
+    toggleCameraState: () => Promise<void>;
+    getCameras: () => Promise<[MediaStreamTrack, MediaDeviceInfo[]] | undefined>;
   };
 }
 
@@ -151,16 +161,78 @@ const createWebRTCSlice: AppSlice<WebRTCSlice> = (set, get) => ({
       );
     },
     myStream: null,
-    initMyStream: async () => {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    getMedia: async (videoElement, deviceId) => {
+      const initialConstrains: MediaStreamConstraints = {
+        audio: true,
+        video: { facingMode: 'environment' },
+      };
+      const cameraConstraints: MediaStreamConstraints = {
+        audio: true,
+        video: { deviceId: { exact: deviceId } },
+      };
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia(deviceId ? cameraConstraints : initialConstrains);
+
+        videoElement.srcObject = stream;
+        set(
+          produce((state: AppState) => {
+            state.webRTC.myStream = stream;
+          }),
+        );
+
+        if (!deviceId) {
+          await get().webRTC.getCameras();
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    isMicMuted: false,
+    isCameraOff: false,
+    toggleMicState: async () => {
+      const { myStream } = get().webRTC;
+      if (!myStream) {
+        throw new Error('myStream is not defined');
+      }
+
+      myStream.getAudioTracks().forEach((track) => (track.enabled = !track.enabled));
 
       set(
         produce((state: AppState) => {
-          state.webRTC.myStream = stream;
+          state.webRTC.isMicMuted = !state.webRTC.isMicMuted;
         }),
       );
+    },
+    toggleCameraState: async () => {
+      const { myStream } = get().webRTC;
+      if (!myStream) {
+        throw new Error('myStream is not defined');
+      }
 
-      return stream;
+      myStream.getVideoTracks().forEach((track) => (track.enabled = !track.enabled));
+
+      set(
+        produce((state: AppState) => {
+          state.webRTC.isCameraOff = !state.webRTC.isCameraOff;
+        }),
+      );
+    },
+    getCameras: async () => {
+      try {
+        const { myStream } = get().webRTC;
+        if (!myStream) {
+          throw new Error('myStream is not defined');
+        }
+
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const cameras = devices.filter((device) => device.kind === 'videoinput');
+        const currentCamera = myStream.getVideoTracks()[0];
+
+        return [currentCamera, cameras];
+      } catch (err) {
+        console.error(err);
+      }
     },
   },
 });
