@@ -1,4 +1,5 @@
 import ILesson from './ILesson';
+import { ITimeTable } from './IPayment';
 import ISignupTimetable from './ISignupTimetable';
 import IUser from './IUser';
 
@@ -9,4 +10,6 @@ export default interface ISignup {
   created_at: Date;
   signuptimetables: ISignupTimetable[];
   startdate: Date;
+
+  timetable: ITimeTable[];
 }
