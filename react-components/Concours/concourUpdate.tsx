@@ -49,7 +49,13 @@ const ConcourUpdate = ({ concours }: { concours: Concours }) => {
       <div>
         <form onSubmit={handleSubmit(onSubmit)} className="flex gap-4">
           <div className="flex flex-col">
-            <img className="place-self-center" src={concours.coverIMG_url} alt="사진이 존재하지 않습니다." />
+            <img
+              className="place-self-center"
+              src={concours.coverIMG_url}
+              alt="사진이 존재하지 않습니다."
+              width={150}
+              height={250}
+            />
             <input type="file" id="image" onChange={setUrl} className="place-self-center" />
           </div>
           <div className="flex flex-col">
