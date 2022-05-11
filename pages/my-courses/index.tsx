@@ -13,6 +13,8 @@ import {
   AppointmentTooltip,
   AppointmentForm,
   MonthView,
+  DateNavigator,
+  TodayButton,
 } from '@devexpress/dx-react-scheduler-material-ui';
 import fetcher from '@lib/api/fetcher';
 import useSWR from 'swr';
@@ -32,6 +34,7 @@ interface iDate {
 
 const MyCoursesPage = () => {
   const { data: signUpData, mutate: mutateLessonData } = useSWR<ISignup[]>('/signup-timetables', fetcher);
+  const [crrentDate, setCrrentDate] = useState<any>(new Date());
 
   const sData = useMemo(() => {
     if (!signUpData) return;
@@ -40,10 +43,15 @@ const MyCoursesPage = () => {
     signUpData.forEach((signup) => {
       signup.signuptimetables.forEach((ti) => {
         const date = new Date(ti.time);
-        // console.log(date.getMonth(), date.getDate(), date.getHours());
+        const addTime = signup.__lesson__.length.split(':').map((ti) => parseInt(ti));
+
+        console.log(addTime[0], addTime[1]);
+
         result.push({
           startDate: date.toString(),
-          endDate: new Date(date.setHours(date.getHours() + 2)).toString(),
+          endDate: new Date(
+            new Date(date.setHours(date.getHours() + addTime[0])).setMinutes(date.getMinutes() + addTime[1]),
+          ).toString(),
           title: signup.__lesson__.name + ' 수업입니다',
         });
       });
@@ -59,11 +67,13 @@ const MyCoursesPage = () => {
         </div>
         <div className="container w-2/3 items-center border p-2 mt-10">
           <Scheduler data={sData} height={640}>
-            <ViewState currentDate={new Date()} defaultCurrentViewName="Month" />
+            <ViewState currentDate={crrentDate} onCurrentDateChange={setCrrentDate} defaultCurrentViewName="Month" />
             <DayView startDayHour={12} endDayHour={18} />
             <WeekView startDayHour={12} endDayHour={18} />
             <MonthView />
             <Toolbar />
+            <DateNavigator />
+            <TodayButton />
             <ViewSwitcher />
             <Appointments />
             <AppointmentTooltip
