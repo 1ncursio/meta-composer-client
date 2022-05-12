@@ -25,8 +25,13 @@ const Message: FC<MessageProps> = ({ message }) => {
 
   return (
     <div className={styles.messageRow(isOwnMessage)}>
-      <div className={styles.messageRowContent(isOwnMessage)}>{message.message}</div>
-      <div className="text-base-content select-none">{dayjs(message.created_at).format('A HH:mm')}</div>
+      {/* <div className={styles.messageRowContent(isOwnMessage)}>{message.message}</div> */}
+      <div className="font-normal max-w-md pt-2 pb-3 pl-4 pr-3 bg-gray-200 rounded-md rounded-tl-2xl text-left">
+        {message.message}
+      </div>
+      <div className="text-base-content text-gray-400 text-sm select-none">
+        {dayjs(message.created_at).format('A HH:mm')}
+      </div>
       <div>{isReadMessage}</div>
     </div>
   );
