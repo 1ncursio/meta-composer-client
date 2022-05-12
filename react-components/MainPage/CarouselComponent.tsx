@@ -4,8 +4,10 @@ import { useCallback, useState } from 'react';
 import fetcher from '@lib/api/fetcher';
 import ILesson from '@typings/ILesson';
 
-const Carousel = () => {
-  const perPage = 1;
+import Carousel from 'nuka-carousel';
+
+const CarouselComponent = () => {
+  const perPage = 4;
 
   const {
     data: LessonDataList,
@@ -31,7 +33,8 @@ const Carousel = () => {
   );
   return (
     <div className="w-full">
-      <div className="carousel-item relative w-full">
+      {/* <div className="carousel-item relative w-full"> */}
+      <Carousel>
         {LessonDataList &&
           LessonDataList[current - 1]?.map((lesson) => {
             return (
@@ -40,9 +43,10 @@ const Carousel = () => {
               </div>
             );
           })}
-      </div>
+      </Carousel>
+      {/* </div> */}
     </div>
   );
 };
 
-export default Carousel;
+export default CarouselComponent;

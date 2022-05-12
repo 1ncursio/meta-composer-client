@@ -15,13 +15,14 @@ import { BsFillPersonFill } from 'react-icons/bs';
 import useSWR from 'swr';
 
 import Cdatjs from 'dayjs/plugin/customParseFormat';
+import getFetcher from '@lib/api/getFetcher';
 const scrollToRef = (ref: any) => window.scrollTo({ top: ref.current.offsetTop, behavior: 'smooth' });
 const LessonPage = () => {
   const router = useRouter();
   const { lessonId, current } = router.query;
   const { data: lessonData, mutate: mutateLessonData } = useSWR<ILesson>(
     lessonId ? `/lessons/${lessonId}` : null,
-    fetcher,
+    getFetcher,
   );
   const [start, setStart] = useState<boolean[]>();
 

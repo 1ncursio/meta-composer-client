@@ -31,8 +31,8 @@ const MessageList = forwardRef<Scrollbars, MessageListProps>(({ chatSections, se
       {Object.entries(chatSections).map(([date, messages]) => (
         //   margin-top: 20px;
         //   border-top: 1px solid #eee;
-        <div key={date} className="mt-6 border-t border-base-content flex flex-col gap-2">
-          <div className="text-base-content font-light">{date}</div>
+        <div key={date} className="mt-6 border-t border-gray-200 border-base-content flex flex-col gap-2">
+          <div className="text-base-content text-center font-light after:border-b border-sky-500">{date}</div>
           {messages.map((message) =>
             message.image ? (
               <ImageMessage key={message.id} message={message} />

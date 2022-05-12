@@ -44,8 +44,8 @@ const MessageRoomList: FC<MessageRoomListProps> = ({ currentRoomId }) => {
   return (
     <div className="w-60">
       {userChatsData && userChatsData.length > 0 && (
-        <div className="bg-gray-200 p2 flex flex-col items-center">
-          <div className="text-base-content  font-bold ">강사와의 채팅</div>
+        <div className="bg-gray-300 p2 flex flex-col h-full items-center">
+          <div className="text-base-content p-2 font-bold ">강사와의 채팅</div>
           {userChatsData?.map((chat) => (
             <div
               key={chat.id}

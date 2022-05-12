@@ -2,7 +2,6 @@ import fetcher from '@lib/api/fetcher';
 import DashboardContainer from '@react-components/DashboardContainer';
 import Notificaiton from '@react-components/notification';
 import NotificaitonButton from '@react-components/notification/button';
-import NotificaitonModal from '@react-components/notification/notifitionModal';
 import { INotification } from '@typings/INotification';
 import { GetStaticProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
