@@ -1,5 +1,6 @@
 import useUserSWR from '@hooks/swr/useUserSWR';
 import fetcher from '@lib/api/fetcher';
+import getFetcher from '@lib/api/getFetcher';
 import LessonComponent from '@react-components/lessonComponents';
 import LessonNoSearchComponent from '@react-components/lessonComponents/noSearchResult';
 import ILesson from '@typings/ILesson';
@@ -40,7 +41,7 @@ const LessonsIndexPage = () => {
         : searchWord
         ? `/lessons/search?searchKeyword=${searchWord}&perPage=8&page=${index + 1}&order=${order}`
         : `/lessons?perPage=8&page=${index + 1}&order=${order}`,
-    fetcher,
+    getFetcher,
   );
   const [isListHover, setIsListHover] = useState<number>(-1);
 

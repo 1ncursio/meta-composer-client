@@ -1,13 +1,15 @@
 import ILesson from './ILesson';
+import { ITimeTable } from './IPayment';
+import ISignupTimetable from './ISignupTimetable';
 import IUser from './IUser';
 
 export default interface ISignup {
   id: number;
-  merchant_uid: string;
-  lesson: ILesson;
-  user: IUser;
+  howManyMonth: number;
+  __lesson__: ILesson;
+  created_at: Date;
+  signuptimetables: ISignupTimetable[];
   startdate: Date;
-  finishdate: Date;
-  weekdays: string;
-  lessonTime: string;
+
+  timetable: ITimeTable[];
 }
