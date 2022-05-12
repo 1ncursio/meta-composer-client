@@ -1,19 +1,18 @@
-/**
- * SheetGenerator 에서 쓰일 RoundedNote 클래스.
- */
-
 export interface IRoundedNote {
   timestamp: number;
   duration: number;
   midiNoteNumber: number;
 }
 
+/**
+ * SheetGenerator 에서 쓰일 RoundedNote 클래스.
+ */
 export default class RoundedNote {
   trackIndex: number;
-  note: any;
+  note: IRoundedNote;
   numerator: number;
   denom: number;
-  dotted: any;
+  dotted: boolean;
   isRest: boolean;
 
   constructor(

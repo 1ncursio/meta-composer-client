@@ -40,7 +40,8 @@ const SheetContainer: FC<SheetContainerProps> = ({ id }) => {
 
         // A quarter-note rest. Note that the key (b/4) specifies the vertical
         // position of the rest.
-        new VF.StaveNote({ clef: 'treble', keys: ['b/4'], duration: 'qr' }),
+        // new VF.GhostNote({ clef: 'treble', keys: ['b/4'], duration: 'qr' }),
+        new VF.GhostNote({ duration: 'q' }),
 
         // A C-Major chord.
         new VF.StaveNote({ clef: 'treble', keys: ['c/4', 'e/4', 'g/4'], duration: 'q' }),

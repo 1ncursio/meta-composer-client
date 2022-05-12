@@ -100,7 +100,9 @@ export interface MidiMetaKeySignatureEvent extends BaseMidiMetaEvent {
   type: 'keySignature';
   key: number;
   /* 0이면 메이저 스케일, 아니면 마이너 스케일 */
-  scale: number;
+  scale: number | string;
+  sharpsFlat?: string;
+  sharpsFlatSymbol?: string;
 }
 
 export interface MidiMetaSequencerSpecificEvent extends BaseMidiMetaEvent {

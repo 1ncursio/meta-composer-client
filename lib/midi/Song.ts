@@ -131,8 +131,12 @@ export interface ActiveTrack {
   meta: MidiMetaEvent[];
   notes: MidiChannelSongNoteEvent[];
   // Render을 하면서 정보를 가져올 때 isOn이 생긴다. 현재 연주중인 노트면 isOn은 true가 된다.
-  notesBySeconds: { [second: string]: MidiChannelSongNoteEventWithIsOn[] };
+  notesBySeconds: NotesBySeconds;
   tempoChanges: MidiMetaSetTempoEvent[];
+}
+
+export interface NotesBySeconds {
+  [second: string]: MidiChannelSongNoteEventWithIsOn[];
 }
 
 export interface MidiChannelSongNoteEventWithIsOn extends MidiChannelSongNoteEvent {

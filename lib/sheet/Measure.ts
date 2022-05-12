@@ -31,7 +31,8 @@ export default class Measure {
   divs: Divs;
   staves: Staves;
   measureWidth: number;
-  roundedNotes: MidiChannelSongNoteEvent;
+  // roundedNotes: MidiChannelSongNoteEvent;
+  roundedNotes: RoundedNotes;
   startTsp: number;
   endTsp: number;
   msDuration: number;
