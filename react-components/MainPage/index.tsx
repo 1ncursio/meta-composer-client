@@ -3,7 +3,7 @@ import fetcher from '@lib/api/fetcher';
 import ILesson from '@typings/ILesson';
 import { useCallback, useState } from 'react';
 import useSWR from 'swr';
-import Carousel from './Carousel';
+import CarouselComponent from './CarouselComponent';
 
 import useSWRInfinite from 'swr/infinite';
 import CardItem from './CardItem';
@@ -41,7 +41,7 @@ const MainPage = () => {
   return (
     <div>
       <div className="carousel w-full">
-        <Carousel />
+        <CarouselComponent />
       </div>
       <br />
       <br />
@@ -58,7 +58,9 @@ const MainPage = () => {
       <br />
       <h1 className="text-2xl font-bold">
         새로 등록된 레슨!&nbsp;
-        <div className="badge badge-secondary">NEW</div>&nbsp;&gt;
+        <div className="badge badge-secondary">
+          <a href="/lessons"> NEW &nbsp;&gt;</a>
+        </div>
       </h1>
       <h2 className="opacity-50">한 번 도전해보세요!</h2>
       <br />
@@ -67,7 +69,9 @@ const MainPage = () => {
       <br />
       <h1 className="text-2xl font-bold">
         Sonata 레슨&nbsp;
-        <div className="badge badge-error">GO</div>&nbsp;&gt;
+        <div className="badge badge-error">
+          <a href="/lessons"> GO &nbsp;&gt;</a>
+        </div>
       </h1>
       <h2 className="opacity-50 pb-4">당신도 할 수 있다!!</h2>
       <TypeLessonCard />
@@ -78,9 +82,11 @@ const MainPage = () => {
       <br />
       <h1 className="text-2xl font-bold">
         콩쿠르 참가하러 가기&nbsp;
-        <div className="badge badge-error">GO</div>&nbsp;&gt;
+        <div className="badge badge-error">
+          <a href="/concours"> GO &nbsp;&gt;</a>
+        </div>
       </h1>
-      <div className="overflow-x-scroll">
+      <div>
         <ConcourComponent />
       </div>
       <br />

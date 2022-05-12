@@ -35,11 +35,11 @@ const LessonComponent: FC<LessonProps> = ({ lesson, show }) => {
         <p className="text-blue-600 text-lg font-bold ">₩{lesson.price}</p>
         <div className="rating rating-sm">
           <input type="radio" className="mask mask-star-2 bg-orange-400" />
-          {start?.map((start) => {
+          {start?.map((start, index) => {
             if (start) {
-              return <input type="radio" className="mask mask-star-2 bg-orange-400" checked />;
+              return <input key={index} type="radio" className="mask mask-star-2 bg-orange-400" checked readOnly />;
             } else {
-              return <input type="radio" className="mask mask-star-2 bg-orange-400" />;
+              return <input key={index} type="radio" className="mask mask-star-2 bg-orange-400" readOnly />;
             }
           })}
         </div>

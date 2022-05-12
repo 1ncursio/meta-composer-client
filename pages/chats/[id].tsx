@@ -202,13 +202,13 @@ const ChatRoomPage = () => {
   }, [getSocket, id, userJoin, userChatsData]);
 
   return (
-    <div className="flex gap-8 h-full">
+    <div className="flex h-full">
       {typeof id === 'string' && <MessageRoomList currentRoomId={parseInt(id)} />}
       <div className="flex-1 flex flex-col">
         <div className="flex-1 overflow-y-scroll">
           <MessageList chatSections={chatSections} ref={scrollbarRef} isReachingEnd={isReachingEnd} setSize={setSize} />
         </div>
-        <form onSubmit={handleSubmit(onSendChatMessage)} className="flex items-center gap-2 py-4">
+        <form onSubmit={handleSubmit(onSendChatMessage)} className="flex items-center gap-2 py-4 bg-gray-200">
           <div className="flex-1 relative">
             <input
               type="text"
