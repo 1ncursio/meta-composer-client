@@ -28,6 +28,7 @@ export interface AGUISlider {
 }
 
 export default AFRAME.registerComponent<AGUISlider>('gui-slider', {
+  // @ts-ignore
   schema: {
     activeColor: { type: 'string', default: key_orange },
     backgroundColor: { type: 'string', default: key_offwhite },
@@ -222,7 +223,9 @@ export default AFRAME.registerComponent<AGUISlider>('gui-slider', {
   pause() {},
   play() {},
   onClick(e) {
+    // @ts-ignore
     console.log('I was clicked at: ', e.detail.intersection.point);
+    // @ts-ignore
     const localCoordinates = this.el.object3D.worldToLocal(e.detail.intersection.point);
     console.log('local coordinates: ', localCoordinates);
     console.log('current percent: ' + this.data.percent);

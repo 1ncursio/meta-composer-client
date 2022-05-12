@@ -12,6 +12,7 @@
       "@lib/*": ["lib/*"],
       "@hooks/*": ["hooks/*"],
       "@typings/*": ["typings/*"],
+      "types": ["iamport-typings"],
       "~/*": ["*"]
     },
     "target": "es5",
@@ -27,7 +28,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": true,
+    "downlevelIteration": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

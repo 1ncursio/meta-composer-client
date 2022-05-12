@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { IMessage } from '@typings/IMessage';
 import { getBackEndUrl } from '@utils/getEnv';
 import { rest } from 'msw';
@@ -16,6 +18,7 @@ const user = {
 const messages: IMessage[] = [
   {
     id: 1,
+    // @ts-ignore
     user: {
       id: 123,
       email: 'asd@naver.com',
@@ -61,6 +64,7 @@ export const handlers = [
       createdAt: new Date(),
     };
 
+    // @ts-ignore
     messages.unshift(newMessage);
 
     return res(

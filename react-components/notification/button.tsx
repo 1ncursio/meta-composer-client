@@ -57,7 +57,7 @@ const NotificaitonButton: FC<NotificaitonCountProps> = ({ count, setSize, curren
           {pageCount.map((page) => (
             <li>
               <a
-                // key={page}
+                key={page}
                 onClick={onPage(page, true)}
                 className={`bg-${
                   currentPage === page - 1 ? 'red-200' : 'white-200'

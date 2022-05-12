@@ -18,6 +18,7 @@ export const messageRow = (isOwnMessage: boolean) =>
     // 'hover:bg-primary',
     pointerEvents('pointer-events-none'),
     alignItems('items-end'),
+    // @ts-ignore
     {
       'flex-row-reverse': isOwnMessage,
       'flex-row': !isOwnMessage,
@@ -30,6 +31,7 @@ export const messageRowContent = (isOwnMessage: boolean) =>
     fontWeight('font-light'),
     maxWidth('max-w-md'),
     padding('pt-2', 'pb-3', 'pl-4', 'pr-3'),
+    // @ts-ignore
     {
       'bg-primary': isOwnMessage,
       'bg-neutral': !isOwnMessage,

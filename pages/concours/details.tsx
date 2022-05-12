@@ -7,11 +7,11 @@ import ConcourItem from '@react-components/Concours/concourItem';
 import fetcher from '@lib/api/fetcher';
 import Concours from '@store/concours';
 
-const details = () => {
+const Details = () => {
   const router = useRouter();
   const { data: concours } = useSWR<Concours>(`/concours/${router.query.id}`, fetcher);
 
   return <div>{concours ? <ConcourItem concours={concours} /> : null}</div>;
 };
 
-export default details;
+export default Details;

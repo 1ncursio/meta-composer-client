@@ -1,10 +1,10 @@
 import useUserSWR from '@hooks/swr/useUserSWR';
-import { getBackEndUrl } from '@utils/getEnv';
+import { getBackEndUrl, isDev } from '@utils/getEnv';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import { BsBell } from 'react-icons/bs';
+import { BsFillFileMusicFill } from 'react-icons/bs';
 import { FaFacebookF } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import Avatar from './Avatar';
@@ -40,13 +40,51 @@ const Header = () => {
           </Link>
         </div>
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal p-0">
-            <li>
-              <Link href="/lessons">
-                <a>Item 1</a>
+          <ul className="menu menu-horizontal p-0 hover:z-50   ">
+            <li tabIndex={1}>
+              <Link href={`/lessons`}>
+                <a>
+                  레슨
+                  <svg
+                    className="fill-current"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+                  </svg>
+                </a>
               </Link>
+              <ul className="p-2 bg-white">
+                <li>
+                  <Link href={`/lessons?searchKeyword=Sonata`}>
+                    <a>Sonata</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link href={`/lessons?searchKeyword=Etudes`}>
+                    <a>Etudes</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link href={`/lessons?searchKeyword=Waltzes`}>
+                    <a>Waltzes</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link href={`/lessons?searchKeyword=Nocturnes`}>
+                    <a>Nocturnes</a>
+                  </Link>
+                </li>
+                <li>
+                  <Link href={`/lessons?searchKeyword=Marches`}>
+                    <a>Marches</a>
+                  </Link>
+                </li>
+              </ul>
             </li>
-            <li tabIndex={0}>
+            {/* <li tabIndex={0}>
               <a>
                 Parent
                 <svg
@@ -67,12 +105,14 @@ const Header = () => {
                   <a>Submenu 2</a>
                 </li>
               </ul>
-            </li>
-            <li>
-              <Link href="/tests">
-                <a>테스트</a>
-              </Link>
-            </li>
+            </li> */}
+            {isDev() && (
+              <li>
+                <Link href="/tests">
+                  <a>테스트</a>
+                </Link>
+              </li>
+            )}
             <li tabIndex={1}>
               <Link href="/concours">
                 <a>
@@ -118,9 +158,9 @@ const Header = () => {
               <input type="checkbox" id="my-modal" className="modal-toggle" />
               <div className="modal">
                 <div className="modal-box max-w-md">
-                  <h3 className="font-bold text-lg">간편 로그인</h3>
-                  <p className="py-4">로그인 모달</p>
-                  <div className="flex gap-2">
+                  <h3 className="font-bold text-lg text-center">간편 로그인</h3>
+                  {/* <p className="py-4">로그인 모달</p> */}
+                  <div className="flex gap-2 p-2 py-8 justify-evenly">
                     <button
                       onClick={onClickLogin('facebook')}
                       className="btn btn-circle bg-[#2374e1] border-none hover:bg-[#2374e1]"
@@ -135,7 +175,7 @@ const Header = () => {
                     </button>
                   </div>
                   <div className="modal-action">
-                    <label htmlFor="my-modal" className="btn">
+                    <label htmlFor="my-modal" className="btn btn-accent">
                       닫기
                     </label>
                   </div>

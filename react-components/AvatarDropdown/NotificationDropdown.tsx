@@ -21,6 +21,10 @@ const NotificationDropdown: FC<NotificaitonProps> = ({ notifitionData }) => {
   const { t } = useTranslation('common');
   const { tab, selectTab } = useTabs();
 
+  const movePage = (notification: INotification) => async () => {
+    await client.get(`/notification/${notification.id}/info`);
+    window.location.href = window.location.origin + notification.url;
+  };
   // const [notifitionInfo, setNotifitionInfo] = useState<INotification | null>();
   // const showNotification = (id: number) => async () => {
   //   const data = await client.get(`/notification/${id}/info`);
@@ -31,17 +35,19 @@ const NotificationDropdown: FC<NotificaitonProps> = ({ notifitionData }) => {
   // };
 
   return (
-    <div tabIndex={0} className="shadow card card-compact dropdown-content bg-base-100 w-80 rounded-none">
-      <div className="card-body">
-        <h3 className="card-title">알림</h3>
+    <div tabIndex={0} className="shadow card card-compact  dropdown-content bg-base-100 w-80 rounded-none">
+      <div className="card-body hover:bg-gray-200">
+        <Link href="/notifications">
+          <button className="card-title">알림함</button>
+        </Link>
       </div>
       {/* <div>{notificationList && JSON.stringify(notificationList.notifitionData)}</div> */}
       <ul className="menu">
         {notifitionData &&
-          notifitionData.map((noti) => (
-            <li key={noti.id} className="flex flex-row items-center">
-              <Link href={'/'}>
-                <a className="flex-1">
+          notifitionData.map((noti, index) => (
+            <li key={index} className="flex flex-row items-center">
+              <div onClick={movePage(noti)}>
+                <p className="flex-1">
                   <AiTwotoneSound size={24} />
                   {noti.content}
                   {!noti.readTime && (
@@ -49,8 +55,8 @@ const NotificationDropdown: FC<NotificaitonProps> = ({ notifitionData }) => {
                       N
                     </div>
                   )}
-                </a>
-              </Link>
+                </p>
+              </div>
             </li>
           ))}
       </ul>

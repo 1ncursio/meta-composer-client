@@ -8,7 +8,7 @@ export interface INotification {
   updated_at: Date;
   userId: number;
   content: string;
-  url: string | undefined;
+  url: string;
   type: string;
 }
 interface Signup {

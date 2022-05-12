@@ -1,7 +1,7 @@
 export interface INoteEvent {
   type: 'noteOn' | 'noteOff';
   note: number;
-  velocity: number;
+  velocity?: number;
 }
 
 export default class NoteEvent {

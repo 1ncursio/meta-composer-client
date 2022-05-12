@@ -1,6 +1,6 @@
 import React from 'react';
 
-const result = () => {
+const ConcourResultPage = () => {
   return (
     <div>
       <h2>result</h2>
@@ -8,4 +8,4 @@ const result = () => {
   );
 };
 
-export default result;
+export default ConcourResultPage;

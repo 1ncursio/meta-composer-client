@@ -36,6 +36,7 @@ export default AFRAME.registerComponent('gui-vertical-slider', {
     var guiItem = el.getAttribute('gui-item');
     var sliderWidth = guiItem.width - data.leftRightPadding * 2.0;
     var sliderHeight = guiItem.height - data.topBottomPadding * 2.0;
+    // @ts-ignore
     this.sliderHeight = sliderHeight;
 
     el.setAttribute('geometry', `primitive: plane; height: ${guiItem.height}; width: ${guiItem.width};`);
@@ -59,6 +60,7 @@ export default AFRAME.registerComponent('gui-vertical-slider', {
         data.sliderBarDepth - 0.01
       }`,
     );
+    // @ts-ignore
     this.sliderActiveBar = sliderActiveBar;
     el.appendChild(sliderActiveBar);
 
@@ -74,6 +76,7 @@ export default AFRAME.registerComponent('gui-vertical-slider', {
       `shader: flat; opacity: 1; alphaTest: 0.5; side:double; color:${data.borderColor};`,
     );
     sliderBar.setAttribute('position', `0 ${data.percent * sliderHeight * 0.5} ${data.sliderBarDepth - 0.01}`);
+    // @ts-ignore
     this.sliderBar = sliderBar;
     el.appendChild(sliderBar);
 
@@ -88,6 +91,7 @@ export default AFRAME.registerComponent('gui-vertical-slider', {
       'position',
       `0 ${data.percent * sliderHeight - sliderHeight * 0.5} ${data.handleOuterDepth - 0.01}`,
     );
+    // @ts-ignore
     this.handleContainer = handleContainer;
     el.appendChild(handleContainer);
 
@@ -112,6 +116,7 @@ export default AFRAME.registerComponent('gui-vertical-slider', {
     valueLabel.setAttribute('font-size', `${guiItem.width * 240}px`);
     valueLabel.setAttribute('font-weight', 'bold');
     valueLabel.setAttribute('text-depth', data.outputTextDepth);
+    // @ts-ignore
     this.valueLabel = valueLabel;
     handleContainer.appendChild(valueLabel);
 
@@ -123,6 +128,7 @@ export default AFRAME.registerComponent('gui-vertical-slider', {
     hoverIndicator.setAttribute('material', `shader: flat; opacity: 1; side:double; color: ${data.activeColor};`);
     hoverIndicator.setAttribute('position', `${-guiItem.width * 0.5} 0 ${data.sliderBarDepth - 0.01}`);
     hoverIndicator.setAttribute('visible', 'false');
+    // @ts-ignore
     this.hoverIndicator = hoverIndicator;
     el.appendChild(hoverIndicator);
 
@@ -135,6 +141,7 @@ export default AFRAME.registerComponent('gui-vertical-slider', {
     hoverLabel.setAttribute('font-color', data.borderColor);
     hoverLabel.setAttribute('font-size', `${guiItem.width * data.hoverFontSize}px`);
     hoverLabel.setAttribute('text-depth', data.outputTextDepth);
+    // @ts-ignore
     this.hoverLabel = hoverLabel;
     hoverIndicator.appendChild(hoverLabel);
 
@@ -148,6 +155,7 @@ export default AFRAME.registerComponent('gui-vertical-slider', {
 
     el.addEventListener('click', function (evt) {
       // console.log('I was clicked at: ', evt.detail.intersection.point);
+      // @ts-ignore
       var localCoordinates = el.object3D.worldToLocal(evt.detail.intersection.point);
       console.log('click local coordinates: ', localCoordinates);
       console.log('current percent: ' + data.percent);
@@ -171,17 +179,22 @@ export default AFRAME.registerComponent('gui-vertical-slider', {
       var clickActionFunction = window[clickActionFunctionName];
       //console.log("clickActionFunction: "+clickActionFunction);
       // is object a function?
+      // @ts-ignore
       if (typeof clickActionFunction === 'function') clickActionFunction(data.percent);
     });
 
     this.el.addEventListener('raycaster-intersected', (evt) => {
       // console.log('***** in raycaster-intersected');
+      // @ts-ignore
       this.raycaster = evt.detail.el;
     });
     this.el.addEventListener('raycaster-intersected-cleared', (evt) => {
       // console.log('****** in raycaster-intersected-cleared');
+      // @ts-ignore
       this.raycaster = null;
+      // @ts-ignore
       this.hoverIndicator.setAttribute('visible', false);
+      // @ts-ignore
       this.hoverLabel.setAttribute('visible', false);
     });
   },
@@ -192,66 +205,87 @@ export default AFRAME.registerComponent('gui-vertical-slider', {
     var sliderWidth = guiItem.width - data.leftRightPadding * 2.0;
     var sliderHeight = guiItem.height - data.topBottomPadding * 2.0;
     //console.log('in vertical slider update, oldData: ' + JSON.stringify(oldData) + ', data: ' + JSON.stringify(data))
+    // @ts-ignore
     if (data.percent != oldData.percent && this.sliderActiveBar && this.sliderBar && this.handleContainer) {
       var sliderHeight = guiItem.height - data.topBottomPadding * 2.0;
+      // @ts-ignore
       this.sliderActiveBar.setAttribute(
         'geometry',
         `primitive: box; height: ${data.percent * sliderHeight}; width: ${data.sliderBarWidth}; depth: ${
           data.sliderBarDepth
         };`,
       );
+      // @ts-ignore
       this.sliderActiveBar.setAttribute(
         'position',
         `0 ${data.percent * sliderHeight - sliderHeight * 0.5 - data.percent * sliderHeight * 0.5} ${
           data.sliderBarDepth - 0.01
         }`,
       );
+      // @ts-ignore
       this.sliderBar.setAttribute(
         'geometry',
         `primitive: box; width: ${data.sliderBarWidth}; height: ${sliderHeight - data.percent * sliderHeight}; depth: ${
           data.sliderBarDepth
         };`,
       );
+      // @ts-ignore
       this.sliderBar.setAttribute('position', `0 ${data.percent * sliderHeight * 0.5} ${data.sliderBarDepth - 0.01}`);
+      // @ts-ignore
       this.handleContainer.setAttribute(
         'position',
         `0 ${data.percent * sliderHeight - sliderHeight * 0.5} ${data.handleOuterDepth - 0.01}`,
       );
       var outputValue = this.getOutputValue(false);
       if (outputValue) {
+        // @ts-ignore
         this.valueLabel.setAttribute('value', outputValue);
       }
+      // @ts-ignore
       this.hoverIndicator.setAttribute('visible', false);
+      // @ts-ignore
       this.hoverLabel.setAttribute('visible', false);
+      // @ts-ignore
     } else if (data.hoverPercent != oldData.hoverPercent && data.hoverPercent != data.percent && this.hoverIndicator) {
       var hoverOutputValue = this.getOutputValue(true);
       if (hoverOutputValue) {
+        // @ts-ignore
         this.hoverLabel.setAttribute('value', hoverOutputValue);
       }
+      // @ts-ignore
       this.hoverIndicator.setAttribute(
         'position',
         `0 ${data.hoverPercent * sliderHeight - sliderHeight * 0.5} ${data.sliderBarDepth - 0.01}`,
       );
+      // @ts-ignore
       this.hoverIndicator.setAttribute('visible', true);
+      // @ts-ignore
       this.hoverLabel.setAttribute('visible', true);
     }
   },
   tick: function () {
+    // @ts-ignore
     if (!this.raycaster) {
       return;
     } // Not intersecting.
 
     var el = this.el;
     var data = this.data;
+    // @ts-ignore
     var sliderHeight = this.sliderHeight;
+    // @ts-ignore
     var handleContainer = this.handleContainer;
+    // @ts-ignore
     let intersection = this.raycaster.components.raycaster.getIntersection(el);
     if (!intersection) {
       return;
     } else {
       //  console.log('1: hover intersection point: ' + JSON.stringify(intersection.point));
+      // @ts-ignore
       if (this.previousLocalY && this.previousLocalY == intersection.point.y) {
+        // @ts-ignore
         this.hoverIndicator.setAttribute('visible', false);
+        // @ts-ignore
         this.hoverLabel.setAttribute('visible', false);
         return;
       }
@@ -269,6 +303,7 @@ export default AFRAME.registerComponent('gui-vertical-slider', {
       localCoordinates.x = intersection.point.x - pos.x;
       localCoordinates.y = intersection.point.y - pos.y;
       localCoordinates.z = intersection.point.z - pos.z;
+      // @ts-ignore
       this.previousLocalY = localCoordinates.y;
       //    console.log('3: hover local position: ' + JSON.stringify(localCoordinates));
       // var localCoordinates = el.object3D.worldToLocal(intersection.point);
@@ -297,17 +332,20 @@ export default AFRAME.registerComponent('gui-vertical-slider', {
       var hoverActionFunction = window[hoverActionFunctionName];
       //console.log("clickActionFunction: "+clickActionFunction);
       // is object a function?
+      // @ts-ignore
       if (typeof hoverActionFunction === 'function') hoverActionFunction(hoverPercent);
     }
   },
   remove: function () {},
   pause: function () {},
   play: function () {},
+  // @ts-ignore
   getOutputValue: function (hover) {
     var outputValueFunction = window[this.data.outputFunction];
     //console.log("clickActionFunction: "+clickActionFunction);
     // is object a function?
     if (typeof outputValueFunction === 'function') {
+      // @ts-ignore
       var outputValue = outputValueFunction(hover ? this.data.hoverPercent : this.data.percent);
       return outputValue;
     }

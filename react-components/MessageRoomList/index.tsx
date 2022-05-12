@@ -36,7 +36,7 @@ const MessageRoomList: FC<MessageRoomListProps> = ({ currentRoomId }) => {
     // }),
     // false,
     if (currentRoomId === id) {
-      window.location.href = 'http://localhost:3000/chats';
+      window.location.href = `${window.location.origin}/chats`;
     }
 
     //여기서 다른 페이지 가는것도 해야됨

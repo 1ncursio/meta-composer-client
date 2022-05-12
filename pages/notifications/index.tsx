@@ -2,7 +2,6 @@ import fetcher from '@lib/api/fetcher';
 import DashboardContainer from '@react-components/DashboardContainer';
 import Notificaiton from '@react-components/notification';
 import NotificaitonButton from '@react-components/notification/button';
-import NotificaitonModal from '@react-components/notification/notifitionModal';
 import { INotification } from '@typings/INotification';
 import { GetStaticProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -12,6 +11,7 @@ import useSWRInfinite from 'swr/infinite';
 import client from '@lib/api/client';
 import { AiFillDelete } from 'react-icons/ai';
 import produce from 'immer';
+import { useRouter } from 'next/router';
 
 export interface NotificaitonSWR {
   notifitionData: INotification[];
@@ -26,13 +26,17 @@ const NotificationsIndexPage = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [notifitionInfo, setNotifitionInfo] = useState<INotification | null>();
-
+  const router = useRouter();
   const test = (id: number) => async () => {
     const data = await client.get(`/notification/${id}/info`);
     const noti: INotification = data.data.payload;
 
     setNotifitionInfo(noti);
     mutateNotification();
+  };
+  const movePage = (notification: INotification) => async () => {
+    await client.get(`/notification/${notification.id}/info`);
+    router.push(notification.url);
   };
   const clear = () => {
     setNotifitionInfo(null);
@@ -82,9 +86,9 @@ const NotificationsIndexPage = () => {
           {notifitionlist &&
             notifitionlist[currentPage]?.notifitionData.map((noti) => (
               <div key={noti.id} className="flex flex-row h-full max-h-20">
-                <label htmlFor="my-modal" onClick={test(noti.id)} className="w-3/4">
+                <div onClick={movePage(noti)} className="w-3/4">
                   <Notificaiton key={noti.id} notification={noti} />
-                </label>
+                </div>
                 <div className="flex items-center">
                   <AiFillDelete size={30} className="m-auto w-10" onClick={remove(noti.id)} />
                 </div>

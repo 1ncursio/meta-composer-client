@@ -53,7 +53,6 @@ const ChatRoomPage = () => {
   const onSendChatMessage = useCallback(
     async ({ message }: IChatForm) => {
       if (!userData || !message?.trim() || typeof id !== 'string' || !socket) return;
-
       try {
         sendMessage({
           message,
@@ -180,7 +179,6 @@ const ChatRoomPage = () => {
         }
       })
       .on('chatJoin-event', () => {
-        console.log(userJoin);
         if (!userJoin) {
           getSocket.emit('chat-current-user-emit');
         }
@@ -197,7 +195,6 @@ const ChatRoomPage = () => {
         setUserJoin(false);
       });
     return () => {
-      getSocket.emit('chat-current-user-emit');
       getSocket?.off('push-message');
       getSocket?.off('chatJoin-event');
       getSocket?.off('chatLeave-event');

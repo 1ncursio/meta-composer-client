@@ -75,7 +75,9 @@ const XRLayoutContainer = () => {
         })}
       >
         {/* offset X container */}
+        {/* @ts-ignore */}
         <a-gui-flex-container flex-direction="row" justify-content="center" align-items="normal" width={1.6} height={1}>
+          {/* @ts-ignore */}
           <a-gui-icon-button
             scale={coordStr({
               x: 1,
@@ -91,6 +93,7 @@ const XRLayoutContainer = () => {
             background-color-opacity={0.6}
             onClick={() => setOffsetX(offsetX - 0.01)}
           />
+          {/* @ts-ignore */}
           <a-gui-label
             width={1.5}
             height={1}
@@ -103,6 +106,7 @@ const XRLayoutContainer = () => {
             font-color="#ffffff"
             margin="0 0 0.05 0"
           />
+          {/* @ts-ignore */}
           <a-gui-icon-button
             scale={coordStr({
               x: 1,
@@ -118,8 +122,11 @@ const XRLayoutContainer = () => {
             background-color-opacity={0.6}
             onClick={() => setOffsetX(offsetX + 0.01)}
           />
+          {/* @ts-ignore */}
         </a-gui-flex-container>
+        {/* @ts-ignore */}
         <a-gui-flex-container flex-direction="row" justify-content="center" align-items="normal" width={1.6} height={1}>
+          {/* @ts-ignore */}
           <a-gui-icon-button
             scale={coordStr({
               x: 1,
@@ -135,6 +142,7 @@ const XRLayoutContainer = () => {
             background-color-opacity={0.6}
             onClick={() => setOffsetY(offsetY - 0.01)}
           />
+          {/* @ts-ignore */}
           <a-gui-label
             width={1.5}
             height={1}
@@ -147,6 +155,7 @@ const XRLayoutContainer = () => {
             font-color="#ffffff"
             margin="0 0 0.05 0"
           />
+          {/* @ts-ignore */}
           <a-gui-icon-button
             scale={coordStr({
               x: 1,
@@ -162,8 +171,11 @@ const XRLayoutContainer = () => {
             background-color-opacity={0.6}
             onClick={() => setOffsetY(offsetY + 0.01)}
           />
+          {/* @ts-ignore */}
         </a-gui-flex-container>
+        {/* @ts-ignore */}
         <a-gui-flex-container flex-direction="row" justify-content="center" align-items="normal" width={1.6} height={1}>
+          {/* @ts-ignore */}
           <a-gui-icon-button
             scale={coordStr({
               x: 1,
@@ -179,6 +191,7 @@ const XRLayoutContainer = () => {
             background-color-opacity={0.6}
             onClick={() => setOffsetZ(offsetZ - 0.01)}
           />
+          {/* @ts-ignore */}
           <a-gui-label
             width={1.5}
             height={1}
@@ -191,6 +204,7 @@ const XRLayoutContainer = () => {
             font-color="#ffffff"
             margin="0 0 0.05 0"
           />
+          {/* @ts-ignore */}
           <a-gui-icon-button
             scale={coordStr({
               x: 1,
@@ -206,9 +220,11 @@ const XRLayoutContainer = () => {
             background-color-opacity={0.6}
             onClick={() => setOffsetZ(offsetZ + 0.01)}
           />
+          {/* @ts-ignore */}
         </a-gui-flex-container>
 
         {/* 세팅 닫기 버튼 */}
+        {/* @ts-ignore */}
         <a-gui-icon-button
           scale={coordStr({
             x: 1,
@@ -223,8 +239,10 @@ const XRLayoutContainer = () => {
           background-color="#000000"
           onClick={closeSettings}
         />
+        {/* @ts-ignore */}
       </a-gui-flex-container>
       {/* 악보 컨테이너 */}
+      {/* @ts-ignore */}
       <a-gui-flex-container
         is-top-container
         flex-direction="column"
@@ -242,8 +260,10 @@ const XRLayoutContainer = () => {
         })}
       >
         <SheetEntity />
+        {/* @ts-ignore */}
       </a-gui-flex-container>
       {/* 컨트롤 버튼 컨테이너 */}
+      {/* @ts-ignore */}
       <a-gui-flex-container
         is-top-container
         flex-direction="row"
@@ -267,6 +287,7 @@ const XRLayoutContainer = () => {
         })}
       >
         {/* 볼륨 아이콘 */}
+        {/* @ts-ignore */}
         <a-gui-icon-button
           scale={coordStr({
             x: 1,
@@ -281,6 +302,7 @@ const XRLayoutContainer = () => {
           focus-color="#ccc"
           background-color="#000000"
         />
+        {/* @ts-ignore */}
         <a-gui-slider
           border-color="#f6f6f6"
           background-color="#000000"
@@ -303,6 +325,7 @@ const XRLayoutContainer = () => {
           margin="0 0 0.05 0"
         />
         {/* backward-step 아이콘 */}
+        {/* @ts-ignore */}
         <a-gui-icon-button
           scale={coordStr({
             x: 1,
@@ -318,6 +341,7 @@ const XRLayoutContainer = () => {
           background-color="#000000"
         />
         {/* pause / play 아이콘 */}
+        {/* @ts-ignore */}
         <a-gui-icon-button
           scale={coordStr({
             x: 1,
@@ -336,6 +360,7 @@ const XRLayoutContainer = () => {
           className="raycastable"
         />
         {/* forward-step 아이콘 */}
+        {/* @ts-ignore */}
         <a-gui-icon-button
           scale={coordStr({
             x: 1,
@@ -351,6 +376,7 @@ const XRLayoutContainer = () => {
           background-color="#000000"
         />
         {/* 마이크 아이콘 */}
+        {/* @ts-ignore */}
         <a-gui-icon-button
           scale={coordStr({
             x: 1,
@@ -368,6 +394,7 @@ const XRLayoutContainer = () => {
           onClick={toggleMuteMic}
         />
         {/* 설정 아이콘 */}
+        {/* @ts-ignore */}
         <a-gui-icon-button
           scale={coordStr({
             x: 1,
@@ -383,6 +410,7 @@ const XRLayoutContainer = () => {
           onClick={openSettings}
         />
         {/* 악보 선택 아이콘 */}
+        {/* @ts-ignore */}
         <a-gui-icon-button
           scale={coordStr({
             x: 1,
@@ -414,6 +442,7 @@ const XRLayoutContainer = () => {
           font-color="#ffffff"
           margin="0 0 0.05 0"
         /> */}
+        {/* @ts-ignore */}
       </a-gui-flex-container>
       {/* <a-gui-flex-container
         is-top-container

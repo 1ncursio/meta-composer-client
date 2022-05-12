@@ -12,3 +12,11 @@ export default interface IPayment {
   affiliation: string;
   refund: string;
 }
+
+export interface ITimeTable {
+  id: number;
+  lessonId: number;
+  signupId: number;
+  day: string;
+  time: string;
+}

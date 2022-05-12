@@ -65,18 +65,18 @@ const MyProfileIndexPage = () => {
   return (
     <DashboardContainer>
       {/* <div className="bg-white block py-10"> */}
-      <div className="flex flex-col w-full items-center gap-y-5">
+      <div className="container flex flex-col w-3/5 mx-auto items-center gap-y-5">
         <form
           onSubmit={handleSubmit(onSend)}
-          className="  mx-auto gap-y-4  w-3/4 border-solid border-2 border-gray-300
+          className="  mx-auto gap-y-4  w-3/4 border-solid border-2 border-gray-300 bg-gray-100
       flex flex-col items-center p-2"
         >
           <Image
             src={typeof imageSrc === 'string' ? imageSrc : ''}
-            className="rounded-full  object-cover"
+            className="rounded-full  object-cover "
             alt="Vercel Logo"
-            width={250}
-            height={250}
+            width={125}
+            height={125}
             onClick={onClickPaperClip}
           />
           <input
@@ -115,7 +115,7 @@ const MyProfileIndexPage = () => {
           </button>
         </form>
 
-        <div className="w-3/4 flex-col gap-y-4  p-5 content-start border-solid border-2 border-gray-300 ">
+        <div className="w-3/4 flex-col gap-y-4  p-5 content-start border-solid border-2 border-gray-300  bg-gray-100">
           <p className="mb-3 font-semibold">email</p>
           <input
             value={userData?.email}
