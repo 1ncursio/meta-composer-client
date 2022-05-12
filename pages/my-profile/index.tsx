@@ -75,8 +75,8 @@ const MyProfileIndexPage = () => {
             src={typeof imageSrc === 'string' ? imageSrc : ''}
             className="rounded-full  object-cover "
             alt="Vercel Logo"
-            width={250}
-            height={250}
+            width={125}
+            height={125}
             onClick={onClickPaperClip}
           />
           <input

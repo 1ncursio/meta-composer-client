@@ -12,29 +12,29 @@ const DashboardMain = () => {
   const { data: userData } = useUserSWR();
   const { data: signUpData, mutate: mutateLessonData } = useSWR<ISignup[]>('/signup-timetables', fetcher);
 
-  const viewSingup = useMemo(() => {
+  const closeSignup = useMemo(() => {
     if (!signUpData || signUpData?.length < 1)
-      return { closeSignup: null, lesson: 0, finishedCount: 0, date: `아직 없습니다` };
+      return { signup: null, lesson: 0, finishedCount: 0, date: `아직 없습니다` };
 
     const row = new Date();
     let max = new Date(row.getFullYear() + 2, 1, 1);
-    let closeSignup = signUpData[0];
+    let signup = signUpData[0];
     signUpData?.forEach((signup) => {
       signup.signuptimetables.forEach((table) => {
         const time = new Date(table.time);
         if (row < time && max > time) {
           max = time;
-          closeSignup = signup;
+          signup = signup;
         }
       });
     });
 
-    const lesson = closeSignup.signuptimetables.length;
-    const finishedCount = closeSignup.signuptimetables.filter((table) => {
+    const lesson = signup.signuptimetables.length;
+    const finishedCount = signup.signuptimetables.filter((table) => {
       return new Date(table.time) < row;
     }).length;
 
-    return { closeSignup, lesson, finishedCount, date: `${max.getMonth() + 1}월 ${max.getDate()}일` };
+    return { signup, lesson, finishedCount, date: `${max.getMonth() + 1}월 ${max.getDate()}일` };
   }, [signUpData]);
 
   return (
@@ -72,29 +72,29 @@ const DashboardMain = () => {
           <p className="font-bold text-md">📖다음 레슨</p>
           <div className="flex items-end gap-2">
             <p className="font-bold text-md">
-              {viewSingup.closeSignup ? viewSingup.closeSignup?.__lesson__.name : '아직 없습니다'}
+              {closeSignup.signup ? closeSignup.signup?.__lesson__.name : '아직 없습니다'}
             </p>
-            <p className=" text-xs">({viewSingup?.date})</p>
+            <p className=" text-xs">({closeSignup?.date})</p>
           </div>
           <div className="w-full">
-            {viewSingup && (
+            {closeSignup && (
               <p>
                 진도율: {'   '}
-                {viewSingup.finishedCount}/{viewSingup.lesson}
-                {'   '}({(viewSingup.finishedCount / viewSingup!.lesson) * 100}%)
+                {closeSignup.finishedCount}/{closeSignup.lesson}
+                {'   '}({(closeSignup.finishedCount / closeSignup!.lesson) * 100}%)
               </p>
             )}
 
-            {viewSingup && (
+            {closeSignup && (
               <progress
                 className="progress w-3/4"
-                value={(viewSingup.finishedCount / viewSingup!.lesson) * 100}
+                value={(closeSignup.finishedCount / closeSignup!.lesson) * 100}
                 max="100"
               ></progress>
             )}
 
             <div className="w-full flex flex-row-reverse">
-              <Link href={viewSingup.closeSignup ? `/lessons/${viewSingup.closeSignup.__lesson__.id}` : `/lessons`}>
+              <Link href={closeSignup.signup ? `/lessons/${closeSignup.signup.__lesson__.id}` : `/lessons`}>
                 <a className="btn btn-error btn-sm">레슨 하러가기</a>
               </Link>
               {/* <button className="btn btn-error btn-sm">레슨 하러가기</button> */}
@@ -103,8 +103,19 @@ const DashboardMain = () => {
           </div>
         </div>
         {/* 내노트  */}
-        <div className="w-full h-48 border flex flex-col gap-y-2 p-2 justify-between rounded">
-          <p className="font-bold text-md">📝최근 내 노트</p>
+        <div className="w-full h-48 border flex flex-col gap-y-2 p-2  rounded">
+          <p className="font-bold text-md-2">📚최근 학습중인 강의</p>
+          {signUpData &&
+            signUpData?.length > 0 &&
+            signUpData.map((signup) => {
+              return (
+                <Link href={`/lessons/${signup.__lesson__.id}`}>
+                  <a>
+                    {signup.__lesson__.name} ({signup.startdate})
+                  </a>
+                </Link>
+              );
+            })}
         </div>
         {/* 학습통계 */}
         <div className="w-full h-48 border flex flex-col gap-y-2 p-2 justify-between rounded">

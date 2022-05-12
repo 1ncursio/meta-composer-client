@@ -50,7 +50,13 @@ const PaymentsComponent: FC<PaymentPropos> = ({ payment, changePayment }) => {
             <p className="font-bold text-lg">김정세</p>
           </div>
         </div>
-        <div className="border rounded-xl  bg-blue-500 font-bold text-white p-1 pl-2 pr-2">레슨중</div>
+        <div
+          className={`border rounded-xl  ${
+            payment.refund ? 'bg-gray-500' : 'bg-blue-500'
+          } font-bold text-white p-1 pl-2 pr-2`}
+        >
+          {payment.refund ? '레슨종료' : '레슨중'}
+        </div>
       </div>
       <div className="w-full flex flex-row-reverse">
         <div className="flex flex-col">
@@ -60,7 +66,7 @@ const PaymentsComponent: FC<PaymentPropos> = ({ payment, changePayment }) => {
       </div>
       <div className="w-full flex flex-row-reverse mt-2">
         <label className="btn btn-circle swap swap-rotate">
-          <input type="checkbox" onClick={() => chek()} />
+          <input type="checkbox" onClick={() => chek()} readOnly />
 
           <svg
             className="swap-off fill-current"
@@ -96,7 +102,7 @@ const PaymentsComponent: FC<PaymentPropos> = ({ payment, changePayment }) => {
         <div className="flex  justify-between">
           <p className="font-bold">레슨진행 ({dayCalculation?.finishedCount}회)</p>
           <div className="flex items-end gap-2 ">
-            <p className="font-bold"> </p>
+            <p className="font-bold"> 총</p>
             <p className="font-bold text-xl">{dayCalculation?.finishedCount * payment.signup.__lesson__.price}원</p>
           </div>
         </div>
@@ -104,20 +110,22 @@ const PaymentsComponent: FC<PaymentPropos> = ({ payment, changePayment }) => {
           <p className="font-bold text-xl text-red-500">
             {payment.signup.__lesson__.price * (lessonCount - dayCalculation.finishedCount)}원
           </p>
-          <p className="font-bold  text-sm text-red-500">환불가능금액</p>
+          <p className="font-bold  text-sm ">{payment.refund ? '한불한 금액' : '환불가능한 금액'}</p>
         </div>
-        <div className="flex  flex-row-reverse">
-          <label
-            onClick={() =>
-              changePayment(payment, payment.signup.__lesson__.price * (lessonCount - dayCalculation.finishedCount))
-            }
-            htmlFor="my-modal-5"
-            className="btn btn-error btn-sm bg-red-500"
-          >
-            환불하기
-          </label>
-          {/* <button className="btn btn-error btn-sm bg-red-500">환불하기</button> */}
-        </div>
+        {!payment.refund && (
+          <div className="flex  flex-row-reverse">
+            <label
+              onClick={() =>
+                changePayment(payment, payment.signup.__lesson__.price * (lessonCount - dayCalculation.finishedCount))
+              }
+              htmlFor="my-modal-5"
+              className="btn btn-error btn-sm bg-red-500"
+            >
+              환불하기
+            </label>
+            {/* <button className="btn btn-error btn-sm bg-red-500">환불하기</button> */}
+          </div>
+        )}
       </div>
     </div>
   );
