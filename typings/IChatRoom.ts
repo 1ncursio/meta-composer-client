@@ -7,7 +7,7 @@ export default interface IChatRoom {
   userId: number;
   lessonId: number;
   user: IUser;
-  __lesson__?: ILesson;
+  __lesson__: ILesson;
   __messages__: IMessage[];
   created_at: Date;
   updated_at: Date;

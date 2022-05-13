@@ -1,6 +1,8 @@
 import useRoomListSWR from '@hooks/swr/useRoomListSWR';
 import useUserSWR from '@hooks/swr/useUserSWR';
 import fetcher from '@lib/api/fetcher';
+import ChatContainer from '@react-components/ChattingContainer';
+import DashboardContainer from '@react-components/DashboardContainer';
 import MessageRoomList from '@react-components/MessageRoomList';
 import IChatRoom from '@typings/IChatRoom';
 import { IMessage } from '@typings/IMessage';
@@ -17,12 +19,17 @@ export interface IChatForm {
 
 const ChatsIndexPage = () => {
   return (
-    <div className="flex gap-8 h-full">
+    <ChatContainer>
+      {/* <div className="flex gap-8 h-full"> */}
       <MessageRoomList currentRoomId={null} />
-      <div className="flex-1 flex flex-col">
+      <div className="w-1/2 bg-gray-100"></div>
+      {/* <div></div>
+      </MessageRoomList> */}
+      {/* <div className="flex-1 flex flex-col">
         <div className="flex-1 overflow-y-scroll"></div>
-      </div>
-    </div>
+      </div> */}
+      {/* </div> */}
+    </ChatContainer>
   );
 };
 

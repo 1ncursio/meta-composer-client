@@ -1,11 +1,9 @@
 import ILesson from '@typings/ILesson';
 
-import { FC } from 'react';
 import optimizeImage from '@utils/optimizeImage';
 import { randomInt } from 'crypto';
 import Link from 'next/link';
 import { FC, useEffect, useState } from 'react';
-
 
 export interface LessonProps {
   lesson: ILesson;
@@ -14,7 +12,6 @@ export interface LessonProps {
 const CarouselItem: FC<LessonProps> = ({ lesson }) => {
   const perPage = 1;
   return (
-
     <div className="hero-content flex-col lg:flex-row">
       {/* <a href="#"> */}
       <img src={optimizeImage(lesson?.imageURL ?? '')} className="max-w-sm rounded-lg shadow-2xl pr-4" />

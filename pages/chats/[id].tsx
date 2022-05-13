@@ -3,6 +3,7 @@ import useUserSWR from '@hooks/swr/useUserSWR';
 import useSocket from '@hooks/useSocket';
 import client from '@lib/api/client';
 import fetcher from '@lib/api/fetcher';
+import ChatContainer from '@react-components/ChattingContainer';
 import MessageList from '@react-components/MessageList';
 import MessageRoomList from '@react-components/MessageRoomList';
 import useStore from '@store/useStore';
@@ -17,6 +18,7 @@ import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useMemo } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { useForm } from 'react-hook-form';
 import { AiOutlinePaperClip } from 'react-icons/ai';
@@ -201,14 +203,36 @@ const ChatRoomPage = () => {
     };
   }, [getSocket, id, userJoin, userChatsData]);
 
+  const title = useMemo(() => {
+    if (typeof id !== 'string') return;
+    let title = 'untitile';
+    userChatsData?.forEach((chat) => {
+      console.log(chat.id);
+      if (chat.id === parseInt(id)) {
+        title = chat.__lesson__.name;
+      }
+    });
+    lessonChatsData?.forEach((lesson) => {
+      lesson.chatRooms?.forEach((chat) => {
+        if (chat.id === parseInt(id)) {
+          title = lesson.name;
+        }
+      });
+    });
+
+    return title;
+  }, [id, lessonChatsData, userChatsData]);
+
   return (
-    <div className="flex h-full">
+    <ChatContainer>
+      {' '}
       {typeof id === 'string' && <MessageRoomList currentRoomId={parseInt(id)} />}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col h-4/5 bg-gray-100 rounded border border-gray-150">
+        <div className=" text-xl p-2 font-bold w-full border-b text-center ">{title}</div>
         <div className="flex-1 overflow-y-scroll">
           <MessageList chatSections={chatSections} ref={scrollbarRef} isReachingEnd={isReachingEnd} setSize={setSize} />
         </div>
-        <form onSubmit={handleSubmit(onSendChatMessage)} className="flex items-center gap-2 py-4 bg-gray-200">
+        <form onSubmit={handleSubmit(onSendChatMessage)} className="flex items-center gap-2 py-4 bg-gray-200 rounded">
           <div className="flex-1 relative">
             <input
               type="text"
@@ -230,7 +254,7 @@ const ChatRoomPage = () => {
           </button>
         </form>
       </div>
-    </div>
+    </ChatContainer>
   );
 };
 
