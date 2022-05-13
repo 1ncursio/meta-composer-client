@@ -65,7 +65,7 @@ const StreamControlContainer = () => {
         </button>
       </div>
       <div className="tooltip" data-tip="미디 파일 업로드">
-        <button onClick={onClickUploadMidiFile} className={styles.stateControlButton(!isMicMuted)}>
+        <button onClick={onClickUploadMidiFile} className={styles.stateControlButton(true)}>
           <BsFileMusic size={24} />
         </button>
         <input type="file" hidden onChange={onLoadMIDI} ref={inputMidiFileRef} accept=".mid, .midi" />
