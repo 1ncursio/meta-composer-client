@@ -30,24 +30,28 @@ const VideoUpload = () => {
     }
   };
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = (data: any) => {
     const files = [];
 
-    files.push(video);
-    files.push(image);
+    setLoading(true);
 
-    const formData = new FormData();
-    formData.append('videoTitle', title + '');
-    formData.append('description', content + '');
-    if (files[0] && files[1]) {
-      formData.append('files', files[0]);
-      formData.append('files', files[1]);
-    }
     try {
-      setLoading(true);
+      files.push(video);
+      files.push(image);
+
+      const formData = new FormData();
+      formData.append('videoTitle', title + '');
+      formData.append('description', content + '');
+      if (files[0] && files[1]) {
+        formData.append('files', files[0]);
+        formData.append('files', files[1]);
+      }
       client
         .post(`/youtubes?id=${Router.query.id}`, formData, { headers: { 'Content-Type': 'multipart/form' } })
-        .then((res) => {});
+        .then((res) => {
+          setLoading(false);
+          console.log(res);
+        });
     } catch (error) {
       console.log(error);
     }
