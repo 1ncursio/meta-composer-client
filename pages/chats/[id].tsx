@@ -227,7 +227,7 @@ const ChatRoomPage = () => {
     <ChatContainer>
       {' '}
       {typeof id === 'string' && <MessageRoomList currentRoomId={parseInt(id)} />}
-      <div className="flex-1 flex flex-col h-4/5 bg-gray-100 rounded border border-gray-150">
+      <div className="flex-1 flex flex-col h-5/6 bg-gray-100 rounded border border-gray-150">
         <div className=" text-xl p-2 font-bold w-full border-b text-center ">{title}</div>
         <div className="flex-1 overflow-y-scroll">
           <MessageList chatSections={chatSections} ref={scrollbarRef} isReachingEnd={isReachingEnd} setSize={setSize} />

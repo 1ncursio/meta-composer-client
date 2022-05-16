@@ -7,7 +7,7 @@ export interface ChattingContainerProps {
 // 여기 기본으로 룸 리스트 깔고 시작
 const ChatContainer: FC<ChattingContainerProps> = ({ children }) => {
   return (
-    <div className="flex h-screen">
+    <div className="flex h-full">
       <DashboardSideBar />
       {children}
     </div>

@@ -22,7 +22,7 @@ const ChatsIndexPage = () => {
     <ChatContainer>
       {/* <div className="flex gap-8 h-full"> */}
       <MessageRoomList currentRoomId={null} />
-      <div className="w-1/2 bg-gray-100"></div>
+      <div className="w-1/2 h-4/5 bg-gray-100"></div>
       {/* <div></div>
       </MessageRoomList> */}
       {/* <div className="flex-1 flex flex-col">

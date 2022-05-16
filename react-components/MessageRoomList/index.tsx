@@ -44,7 +44,7 @@ const MessageRoomList: FC<MessageRoomListProps> = ({ currentRoomId }) => {
     //여기서 다른 페이지 가는것도 해야됨
   };
   return (
-    <div className="w-1/4 h-4/5 bg-gray-100 ">
+    <div className="w-1/4 h-5/6 bg-gray-100 ">
       {userChatsData && userChatsData.length > 0 && (
         <div className="w-full p2 flex flex-col gap-2 mb-2 items-center">
           <div className="text-blue-500 text-xl p-2 font-bold w-full    border-b  ">
