@@ -556,7 +556,7 @@ export default class SheetGenerator {
 
   generateCanvas(measureIndex) {
     Object.entries(this.measureObjects[measureIndex].divs).forEach((measureEntry) => {
-      let cnv = document.createElement('canvas');
+      let cnv = document.createElement<'canvas'>('canvas');
       let ctx = cnv.getContext('2d');
       let svg = measureEntry[1].children[0];
 
@@ -661,7 +661,7 @@ export default class SheetGenerator {
   setupRenderers(voicesOfTracks, divs, measureWidth: number, renderers, contexts) {
     Object.keys(voicesOfTracks).forEach((track) => {
       let VF = this.VF;
-      let div = document.createElement('div');
+      let div = document.createElement<'div'>('div');
       divs[track] = div;
       let renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
       renderer.resize(measureWidth, BAR_HEIGHT);
