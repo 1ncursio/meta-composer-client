@@ -4,6 +4,7 @@ import useSWR from 'swr';
 import client from '../../lib/api/client';
 import fetcher from '@lib/api/fetcher';
 import Concours from '@store/concours';
+import { getSocketUrl } from '@utils/getEnv';
 
 const ConcourList = () => {
   const { data: concours } = useSWR<Concours[]>('/concours', fetcher);
@@ -24,7 +25,13 @@ const ConcourList = () => {
             // </div>
             <div key={item.id} className="card w-96 bg-base-100 shadow-xl">
               <figure className="px-10 pt-10">
-                <img src={item.coverIMG_url} alt="Cover Image" className="rounded-xl" width={150} height={280} />
+                <img
+                  src={getSocketUrl() + '/' + item.coverIMG_url}
+                  alt="Cover Image"
+                  className="rounded-xl"
+                  width={150}
+                  height={280}
+                />
               </figure>
               <div className="card-body items-center text-center">
                 <h2 className="card-title">{item.title}</h2>

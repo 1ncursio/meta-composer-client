@@ -2,11 +2,12 @@ import React, { ChangeEvent, useRef, useState } from 'react';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import Router from 'next/router';
+import client from '@lib/api/client';
 
-const client = axios.create({
-  baseURL: 'http://localhost:4000',
-  withCredentials: true,
-});
+// const client = axios.create({
+//   baseURL: 'http://localhost:4000',
+//   withCredentials: true,
+// });
 
 const ConcoursRegisterForm = () => {
   const [title, setTitle] = useState('');
@@ -42,7 +43,7 @@ const ConcoursRegisterForm = () => {
     console.log(formData);
 
     client
-      .post('api/concours', formData, { headers: { 'Content-Type': 'multipart/form' } })
+      .post('/concours', formData, { headers: { 'Content-Type': 'multipart/form' } })
       .then((res) => Router.push(targetPage));
   };
 
