@@ -22,10 +22,10 @@ const MyStreamContainer = () => {
   }, [myVideoRef.current]);
 
   return (
-    <div className="h-full">
+    <div className="h-full flex-2">
       <div
         // className="w-full 2xl:h-36 xl:h-32 lg:h-28 md:h-24 h-20"
-        className="w-full h-20"
+        className="w-full h-14"
       >
         <ControlledPiano
           noteRange={{ first: firstNote, last: lastNote }}
@@ -34,7 +34,7 @@ const MyStreamContainer = () => {
           stopNote={() => {}}
           onPlayNoteInput={addPressedKey}
           onStopNoteInput={removePressedKey}
-          keyWidthToHeight={0.5}
+          // keyWidthToHeight={0.5}
           css={pianoStyle}
         />
       </div>
@@ -43,6 +43,7 @@ const MyStreamContainer = () => {
         // muted
         playsInline
         ref={myVideoRef}
+        width="100%"
         onClick={() => {
           console.log('click');
         }}

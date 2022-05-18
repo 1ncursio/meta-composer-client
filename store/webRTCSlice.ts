@@ -12,7 +12,7 @@ export interface WebRTCSlice {
     peers: Peers;
     resetPeers: () => void;
     removePeer: (userId: IUser['id']) => void;
-    addAfterMakePeer: (userId: IUser['id'], initiator: boolean, socket: Socket, isOculus: boolean) => Peer.Instance;
+    addAfterMakePeer: (userId: IUser['id'], initiator: boolean, socket: Socket) => Promise<Peer.Instance>;
     linkState: 'idle' | 'connecting' | 'connected' | 'disconnected';
     setLinkState: (state: WebRTCSlice['webRTC']['linkState']) => void;
     myStream: MediaStream | null;
@@ -47,8 +47,7 @@ const createWebRTCSlice: AppSlice<WebRTCSlice> = (set, get) => ({
         }),
       );
     },
-    // TODO: media 스트림이 필요하면(Oculus 2 Oculus 연결) 미디어 스트림용 makePeer 만들어야 함
-    addAfterMakePeer: (userId, initiator, socket, isOculus) => {
+    addAfterMakePeer: async (userId, initiator, socket, peerVideoElement?: HTMLVideoElement) => {
       const isAlreadyPeer = get().webRTC.peers[userId];
 
       if (isAlreadyPeer) {
@@ -70,10 +69,12 @@ const createWebRTCSlice: AppSlice<WebRTCSlice> = (set, get) => ({
 
       console.log('피어 생성 중');
 
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+
       const peer = new Peer({
         initiator: initiator,
         trickle: false,
-        // stream: media,
+        stream: stream,
         config: {
           iceServers: [
             {
@@ -130,6 +131,13 @@ const createWebRTCSlice: AppSlice<WebRTCSlice> = (set, get) => ({
         //     audioTag.current.srcObject = stream;
         //   }
         // })
+        .on('stream', (stream) => {
+          if (peerVideoElement?.srcObject) {
+            peerVideoElement.srcObject = stream;
+          }
+
+          peerVideoElement?.play();
+        })
         .on('end', () => {
           console.log('피어 연결 끊김');
           // setMyPeer(undefined);

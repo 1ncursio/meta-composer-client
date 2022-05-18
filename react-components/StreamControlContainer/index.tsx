@@ -45,7 +45,7 @@ const StreamControlContainer = () => {
   }, []);
 
   return (
-    <div className="flex gap-4 p-2 py-8 justify-center">
+    <div className="flex gap-4 p-2 py-4 justify-center">
       <div
         className="tooltip tooltip-open tooltip-warning"
         data-tip={!isMidiConnected ? 'MIDI 연결 필요' : 'MIDI 연결 완료'}
