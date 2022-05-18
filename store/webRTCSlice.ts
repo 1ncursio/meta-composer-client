@@ -12,7 +12,12 @@ export interface WebRTCSlice {
     peers: Peers;
     resetPeers: () => void;
     removePeer: (userId: IUser['id']) => void;
-    addAfterMakePeer: (userId: IUser['id'], initiator: boolean, socket: Socket) => Promise<Peer.Instance>;
+    addAfterMakePeer: (
+      userId: IUser['id'],
+      initiator: boolean,
+      socket: Socket,
+      peerVideoElement?: HTMLVideoElement,
+    ) => Promise<Peer.Instance>;
     linkState: 'idle' | 'connecting' | 'connected' | 'disconnected';
     setLinkState: (state: WebRTCSlice['webRTC']['linkState']) => void;
     myStream: MediaStream | null;
@@ -47,9 +52,10 @@ const createWebRTCSlice: AppSlice<WebRTCSlice> = (set, get) => ({
         }),
       );
     },
-    addAfterMakePeer: async (userId, initiator, socket, peerVideoElement?: HTMLVideoElement) => {
+    addAfterMakePeer: async (userId, initiator, socket, peerVideoElement) => {
       const isAlreadyPeer = get().webRTC.peers[userId];
 
+      console.log({ peerVideoElement });
       if (isAlreadyPeer) {
         console.log('이미 존재하는 피어');
         return isAlreadyPeer;
@@ -72,9 +78,9 @@ const createWebRTCSlice: AppSlice<WebRTCSlice> = (set, get) => ({
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
 
       const peer = new Peer({
-        initiator: initiator,
+        initiator,
         trickle: false,
-        stream: stream,
+        stream,
         config: {
           iceServers: [
             {
@@ -126,14 +132,13 @@ const createWebRTCSlice: AppSlice<WebRTCSlice> = (set, get) => ({
               break;
           }
         })
-        // .on('stream', (stream) => {
-        //   if (audioTag.current) {
-        //     audioTag.current.srcObject = stream;
-        //   }
-        // })
         .on('stream', (stream) => {
-          if (peerVideoElement?.srcObject) {
+          console.log('스트림 오고 있는거야?');
+          console.log({ stream, peerVideoElement });
+          if (peerVideoElement) {
             peerVideoElement.srcObject = stream;
+          } else {
+            console.log('srcObject가 없어요');
           }
 
           peerVideoElement?.play();

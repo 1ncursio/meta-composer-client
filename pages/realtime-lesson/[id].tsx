@@ -7,34 +7,50 @@ import useStore from '@store/useStore';
 import RtcData from '@typings/RtcData';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import React, { ReactElement, useEffect, useRef } from 'react';
+import React, { ReactElement, useEffect, useMemo, useRef, useState } from 'react';
 
 const SheetContainer = dynamic(() => import('@react-components/SheetContainer'), { ssr: false });
 
 const RealtimeLessonShowPage = () => {
+  const [workspaceName, setWorkspaceName] = useState('');
   const router = useRouter();
   const { id } = router.query;
 
   const { data: userData } = useUserSWR();
   const { peers, addAfterMakePeer, linkState, setLinkState } = useStore((state) => state.webRTC);
 
-  const [socket] = useSocket('lesson');
-
   const peerVideoRef = useRef<HTMLVideoElement | null>(null);
+
+  const lessonId = useMemo(() => {
+    if (typeof id === 'string') {
+      return parseInt(id);
+    }
+
+    console.error('레슨 아이디가 string이 아니므로 0을 반환합니다.');
+    return 0;
+  }, [id]);
+
+  const [socket] = useSocket(workspaceName, { lessonId });
+
+  useEffect(() => {
+    if (lessonId && userData) {
+      setWorkspaceName('lesson');
+    }
+  }, [lessonId, userData]);
 
   useEffect(() => {
     if (userData && socket && typeof id === 'string') {
-      console.log({ userData, socket, id });
+      console.log({ socket });
       socket
         .on('connect', () => {
           console.log('lesson 소켓이 연결됨');
-          socket.emit('setInit', { lessonId: parseInt(id) });
+          //   socket.emit('setInit');
         })
         .on('getOffer', async (offerData: RtcData) => {
           console.log('offer 받음');
 
           try {
-            const peer = await addAfterMakePeer(userData.id, false, socket);
+            const peer = await addAfterMakePeer(userData.id, false, socket, peerVideoRef.current as HTMLVideoElement);
             peer.signal(offerData.data);
           } catch (err) {
             console.error(err);
@@ -44,7 +60,7 @@ const RealtimeLessonShowPage = () => {
           console.log('offer 보냄');
 
           try {
-            await addAfterMakePeer(userData.id, true, socket);
+            await addAfterMakePeer(userData.id, true, socket, peerVideoRef.current as HTMLVideoElement);
           } catch (err) {
             console.error(err);
           }
@@ -58,7 +74,7 @@ const RealtimeLessonShowPage = () => {
     return () => {
       socket?.off('connect').off('getOffer').off('sendOffer').off('disconnect');
     };
-  }, [socket, userData, id]);
+  }, [socket, userData, id, peerVideoRef.current]);
 
   return (
     <div className="bg-neutral-focus">

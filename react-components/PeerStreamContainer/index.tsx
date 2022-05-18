@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import useStore from '@store/useStore';
-import React, { forwardRef, useRef } from 'react';
+import React, { forwardRef } from 'react';
 import { ControlledPiano, MidiNumbers } from 'react-piano';
 
 const firstNote: number = MidiNumbers.fromNote('e1');
@@ -26,6 +26,7 @@ const PeerStreamContainer = forwardRef<HTMLVideoElement>((props, peerVideoRef) =
           autoPlay
           muted
           playsInline
+          width="100%"
           ref={peerVideoRef}
           onClick={() => {
             console.log('click');
