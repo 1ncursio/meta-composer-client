@@ -15,7 +15,7 @@ import { DomHelper } from '../ui/DomHelper';
 import { createKeyBinder, getKeyBinder } from '../ui/KeyBinder';
 import CONST from './CONST';
 import { NoteRender } from './NoteRender';
-import Player, { PlayerState } from './Player.js';
+import Player, { PlayerState } from './Player';
 import { RenderDimensions } from './RenderDimensions';
 import { getTrackColor, isTrackDrawn } from './Tracks';
 
