@@ -21,6 +21,18 @@ export interface InputNote {
   wasUsed: boolean;
 }
 
+export interface PlayerState {
+  time: number;
+  ctxTime: number;
+  end: number;
+  loading: boolean;
+  song: Song | null;
+  inputActiveNotes: InputActiveNotes;
+  inputPlayedNotes: InputNote[];
+  bpm: number;
+  longNotes: LongNotes;
+}
+
 const LOOK_AHEAD_TIME = 0.2;
 const LOOK_AHEAD_TIME_WHEN_PLAYALONG = 0.02;
 export const START_DELAY = -4.5;
@@ -113,7 +125,7 @@ export default class Player {
     return this.instance || (this.instance = new this());
   }
 
-  getState() {
+  getState(): PlayerState {
     const time = this.getTime();
     const songReady = !!this.song?.ready;
 
@@ -431,7 +443,8 @@ export default class Player {
 
       if (
         this.noteSequence[0] &&
-        (!isTrackRequiredToPlay(this.noteSequence[0].track) || this.isInputKeyPressed(this.noteSequence[0].noteNumber))
+        (!isTrackRequiredToPlay(this.noteSequence[0].track.toString()) ||
+          this.isInputKeyPressed(this.noteSequence[0].noteNumber))
       ) {
         this.playNote(this.noteSequence.shift()!);
       } else {
@@ -597,7 +610,7 @@ export default class Player {
   }
 
   getNoteVolume(note: MidiChannelSongNoteEvent) {
-    return (this.volume / 100) * (getTrackVolume(note.track) / 100) * (note.channelVolume / 127);
+    return (this.volume / 100) * (getTrackVolume(note.track.toString()) / 100) * (note.channelVolume / 127);
   }
 
   addInputNoteOn(noteNumber: number) {

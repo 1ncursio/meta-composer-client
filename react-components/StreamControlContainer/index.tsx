@@ -45,7 +45,7 @@ const StreamControlContainer = () => {
   }, []);
 
   return (
-    <div className="flex gap-4 p-2 py-8 justify-center">
+    <div className="flex gap-4 p-2 py-4 justify-center">
       <div
         className="tooltip tooltip-open tooltip-warning"
         data-tip={!isMidiConnected ? 'MIDI 연결 필요' : 'MIDI 연결 완료'}
@@ -65,7 +65,7 @@ const StreamControlContainer = () => {
         </button>
       </div>
       <div className="tooltip" data-tip="미디 파일 업로드">
-        <button onClick={onClickUploadMidiFile} className={styles.stateControlButton(!isMicMuted)}>
+        <button onClick={onClickUploadMidiFile} className={styles.stateControlButton(true)}>
           <BsFileMusic size={24} />
         </button>
         <input type="file" hidden onChange={onLoadMIDI} ref={inputMidiFileRef} accept=".mid, .midi" />

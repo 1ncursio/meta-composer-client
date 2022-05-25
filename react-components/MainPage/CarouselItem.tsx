@@ -5,6 +5,7 @@ import { randomInt } from 'crypto';
 import Link from 'next/link';
 import { FC, useEffect, useState } from 'react';
 
+
 export interface LessonProps {
   lesson: ILesson;
 }

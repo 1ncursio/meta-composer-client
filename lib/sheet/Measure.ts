@@ -28,7 +28,7 @@ export interface Staves {
 
 //Class to save the finished, rendered Measures. obj.canvases will be generated after all measures are rendered in VF. Otherwise bounds won't yet be calculated correctly
 export default class Measure {
-  divs: Divs;
+  divs?: Divs;
   staves: Staves;
   measureWidth: number;
   // roundedNotes: MidiChannelSongNoteEvent;
@@ -40,6 +40,9 @@ export default class Measure {
   keySignatureName: string;
   cumulativeXPosition: number;
   isFirstInRow: boolean;
+  canvases: {};
+  div: any;
+  [key: string]: any;
 
   constructor(
     divs: Divs,

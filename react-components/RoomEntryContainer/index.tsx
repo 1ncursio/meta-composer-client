@@ -154,14 +154,14 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
         .on('getOffer', (offerData: RtcData) => {
           console.log('offer 받음');
 
-          const peer = addAfterMakePeer(userData.id, false, socket, isOculus);
+          const peer = addAfterMakePeer(userData.id, false, socket);
 
           peer.signal(offerData.data);
         })
         .on('sendOffer', () => {
           console.log('offer 보냄');
 
-          addAfterMakePeer(userData.id, true, socket, isOculus);
+          addAfterMakePeer(userData.id, true, socket);
         })
         .on('disconnect', () => {
           console.log('self setup 소켓 연결 끊김');
