@@ -12,7 +12,7 @@ const SheetContainer: FC<SheetContainerProps> = ({ id }) => {
     if (canvasRef.current) {
       const VF = Vex.Flow;
       const renderer = new VF.Renderer(canvasRef.current!, VF.Renderer.Backends.CANVAS);
-      const width = 1200;
+      const width = window.innerWidth;
       const height = 300;
       renderer.resize(width, height);
       const context = renderer.getContext();

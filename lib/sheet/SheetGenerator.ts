@@ -1,39 +1,76 @@
 import CONST from '@lib/midi/CONST';
-import { MidiChannelSongNoteEventWithIsOn, NotesBySeconds } from '@lib/midi/Song';
+import { ActiveTrack, MidiChannelSongNoteEventWithIsOn, NotesBySeconds } from '@lib/midi/Song';
 import { MidiMetaKeySignatureEvent } from '@typings/MidiEvent';
+import sumArray from '@utils/sumArray';
+import Vex from 'vexflow';
+import Measure from './Measure';
 import RoundedNote from './RoundedNote';
+
+export interface MeasureWithRoundedNotesMap {
+  [measureIndex: string]: {
+    [trackIndex: string]: RoundedNotesByQuantizedTimestamp;
+  };
+}
+
+export interface RoundedNotesByQuantizedTimestamp {
+  [quantizedTimestamp: string]: RoundedNote[];
+}
+
+export interface NewLinesDivs {
+  [keySignatureName: string]: {
+    bass: HTMLCanvasElement;
+    treble: HTMLCanvasElement;
+  };
+}
 
 export interface MeasuresBySecond {
   [key: string]: IMeasure;
 }
 
+export interface YBounds {
+  [key: string]: {
+    min: number;
+    max: number;
+  };
+}
+
+export type QuantizeFunction = (num: number) => number;
+
 export type IMeasure = [number, number];
+
+const noteDenoms: number[] = [];
+for (let i = -8; i < 8; i++) {
+  noteDenoms.push(Math.pow(2, i));
+}
+
+const BAR_HEIGHT = 170;
+const MIN_MEASURE_WIDTH = 250;
+const STAFF_WIDTH = 140;
 
 const SHEET_SIDE_MARGIN = 55;
 
 export default class SheetGenerator {
   keySignature: MidiMetaKeySignatureEvent;
-  key: number;
   keySignatureName: string;
   songEnd: number;
-  //   VF: typeof Vex.Flow;
-  formatter: any;
-  measureWithRoundedNotesMap: {};
+  VF: typeof Vex.Flow;
+  formatter: Vex.Flow.Formatter;
+  measureWithRoundedNotesMap: MeasureWithRoundedNotesMap;
   numerator: number;
   denominator: number;
-  measures: any;
+  measures: IMeasure[];
   cumulativeXPosition: number;
-  measureObjects: never[];
+  measureObjects: Measure[];
   lineStartIndexes: number[];
-  newLinesDivs: {};
-  tracks: null;
+  newLinesDivs: NewLinesDivs;
   generated: boolean;
   inputStave: Vex.Flow.Stave;
-  yBounds: {};
-  sharpsFlatSymbol: string;
+  yBounds: YBounds;
   scale: string;
+  // staffYs: {};
   sharpsFlat: string;
-  staffYs: {};
+  sharpsFlatSymbol: string;
+  key: number;
 
   constructor(
     measuresBySecond: MeasuresBySecond,
@@ -45,20 +82,27 @@ export default class SheetGenerator {
     this.keySignature = keySignature;
     // TODO: ==에서 ===에서 바꿨음. 문제 생기면 다시 바꿔야함.
     this.keySignature.scale = keySignature.scale === 0 ? 'MAJOR' : 'MINOR';
+    this.scale = this.keySignature.scale;
+
     this.keySignature.key = keySignature.key;
+    this.key = this.keySignature.key;
 
-    // TODO: this.key를 할당하는 곳이 존재하지 않음. 디버깅 후에도 undefined로 나옴.
-    this.keySignature.sharpsFlat = this.key > 0 ? 'SHARPS' : 'FLATS';
+    // TODO: this.key를 할당하는 곳이 존재하지 않음. 디버깅 후에도 undefined로 나옴. this.keySignature.key 로 변경.
+    this.keySignature.sharpsFlat = this.keySignature.key > 0 ? 'SHARPS' : 'FLATS';
+    this.sharpsFlat = this.keySignature.sharpsFlat;
+
     this.keySignature.sharpsFlatSymbol = this.keySignature.sharpsFlat === 'SHARPS' ? '#' : 'b';
+    this.sharpsFlatSymbol = this.keySignature.sharpsFlatSymbol;
 
+    // @ts-ignore
     this.keySignatureName = CONST.MIDI_TO_VEXFLOW_KEYS[this.keySignature.scale][this.keySignature.key];
     this.songEnd = songEnd;
 
     this.generated = false;
-    // this.VF = Vex.Flow;
-    // this.formatter = new this.VF.Formatter({
-    //   /* globalSoftmax: false*/
-    // });
+    this.VF = Vex.Flow;
+    this.formatter = new Vex.Flow.Formatter({
+      /* globalSoftmax: false*/
+    });
 
     this.measureWithRoundedNotesMap = {};
     this.numerator = numerator;
@@ -70,6 +114,7 @@ export default class SheetGenerator {
 
     this.lineStartIndexes = [];
     this.newLinesDivs = {};
+    this.yBounds = {};
     this.getNewLineDiv(this.keySignatureName);
 
     // TODO: 스크롤 구현 시 사용
@@ -85,19 +130,22 @@ export default class SheetGenerator {
   }
   clear() {
     this.measureWithRoundedNotesMap = {};
-    this.numerator = null;
-    this.denominator = null;
+    // TODO: 오류 생기면 null로 변경
+    // this.numerator = null;
+    // this.denominator = null;
+    this.numerator = 0;
+    this.denominator = 0;
     this.measures = [];
     this.cumulativeXPosition = 0;
-    removeSettingCallback('sheetMeasureScroll', this.sheetMeasureScrollCallback);
+    // removeSettingCallback('sheetMeasureScroll', this.sheetMeasureScrollCallback);
 
     this.measureObjects.forEach((measure) => {
       for (const key in measure) {
         measure[key] = null;
       }
+      // @ts-ignore
       delete this.measureObjects[measure];
     });
-    this.tracks = null;
 
     this.lineStartIndexes = [];
     this.newLinesDivs = {};
@@ -105,7 +153,7 @@ export default class SheetGenerator {
     // this.sheetMeasureScrollCallback = null;
   }
 
-  async generate(tracks) {
+  async generate(tracks: ActiveTrack[]) {
     this.generateRoundedNotes(tracks);
 
     this.generateMeasures();
@@ -122,13 +170,18 @@ export default class SheetGenerator {
     this.computeLines(window.innerWidth, SHEET_SIDE_MARGIN);
 
     this.generated = true;
-    Object.keys(this.measureObjects).forEach((key) => {
-      delete this.measureObjects[key].divs;
+    // TODO: 배열을 Object.keys로 접근했음. 변경해둠
+    // Object.keys(this.measureObjects).forEach((key) => {
+    //   delete this.measureObjects[key].divs;
+    // });
+    this.measureObjects.forEach((measure) => {
+      delete measure.divs;
     });
+
     return Promise.resolve();
   }
 
-  getNewLineDiv(keySignatureName) {
+  getNewLineDiv(keySignatureName: string) {
     if (!this.newLinesDivs.hasOwnProperty(keySignatureName)) {
       this.newLinesDivs[keySignatureName] = {
         treble: this.getRenderedStave('treble'),
@@ -139,7 +192,7 @@ export default class SheetGenerator {
   }
 
   getRenderedStave(clef: string) {
-    let div = document.createElement('canvas');
+    let div = document.createElement<'canvas'>('canvas');
     div.width = STAFF_WIDTH;
     div.height = BAR_HEIGHT;
     let stave = this.getStave(0, 0, STAFF_WIDTH, clef, true, false);
@@ -156,76 +209,30 @@ export default class SheetGenerator {
     this.lineStartIndexes = [0];
     let x = SHEET_SIDE_MARGIN;
     let hasKey = true;
-    if (!getSetting('sheetMeasureScroll')) {
-      Object.values(this.measureObjects).forEach((measureObj, measureIndex) => {
-        x += measureObj.measureWidth;
-        if (x > width - margin - STAFF_WIDTH) {
-          x = measureObj.measureWidth;
-          this.lineStartIndexes.push(measureIndex);
-          hasKey = true;
-        }
-        if (measureObj && measureObj.isFirstInRow != hasKey) {
-          // this.redrawMeasureWithKey(measureIndex, hasKey)
+    // if (!getSetting('sheetMeasureScroll')) {
+    Object.values(this.measureObjects).forEach((measureObj, measureIndex) => {
+      x += measureObj.measureWidth;
+      if (x > width - margin - STAFF_WIDTH) {
+        x = measureObj.measureWidth;
+        this.lineStartIndexes.push(measureIndex);
+        hasKey = true;
+      }
+      if (measureObj && measureObj.isFirstInRow != hasKey) {
+        // this.redrawMeasureWithKey(measureIndex, hasKey)
 
-          measureObj.isFirstInRow = hasKey;
-        }
-        hasKey = false;
-      });
-    } else {
-      Object.values(this.measureObjects).forEach((measureObj, measureIndex) => {
-        measureObj.isFirstInRow = measureIndex == 0;
-      });
-    }
+        measureObj.isFirstInRow = hasKey;
+      }
+      hasKey = false;
+    });
+    // }
+    // else {
+    //   Object.values(this.measureObjects).forEach((measureObj, measureIndex) => {
+    //     measureObj.isFirstInRow = measureIndex == 0;
+    //   });
+    // }
     this.computeCumulativeXs();
   }
-  // redrawMeasureWithKey(measureIndex, withKey) {
-  // 	let measure = this.getMeasure(measureIndex)
-  // 	for (let key in measure.svgs) {
-  // 		let svg = measure.svgs[key]
-  // 		svg.innerHTML = ""
-  // 	}
-  // 	let lastIndexInSong = Object.keys(this.measureObjects).length - 1
-  // 	let voicesOfTracks = measure.voices
-  // 	let voicesWithNotes = this.getVoicesWithNotes(voicesOfTracks)
-  // 	let hasNotes = Object.keys(voicesWithNotes).length > 0
 
-  // 	let measureWidth = this.getMeasureWidth(
-  // 		hasNotes,
-  // 		voicesWithNotes,
-  // 		MIN_MEASURE_WIDTH,
-  // 		withKey
-  // 	)
-  // 	measure.measureWidth = measureWidth
-
-  // 	let staves = this.getStaves(
-  // 		voicesOfTracks,
-  // 		measureWidth,
-  // 		withKey,
-  // 		lastIndexInSong == measureIndex
-  // 	)
-  // 	Object.keys(staves).forEach(track =>
-  // 		measure.renderers[track].resize(measureWidth, BAR_HEIGHT)
-  // 	)
-  // 	Object.keys(staves).forEach(track =>
-  // 		staves[track].setContext(measure.contexts[track]).draw()
-  // 	)
-
-  // 	//TODO make leading track configurable.
-  // 	let track0 = Object.keys(staves).find(key => key)
-
-  // 	if (hasNotes) {
-  // 		this.formatVoices(voicesWithNotes, measureWidth, track0)
-  // 		this.renderVoices(
-  // 			voicesWithNotes,
-  // 			measure.contexts,
-  // 			staves,
-  // 			measure.beams
-  // 		)
-  // 	}
-  // 	measure.isFirstInRow = withKey
-  // 	this.generateNotePathsForMeasure(measureIndex)
-  // 	this.generateCanvas(measureIndex)
-  // }
   computeCumulativeXs() {
     let x = 0;
     Object.values(this.measureObjects).forEach((measure) => {
@@ -237,7 +244,7 @@ export default class SheetGenerator {
     });
   }
 
-  generateRoundedNotes(tracks) {
+  generateRoundedNotes(tracks: ActiveTrack[]) {
     tracks.forEach((track, trackIndex) => {
       let notesBySeconds = track.notesBySeconds;
 
@@ -248,7 +255,7 @@ export default class SheetGenerator {
 
         let beatDuration = (measureEnd - curTime) / this.numerator;
         let quantizeConstant = beatDuration / 2 ** 5;
-        let quantize = (num) => Math.floor(num / quantizeConstant) * quantizeConstant;
+        let quantize: QuantizeFunction = (num) => Math.floor(num / quantizeConstant) * quantizeConstant;
 
         if (!this.measureWithRoundedNotesMap.hasOwnProperty(measureIndex)) {
           this.measureWithRoundedNotesMap[measureIndex] = {};
@@ -281,10 +288,10 @@ export default class SheetGenerator {
   }
 
   generateStaveForInputKey() {
-    this.inputStave = new Vex.Flow.Stave(0, 0, 100).setKeySignature(this.keySignatureName);
+    this.inputStave = new Vex.Flow.Stave(0, 0, 100).setKeySignature(this.keySignatureName, this.keySignatureName);
   }
 
-  getLineForKey(key, clef) {
+  getLineForKey(key: string, clef: string) {
     let inputNote = new Vex.Flow.StaveNote({
       clef: clef || 'treble',
       keys: [key],
@@ -292,11 +299,23 @@ export default class SheetGenerator {
     });
     new Vex.Flow.Formatter().formatToStave([this.getVoicesOfTrack(Vex.Flow, [inputNote])], this.inputStave, {
       align_rests: false,
+      // TODO: context 추가해야 함.
+      // context:
     });
-    return inputNote.keyProps[0].line;
+
+    // TODO: 구버전에서 신버전으로 바뀜. 동작안하면 변경
+    // return inputNote.keyProps[0].line;
+    return inputNote.getKeyProps()[0].line;
   }
 
-  stepTillEndOfMeasureAndFillRests(measure, stepThroughTime, beatDuration, quantize, currentMeasureNotes, trackIndex) {
+  stepTillEndOfMeasureAndFillRests(
+    measure: IMeasure,
+    stepThroughTime: number,
+    beatDuration: number,
+    quantize: QuantizeFunction,
+    currentMeasureNotes: RoundedNotesByQuantizedTimestamp,
+    trackIndex: number,
+  ) {
     let measureEnd = measure[0];
     let timeTilMeasureEnd = Math.max(0, measureEnd - stepThroughTime);
     if (timeTilMeasureEnd > beatDuration / 32) {
@@ -322,20 +341,22 @@ export default class SheetGenerator {
   }
 
   stepThroughMeasureAndFillRestsInbetweenNotes(
-    currentMeasureNotes,
-    stepThroughTime,
-    beatDuration,
-    quantize,
-    trackIndex,
+    currentMeasureNotes: RoundedNotesByQuantizedTimestamp,
+    stepThroughTime: number,
+    beatDuration: number,
+    quantize: QuantizeFunction,
+    trackIndex: number,
   ) {
     Object.values(currentMeasureNotes).forEach((roundedNotes) => {
       let roundedNote = roundedNotes.sort((a, b) => b.note.duration - a.note.duration)[0];
       let timeUntilNext = Math.max(0, roundedNote.note.timestamp - stepThroughTime);
 
       if (timeUntilNext > beatDuration / 32) {
+        // TODO: 인자 2개만 받는데 4개 보내는 중
         let bestDurationFitDenom = this.getBestNoteDurationFit(
           quantize(timeUntilNext),
           beatDuration,
+          // @ts-ignore
           this.denominator,
           true,
         );
@@ -358,8 +379,13 @@ export default class SheetGenerator {
     return stepThroughTime;
   }
 
-  getRoundedNotesOfMeasure(notesOfMeasure, quantize, beatDuration, trackIndex) {
-    let roundedNotesOfMeasure = [];
+  getRoundedNotesOfMeasure(
+    notesOfMeasure: MidiChannelSongNoteEventWithIsOn[],
+    quantize: QuantizeFunction,
+    beatDuration: number,
+    trackIndex: number,
+  ) {
+    const roundedNotesOfMeasure: RoundedNote[] = [];
 
     notesOfMeasure.forEach((note) => {
       let quantizedDuration = quantize(note.duration);
@@ -389,7 +415,7 @@ export default class SheetGenerator {
     });
   }
 
-  generateMeasure(measureIndex, isFirstInRow, isLastMeasure) {
+  generateMeasure(measureIndex: number, isFirstInRow: boolean, isLastMeasure: boolean) {
     let VF = this.VF;
     let voicesOfTracks = this.getVoicesOfMeasure(measureIndex);
     let beams = {};
@@ -416,6 +442,7 @@ export default class SheetGenerator {
 
       this.setupRenderers(voicesOfTracks, divs, measureWidth, renderers, contexts);
       let staves = this.getStaves(voicesOfTracks, measureWidth, isFirstInRow, isLastMeasure);
+      console.log('generateMeasure', measureIndex, staves);
 
       //TODO make leading track configurable.
       let track0 = Object.keys(staves).find((key) => key);
@@ -424,13 +451,13 @@ export default class SheetGenerator {
         this.formatVoices(voicesWithNotes, measureWidth, track0);
 
         let maxX = measureWidth;
-        Object.values(voicesWithNotes).forEach((voice) =>
+        Object.values(voicesWithNotes).forEach((voice) => {
           voice.tickables.forEach((tickable) => {
             if (tickable.getTieLeftX && tickable.getTieLeftX() + tickable.width + 20 > maxX) {
               maxX = tickable.getTieLeftX() + tickable.width + 20;
             }
-          }),
-        );
+          });
+        });
         if (maxX > measureWidth) {
           measureWidth = Math.ceil(maxX + 10);
           Object.values(staves).forEach((staff) => staff.setWidth(measureWidth));
@@ -499,7 +526,7 @@ export default class SheetGenerator {
     });
   }
 
-  formatVoices(voicesWithNotes, measureWidth, track0) {
+  formatVoices(voicesWithNotes, measureWidth: number, track0) {
     Object.values(voicesWithNotes).forEach((voice, index) =>
       this.formatter.format([voice], measureWidth, {
         // this.formatter.formatToStave([voice], staves[track0], {
@@ -529,7 +556,7 @@ export default class SheetGenerator {
 
   generateCanvas(measureIndex) {
     Object.entries(this.measureObjects[measureIndex].divs).forEach((measureEntry) => {
-      let cnv = document.createElement('canvas');
+      let cnv = document.createElement<'canvas'>('canvas');
       let ctx = cnv.getContext('2d');
       let svg = measureEntry[1].children[0];
 
@@ -599,7 +626,7 @@ export default class SheetGenerator {
     );
   }
 
-  getPathsInChildren(el) {
+  getPathsInChildren(el: Element) {
     if (!el) {
       return [];
     }
@@ -607,18 +634,21 @@ export default class SheetGenerator {
       return [el];
     }
 
-    let paths = [];
-    el.children.forEach((child) => {
-      if (child.tagName == 'path') {
-        paths.push(child);
+    const paths: SVGPathElement[] = [];
+    Array.from(el.children).forEach((child) => {
+      if (child.tagName === 'path') {
+        paths.push(child as SVGPathElement);
       } else if (child.children) {
-        this.getPathsInChildren(child).forEach((pth) => paths.push(pth));
+        this.getPathsInChildren(child).forEach((pth) => {
+          // @ts-ignore
+          paths.push(pth);
+        });
       }
     });
     return paths;
   }
 
-  getStaves(voicesOfTracks, measureWidth, isFirstInRow, isLastMeasure) {
+  getStaves(voicesOfTracks, measureWidth: number, isFirstInRow: boolean, isLastMeasure: boolean) {
     let staves = {};
     Object.keys(voicesOfTracks).forEach((track, index) => {
       let clef = index == 0 ? 'treble' : 'bass';
@@ -628,10 +658,10 @@ export default class SheetGenerator {
     return staves;
   }
 
-  setupRenderers(voicesOfTracks, divs, measureWidth, renderers, contexts) {
+  setupRenderers(voicesOfTracks, divs, measureWidth: number, renderers, contexts) {
     Object.keys(voicesOfTracks).forEach((track) => {
       let VF = this.VF;
-      let div = document.createElement('div');
+      let div = document.createElement<'div'>('div');
       divs[track] = div;
       let renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
       renderer.resize(measureWidth, BAR_HEIGHT);
@@ -641,8 +671,14 @@ export default class SheetGenerator {
     });
   }
 
-  computeMinMeasureWidth(hasNotes, measureIndex, voicesWithNotes, minMeasureWidth, isFirstInRow) {
-    let timestamps = {};
+  computeMinMeasureWidth(
+    hasNotes: boolean,
+    measureIndex: number,
+    voicesWithNotes,
+    minMeasureWidth: number,
+    isFirstInRow: boolean,
+  ) {
+    const timestamps: { [timestamp: string]: number } = {};
     let mods = 0;
     Object.keys(this.measureWithRoundedNotesMap[measureIndex]).forEach((track, trackIndex) => {
       if (!this.yBounds.hasOwnProperty(track)) {
@@ -660,7 +696,7 @@ export default class SheetGenerator {
     let distinctTspsWidth = Object.keys(timestamps).length * 28 + mods * 25;
     distinctTspsWidth = distinctTspsWidth > 0 ? distinctTspsWidth : minMeasureWidth;
 
-    let measureWidth = hasNotes
+    const measureWidth = hasNotes
       ? Math.max(
           50 + distinctTspsWidth,
           Math.max(minMeasureWidth, this.formatter.preCalculateMinTotalWidth(Object.values(voicesWithNotes))),
@@ -710,7 +746,7 @@ export default class SheetGenerator {
     });
   }
 
-  getVoicesOfMeasure(measureIndex) {
+  getVoicesOfMeasure(measureIndex: number) {
     let VF = this.VF;
     let voicesOfTracks = {};
 
@@ -733,7 +769,7 @@ export default class SheetGenerator {
     return voicesOfTracks;
   }
 
-  getVoicesOfTrack(VF, notes) {
+  getVoicesOfTrack(VF: typeof Vex.Flow, notes: Vex.Flow.Tickable[]) {
     return new VF.Voice({
       num_beats: this.numerator,
       beat_value: this.denominator,
@@ -743,16 +779,18 @@ export default class SheetGenerator {
       .addTickables(notes);
   }
 
-  getBestNoteDurationFit(duration, beatDuration) {
-    let denominationFits = [];
-    let dottedDenominationFits = [];
+  getBestNoteDurationFit(duration: number, beatDuration: number) {
+    let denominationFits: number[] = [];
+    let dottedDenominationFits: number[] = [];
     let minFit = 999999999;
     let minIndex = 0;
     noteDenoms.forEach((denom) => {
       denominationFits.push(Math.abs(duration / beatDuration / this.denominator / denom - 1));
       //take power of dotted fit to weigh them less.
       dottedDenominationFits.push(
-        Math.pow(Math.abs(duration / beatDuration / this.denominator / (denom * 1.5), 2) - 1),
+        // TODO: 오작동시 수정
+        // Math.abs(duration / beatDuration / this.denominator / (denom * 1.5), 2) - 1),
+        Math.pow(Math.abs(duration / beatDuration / this.denominator / (denom * 1.5)) - 1, 2),
       );
     });
     let dotted = false;
@@ -773,9 +811,9 @@ export default class SheetGenerator {
     return { denom: noteDenoms[minIndex], dotted: dotted };
   }
   //TODO do multiple passovers
-  getBestRestDurationFit(duration, beatDuration, denominator) {
-    let denominationFits = [];
-    let dottedDenominationFits = [];
+  getBestRestDurationFit(duration: number, beatDuration: number, denominator: number) {
+    const denominationFits: number[] = [];
+    const dottedDenominationFits: number[] = [];
     let minFit = 999999999;
     let minIndex = 0;
     noteDenoms.forEach((denom) => {
@@ -800,17 +838,17 @@ export default class SheetGenerator {
     return { denom: noteDenoms[minIndex], dotted: dotted };
   }
 
-  getStaveNotes(groupedNotes, clef) {
-    let noteAmount = sumArray(Object.values(groupedNotes).map((arr) => arr.length));
-    let keyManager = new this.VF.KeyManager(this.keySignatureName);
+  getStaveNotes(groupedNotes: RoundedNotesByQuantizedTimestamp, clef: string) {
+    const noteAmount = sumArray(Object.values(groupedNotes).map((arr) => arr.length));
+    const keyManager = new this.VF.KeyManager(this.keySignatureName);
     return Object.keys(groupedNotes)
       .sort((a, b) => a - b)
       .map((key) => groupedNotes[key])
       .map((roundedNotes) => this.mapGroupedNotesToStaveNote(roundedNotes, clef, noteAmount, keyManager));
   }
 
-  mapGroupedNotesToStaveNote(groupedNotes, clef, noteAmountInMeasure, keyManager) {
-    let VF = this.VF;
+  mapGroupedNotesToStaveNote(groupedNotes: RoundedNote[], clef: string, noteAmountInMeasure: number, keyManager) {
+    const VF = this.VF;
     let keys = [];
     let accidentals = [];
     let dots = [];
@@ -835,7 +873,7 @@ export default class SheetGenerator {
       // 	(noteAccidental ? noteAccidental : "") +
       // 	"/" +
       // 	noteNum
-      let name = CONST.MIDI_NOTE_TO_KEY[roundedNote.note.midiNoteNumber];
+      const name = CONST.MIDI_NOTE_TO_KEY[roundedNote.note.midiNoteNumber];
       let noteChar = name[0];
       let noteNum = name[name.length - 1];
       if (roundedNote.isRest) {
@@ -859,7 +897,8 @@ export default class SheetGenerator {
 
     let duration = this.getDurationStringOfGroupedNotes(groupedNotes);
 
-    let staveNote = null;
+    let staveNote: Vex.Flow.GhostNote | Vex.Flow.StaveNote;
+
     let ghost = false;
     if (groupedNotes[0].isRest && groupedNotes[0].denom <= 1 / CONST.NOTE_DENOMS_NAMES[getSetting('hideRestsBelow')]) {
       ghost = true;
@@ -902,13 +941,16 @@ export default class SheetGenerator {
     return duration;
   }
 
-  convertNoteToKey(noteName) {
+  convertNoteToKey(noteName: string) {
     let accidental = noteName.length > 1 ? noteName[1] : '';
     let note = noteName[0];
-    let cancelAcc = this.sharpsFlatSymbol == '#' ? 'b' : '#';
+    let cancelAcc = this.keySignature.sharpsFlatSymbol === '#' ? 'b' : '#';
 
-    let sharpFlatKeys = CONST.KEY_ORDER[this.scale][this.sharpsFlat].slice(0, Math.abs(this.key));
-    if (sharpFlatKeys.includes(note) && accidental == this.sharpsFlatSymbol) {
+    let sharpFlatKeys = CONST.KEY_ORDER[this.keySignature.scale as string][this.keySignature.sharpsFlat].slice(
+      0,
+      Math.abs(this.key),
+    );
+    if (sharpFlatKeys.includes(note) && accidental === this.keySignature.sharpsFlatSymbol) {
       return {
         note,
         accidental: '',
@@ -932,8 +974,8 @@ export default class SheetGenerator {
     }
   }
 
-  getGroupedNotes(measure, quantize) {
-    let groupedMeasure = {};
+  getGroupedNotes(measure: RoundedNote[], quantize: QuantizeFunction) {
+    const groupedMeasure: RoundedNotesByQuantizedTimestamp = {};
     measure.forEach((roundedNote) => {
       let quantizedTsp = quantize(roundedNote.note.timestamp);
       if (!groupedMeasure.hasOwnProperty(quantizedTsp)) {
@@ -944,46 +986,50 @@ export default class SheetGenerator {
     return groupedMeasure;
   }
 
-  getStave(x, y, measureWidth, clef, isFirstInRow, end) {
-    let staveMeasure = new Vex.Flow.Stave(x, y, measureWidth);
+  getStave(x: number, y: number, measureWidth: number, clef: string, isFirstInRow: boolean, end: boolean) {
+    const staveMeasure = new Vex.Flow.Stave(x, y, measureWidth);
     if (isFirstInRow) {
+      // TODO: 버전 이슈로 수정했음.
       staveMeasure
+        .setKeySignature(this.keySignatureName, this.keySignatureName)
         .addClef(clef)
-        .addTimeSignature(this.numerator + '/' + this.denominator)
-        .setKeySignature(this.keySignatureName);
+        .addTimeSignature(`${this.numerator}/${this.denominator}`);
     }
     if (end) {
       staveMeasure.setEndBarType(Vex.Flow.Barline.type.END);
     }
+    // @ts-ignore
     staveMeasure.clef = clef;
+
     return staveMeasure;
   }
 
-  getMeasure(measureIndex) {
+  getMeasure(measureIndex: number) {
     return this.measureObjects[measureIndex] ? this.measureObjects[measureIndex] : null;
   }
 
-  getMeasureSvg(measureIndex) {
+  getMeasureSvg(measureIndex: number) {
     let measure = this.getMeasure(measureIndex);
     return measure ? measure.div.querySelector('svg') : null;
   }
 
-  computeStaffYs() {
-    this.staffYs = {};
+  // TODO: 현재 필요없는 메서드. 추후 필요하면 수정
+  // computeStaffYs() {
+  //   this.staffYs = {};
 
-    let curY = 15;
+  //   let curY = 15;
 
-    for (let key in this.yBounds) {
-      let bounds = this.yBounds[key];
-      let relY = 0 - bounds.min;
-      curY += relY;
+  //   for (let key in this.yBounds) {
+  //     let bounds = this.yBounds[key];
+  //     let relY = 0 - bounds.min;
+  //     curY += relY;
 
-      this.staffYs[key] = {};
-      this.staffYs[key].min = curY;
-      curY += bounds.max - bounds.min + 4;
-      this.staffYs[key].max = curY;
-    }
-  }
+  //     this.staffYs[key] = {};
+  //     this.staffYs[key].min = curY;
+  //     curY += bounds.max - bounds.min + 4;
+  //     this.staffYs[key].max = curY;
+  //   }
+  // }
 }
 
 export function getNotesInTimewindow(start: number, end: number, notesBySecond: NotesBySeconds) {

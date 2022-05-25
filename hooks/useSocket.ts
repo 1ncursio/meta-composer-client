@@ -5,8 +5,8 @@ import io, { Socket } from 'socket.io-client';
 
 const sockets: { [key: string]: Socket } = {};
 
-const useSocket = (workspace?: string): [Socket | undefined, () => void] => {
-  const { accessToken, getAccessToken } = useStore((state) => state.user);
+const useSocket = (workspace?: string, query?: Record<string, any>): [Socket | undefined, () => void] => {
+  const { accessToken } = useStore((state) => state.user);
   console.log('rerender', workspace);
 
   const disconnect = useCallback(() => {
@@ -21,12 +21,14 @@ const useSocket = (workspace?: string): [Socket | undefined, () => void] => {
   }
 
   if (!sockets[workspace] && accessToken) {
+    console.log(query);
     sockets[workspace] = io(`${getSocketUrl()}/${workspace}`, {
       transports: ['websocket'],
       withCredentials: true,
       auth: {
         token: accessToken,
       },
+      query,
     });
   }
 

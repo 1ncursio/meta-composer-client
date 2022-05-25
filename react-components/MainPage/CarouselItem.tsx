@@ -3,6 +3,7 @@ import ILesson from '@typings/ILesson';
 import optimizeImage from '@utils/optimizeImage';
 import { randomInt } from 'crypto';
 import Link from 'next/link';
+
 import { FC, useEffect, useState } from 'react';
 
 export interface LessonProps {
