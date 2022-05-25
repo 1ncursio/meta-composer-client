@@ -1,9 +1,11 @@
 import useRoomListSWR from '@hooks/swr/useRoomListSWR';
 import client from '@lib/api/client';
+import AvatarDefaultImage from '@react-components/AvatarDefaultImage';
 import IChatRoom from '@typings/IChatRoom';
 import ITeacherChatRoom from '@typings/ITeacherChatRoom';
 import IUserChatRoom from '@typings/IUserChatRoom';
 import produce from 'immer';
+import Image from 'next/image';
 import Link from 'next/link';
 import React, { FC, useCallback } from 'react';
 import { useEffect } from 'react';
@@ -42,30 +44,39 @@ const MessageRoomList: FC<MessageRoomListProps> = ({ currentRoomId }) => {
     //여기서 다른 페이지 가는것도 해야됨
   };
   return (
-    <div className="w-60">
+    <div className="w-1/4 h-5/6 bg-gray-100 ">
       {userChatsData && userChatsData.length > 0 && (
-        <div className="bg-gray-300 p2 flex flex-col h-full items-center">
-          <div className="text-base-content p-2 font-bold ">강사와의 채팅</div>
+        <div className="w-full p2 flex flex-col gap-2 mb-2 items-center">
+          <div className="text-blue-500 text-xl p-2 font-bold w-full    border-b  ">
+            <div className="w-4/5 mx-auto">Chatting</div>
+          </div>
           {userChatsData?.map((chat) => (
             <div
               key={chat.id}
-              className="my-5 w-5/6"
+              className=" w-5/6"
               onMouseEnter={() => setIsListHover(chat.id)}
               onMouseLeave={() => setIsListHover(-1)}
             >
-              <div className="flex flex-row bg-white shadow-lg rounded w-full p-5 mx-auto ">
+              <div className="flex flex-row bg-white shadow-lg rounded-lg w-full p-3 mx-auto ">
                 <Link href={'/chats/' + chat.id}>
-                  <div className="odd:bg-gray-50 flex gap-3 items-center font-semibold text-gray-800 p-3 hover:bg-gray-100 rounded-md hover:cursor-pointer w-full">
-                    {/* <img className="w-10 h-10 rounded-full" src="https://randomuser.me/api/portraits/women/24.jpg" alt="Rebecca Burke"/> */}
-                    <div className="flex flex-col">
-                      <div>{chat.__lesson__?.name.slice(0, 6) + '..'}</div>
-                      {/* <div className="text-gray-400 text-sm font-normal">
-                  {chat?.__messages__[0]?.image
-                    ? '이미지 파일'
-                    : chat.__messages__[0]
-                    ? chat.__messages__[0].message.slice(0, 10) + '..'
-                    : '채팅을 시작해 보세요!'}
-                </div> */}
+                  <div className="flex gap-3 items-center font-semibold text-gray-800 p-3 hover:bg-gray-100 rounded-md hover:cursor-pointer w-full">
+                    <div className="avatar">
+                      <div className="w-10 rounded-full">
+                        <AvatarDefaultImage
+                          image={chat.__lesson__.__teacher__.user.profile_image}
+                          username={chat.__lesson__.__teacher__.user.username}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex flex-col w-1/2 lg:w-3/5">
+                      <p className="truncate">{chat.__lesson__.__teacher__.user.username}</p>
+                      {/* <div className="text-gray-400 text-sm font-normal truncate">
+                        {chat?.__messages__[0]?.image
+                          ? '이미지 파일'
+                          : chat.__messages__[0]
+                          ? chat.__messages__[0].message.slice(0, 10) + '..'
+                          : '채팅을 시작해 보세요!'}
+                      </div> */}
                     </div>
                     {chat.unReadCount > 0 ? (
                       <div className="rounded-full w-5 h-5 bg-red-500 inline-flex justify-center items-center text-sm font-light text-white">
@@ -88,34 +99,39 @@ const MessageRoomList: FC<MessageRoomListProps> = ({ currentRoomId }) => {
       )}
 
       {lessonChatsData && lessonChatsData?.length > 0 && (
-        <div className="mt-2 bg-gray-200 p2 flex flex-col items-center">
-          <div className="text-base-content  font-bold ">학생과의 채팅</div>
+        <div className=" w-full  flex flex-col gap-2  items-center">
+          {/* <div className="text-base-content  font-bold ">학생과의 채팅</div> */}
           {lessonChatsData?.map((lesson) => (
-            <div key={lesson.id}>
+            <div key={lesson.id} className="w-full">
               {/* <div className="bg-gray-100 p-2"> */}
-              <div className="text-center">{lesson.name.slice(0, 10)}</div>
+              {/* <div className="text-center">{lesson.name.slice(0, 10)}</div> */}
 
               {lesson.chatRooms &&
                 lesson.chatRooms.map((chat) => (
                   <div
                     key={chat.id}
-                    className="my-5 w-full"
+                    className=" w-full"
                     onMouseEnter={() => setIsListHover(chat.id)}
                     onMouseLeave={() => setIsListHover(-1)}
                   >
-                    <div className="flex flex-row bg-white shadow-lg rounded w-full p-5 mx-auto ">
+                    <div className="flex flex-row bg-white shadow-lg rounded-lg  w-5/6  p-3 mx-auto ">
                       <Link href={'/chats/' + chat.id}>
-                        <div className="odd:bg-gray-50 flex gap-3 items-center font-semibold text-gray-800 p-3 hover:bg-gray-100 rounded-md hover:cursor-pointer w-full">
-                          {/* <img className="w-10 h-10 rounded-full" src="https://randomuser.me/api/portraits/women/24.jpg" alt="Rebecca Burke"/> */}
-                          <div className="flex flex-col">
-                            <div>{chat.user.username.slice(0, 10)}</div>
-                            {/* <div className="text-gray-400 text-sm font-normal">
-                            {chat.__messages__[0]?.image
-                              ? '이미지 파일'
-                              : chat.__messages__[0]
-                              ? chat.__messages__[0].message.slice(0, 10) + '..'
-                              : '채팅을 시작해 보세요!'}
-                          </div> */}
+                        <div className=" flex gap-3 items-center font-semibold text-gray-800 p-3 hover:bg-gray-100 rounded-md hover:cursor-pointer w-full">
+                          <div className="avatar">
+                            <div className="w-10 rounded-full">
+                              <AvatarDefaultImage image={chat.user.profile_image} username={chat.user.username} />
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col w-1/2 lg:w-3/5">
+                            <p className="truncate">{chat.user.username}</p>
+                            {/* <div className="text-gray-400 text-sm font-normal truncate">
+                              {chat.__messages__[0]?.image
+                                ? '이미지 파일'
+                                : chat.__messages__[0]
+                                ? chat.__messages__[0].message.slice(0, 10) + '..'
+                                : '채팅을 시작해 보세요!'}
+                            </div> */}
                           </div>
                           {chat.unReadCount > 0 ? (
                             <div className="rounded-full w-5 h-5 bg-red-500 inline-flex justify-center items-center text-sm font-light text-white">

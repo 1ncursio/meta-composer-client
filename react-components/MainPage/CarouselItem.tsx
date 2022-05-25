@@ -1,10 +1,10 @@
 import ILesson from '@typings/ILesson';
 
-import { FC } from 'react';
 import optimizeImage from '@utils/optimizeImage';
 import { randomInt } from 'crypto';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
+
 
 export interface LessonProps {
   lesson: ILesson;

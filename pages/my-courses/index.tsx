@@ -23,8 +23,6 @@ import ISignup from '@typings/ISignup';
 import { sign } from 'crypto';
 import dayjs from 'dayjs';
 import { json } from 'stream/consumers';
-import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
 import Image from 'next/image';
 interface iDate {
   startDate: string;
