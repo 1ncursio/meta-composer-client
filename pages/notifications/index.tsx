@@ -74,7 +74,7 @@ const NotificationsIndexPage = () => {
             </div>
           )}
           <div className="modal-action">
-            <label className="my-modal" className="btn" onClick={clear}>
+            <label htmlFor="my-modal" className="btn" onClick={clear}>
               Yay!
             </label>
           </div>

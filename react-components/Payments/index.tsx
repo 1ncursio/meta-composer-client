@@ -118,7 +118,7 @@ const PaymentsComponent: FC<PaymentPropos> = ({ payment, changePayment }) => {
               onClick={() =>
                 changePayment(payment, payment.signup.__lesson__.price * (lessonCount - dayCalculation.finishedCount))
               }
-              className="my-modal-5"
+              htmlFor="my-modal-5"
               className="btn btn-error btn-sm bg-red-500"
             >
               환불하기

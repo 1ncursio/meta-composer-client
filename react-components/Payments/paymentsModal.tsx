@@ -58,7 +58,7 @@ const PaymentsModal: FC<PaymentModalPropos> = ({ payment, pay }) => {
               {/* </div>{' '} */}
             </div>
             <div className="modal-action">
-              <label className="my-modal-5" className="btn">
+              <label htmlFor="my-modal-5" className="btn">
                 취소
               </label>
             </div>
