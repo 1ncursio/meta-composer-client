@@ -10,6 +10,10 @@ import ILesson from '@typings/ILesson';
 import { RequestPayResponse } from 'iamport-typings';
 import ISignup from '@typings/ISignup';
 
+interface IRequestPayResponse extends RequestPayResponse {
+  receipt_url?: string;
+}
+
 export interface SignSlice {
   signup: {
     signupLoad: ({
@@ -57,7 +61,7 @@ const createSignSlice: AppSlice<SignSlice> = (set, get) => ({
           buyer_tel: data.buyer_tel,
           buyer_postcode: '41416',
         },
-        async (rsp: RequestPayResponse) => {
+        async (rsp: IRequestPayResponse) => {
           console.log(rsp);
           if (!rsp.success) return;
           const res = await client.post(`${getBackEndUrl()}/signups/lessons/${lessonId}`, {
