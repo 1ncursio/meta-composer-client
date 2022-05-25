@@ -4,6 +4,7 @@ import Concours from '@store/concours';
 import React, { ChangeEvent, useState } from 'react';
 import Head from 'next/head';
 import Router from 'next/router';
+import ConcourItem from './concourItem';
 
 declare const window: typeof globalThis & {
   IMP: any;
@@ -131,9 +132,7 @@ const EntryConours = ({ concours }: { concours: Concours }) => {
 
   return (
     <div>
-      <h2>entry Form</h2>
-      <div>{concours.title}</div>
-      <div>{concours.price}</div>
+      <ConcourItem concours={concours} />
       <button onClick={requestPay2} className="btn btn-primary">
         test
       </button>
