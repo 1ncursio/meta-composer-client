@@ -128,12 +128,16 @@ const Header = () => {
                   </svg>
                 </a>
               </Link>
-              <ul className="p-2">
+              <ul className="p-2 bg-white">
                 <li>
-                  <a href="/concours">전체 콩쿠르 보기</a>
+                  <Link href={'/concours'}>
+                    <a>전체 콩쿠르 보기</a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/concours/result">콩쿠르 결과</a>
+                  <Link href={'/concours/result'}>
+                    <a>콩쿠르 결과</a>
+                  </Link>
                 </li>
               </ul>
             </li>

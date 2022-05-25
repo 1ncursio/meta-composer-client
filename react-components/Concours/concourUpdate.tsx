@@ -4,6 +4,9 @@ import { useForm } from 'react-hook-form';
 
 import client from '@lib/api/client';
 import Router from 'next/router';
+import optimizeImage from '@utils/optimizeImage';
+import Image from 'next/image';
+import Link from 'next/link';
 
 const ConcourUpdate = ({ concours }: { concours: Concours }) => {
   const [title, setTitle] = useState(concours.title);
@@ -45,30 +48,41 @@ const ConcourUpdate = ({ concours }: { concours: Concours }) => {
   };
 
   return (
-    <div className="mx-auto flex flex-col gap-4">
-      <div>
+    <div className="mx-auto flex flex-col gap-28">
+      <h1 className="text-xl text-center">Change Concours Information</h1>
+      <div className="border border-slate-300 rounded-lg">
         <form onSubmit={handleSubmit(onSubmit)} className="flex gap-4">
-          <div className="flex flex-col">
-            <img
+          <div className="flex flex-col place-self-center">
+            <Image
               className="place-self-center"
-              src={concours.coverIMG_url}
+              src={optimizeImage(concours?.coverIMG_url)}
               alt="사진이 존재하지 않습니다."
-              width={150}
-              height={250}
+              width={250}
+              height={450}
             />
             <input type="file" id="image" onChange={setUrl} className="place-self-center" />
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col ">
             <div>
-              <label htmlFor="title">대회명</label>
+              <label className="label">
+                <span className="label-text">대회명</span>
+              </label>
               {/* concours.title */}
-              <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} id="title" />
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                id="title"
+                className="input input-bordered input-sm w-full max-w-xs"
+              />
             </div>
             <div>
-              <label htmlFor="content">대회 설명</label>
+              <label className="label">
+                <span className="label-text">대회 설명</span>
+              </label>
               {/* concours.title */}
               <textarea
-                className="border"
+                className="textarea textarea-bordered h-24"
                 id="content"
                 cols={30}
                 rows={5}
@@ -77,7 +91,9 @@ const ConcourUpdate = ({ concours }: { concours: Concours }) => {
               />
             </div>
             <div>
-              <label htmlFor="date">대회 기간</label>
+              <label className="label">
+                <span className="label-text">대회 기간</span>
+              </label>
               {/* concours.date */}
               <input
                 type="date"
@@ -89,7 +105,9 @@ const ConcourUpdate = ({ concours }: { concours: Concours }) => {
               <input type="date" id="date" value={endDate.split('T')[0]} onChange={(e) => setEndDate(e.target.value)} />
             </div>
             <div>
-              <label htmlFor="people">최소 인원수</label>
+              <label className="label">
+                <span className="label-text">최소 인원수</span>
+              </label>
               <select
                 name="people"
                 id="people"
@@ -105,14 +123,29 @@ const ConcourUpdate = ({ concours }: { concours: Concours }) => {
               </select>
             </div>
             <div>
-              <label htmlFor="enternce_pee">참가비</label>
+              <label className="label">
+                <span className="label-text">참가비</span>
+              </label>
               {/* concours.pee */}
-              <input id="enternce_pee" type="text" value={entryPee} onChange={(e) => setEntryPee(e.target.value)} />원
+              <input
+                className="input input-bordered input-sm  max-w-xs text-right"
+                id="enternce_pee"
+                type="text"
+                value={entryPee}
+                onChange={(e) => setEntryPee(e.target.value)}
+              />
+              원
             </div>
-
-            <button type="submit" className="place-self-center bg-amber-500 w-28 rounded-md text-white">
-              수정하기
-            </button>
+            <div>
+              <button type="submit" className="place-self-center bg-amber-500 w-28 rounded-md text-white m-5">
+                수정하기
+              </button>
+              <button className="place-self-center bg-amber-500 w-28 rounded-md text-white m-5y">
+                <Link href={`/concours/details?id=${concours.id}`}>
+                  <a>취소</a>
+                </Link>
+              </button>
+            </div>
           </div>
         </form>
       </div>

@@ -5,13 +5,15 @@ import client from '../../lib/api/client';
 import fetcher from '@lib/api/fetcher';
 import Concours from '@store/concours';
 import { getSocketUrl } from '@utils/getEnv';
+import optimizeImage from '@utils/optimizeImage';
+import Image from 'next/image';
 
 const ConcourList = () => {
   const { data: concours } = useSWR<Concours[]>('/concours', fetcher);
 
   return (
-    <div className="mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 gap-40">
+    <div className="relative">
+      <div className="container grid grid-cols-4 grid-rows-2 grid-flow-rows h-full w-full gap-20">
         {concours &&
           concours.map((item) => (
             // <div key={item.id} className="flex flex-col">
@@ -24,13 +26,13 @@ const ConcourList = () => {
             //   </span>
             // </div>
             <div key={item.id} className="card w-96 bg-base-100 shadow-xl">
-              <figure className="px-10 pt-10">
-                <img
-                  src={getSocketUrl() + '/' + item.coverIMG_url}
+              <figure>
+                <Image
+                  src={optimizeImage(item?.coverIMG_url)}
                   alt="Cover Image"
                   className="rounded-xl"
-                  width={150}
-                  height={280}
+                  width={300}
+                  height={380}
                 />
               </figure>
               <div className="card-body items-center text-center">

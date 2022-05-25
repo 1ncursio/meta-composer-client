@@ -10,4 +10,5 @@ export default interface IUser {
   provider_id: number;
   self_introduce: string | null;
   teacher: ITeacher | null;
+  is_admin: boolean;
 }
