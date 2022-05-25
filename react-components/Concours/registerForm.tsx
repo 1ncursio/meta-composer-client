@@ -48,8 +48,8 @@ const ConcoursRegisterForm = () => {
   };
 
   return (
-    <div className="mx-auto flex flex-col gap-4">
-      <div className="border-2 border-black">
+    <div className="mx-auto flex flex-col gap-28">
+      <div className="border border-slate-300 rounded-lg px-96">
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <div>
             <div className="form-control w-full max-w-xs">
@@ -80,18 +80,24 @@ const ConcoursRegisterForm = () => {
             />
           </div>
           <div>
-            <label htmlFor="date">대회 기간</label>
+            <label className="label">
+              <span className="label-text">대회 기간</span>
+            </label>
             {/* concours.date */}
             <input type="date" id="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} /> ~{' '}
             <input type="date" id="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
           </div>
           <div>
-            <label htmlFor="image">포스터 등록</label>
+            <label className="label">
+              <span className="label-text">포스터 등록</span>
+            </label>
             <input type="file" id="image" onChange={setURL} />
           </div>
           {/* concours.image */}
           <div>
-            <label htmlFor="people">최소 인원수</label>
+            <label className="label">
+              <span className="label-text">최소 인원수</span>
+            </label>
             <select
               className="select select-bordered select-sm max-w-xs"
               name="people"
@@ -107,9 +113,12 @@ const ConcoursRegisterForm = () => {
             </select>
           </div>
           <div>
-            <label htmlFor="enternce_pee">참가비</label>
+            <label className="label">
+              <span className="label-text">참가비</span>
+            </label>
             {/* concours.pee */}
             <input
+              className="text-right input input-bordered input-sm  max-w-xs"
               id="enternce_pee"
               type="text"
               min={0}

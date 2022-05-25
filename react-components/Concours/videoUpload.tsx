@@ -1,8 +1,9 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
-import Router from 'next/router';
+import Router, { useRouter } from 'next/router';
 import client from '@lib/api/client';
+import Loading from './Loading';
 
 // const client = axios.create({
 //   baseURL: 'http://localhost:4000',
@@ -15,6 +16,8 @@ const VideoUpload = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const targetPage = `/concours/details?id=${router.query.id}`;
 
   const { handleSubmit } = useForm();
 
@@ -50,59 +53,69 @@ const VideoUpload = () => {
         .post(`/youtubes?id=${Router.query.id}`, formData, { headers: { 'Content-Type': 'multipart/form' } })
         .then((res) => {
           setLoading(false);
-          console.log(res);
+          alert('영상 등록 성공');
+          Router.push(targetPage);
         });
     } catch (error) {
       console.log(error);
     }
-
-    setLoading(false);
   };
 
+  if (loading) {
+    return <Loading loading={loading} />;
+  }
+
   return (
-    <div className="mx-auto flex flex-col gap-4">
-      {loading ? (
-        <progress className="progress progress-warning w-56" value="70" max="100"></progress>
-      ) : (
-        <div className="border-2 border-black">
-          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-            <div>
-              <label htmlFor="title">영상 제목</label>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                }}
-              />
-            </div>
-            <div>
-              <label htmlFor="description">영상 설명</label>
-              <textarea
-                name=""
-                id="description"
-                cols={10}
-                rows={3}
-                value={content}
-                onChange={(e) => {
-                  setContent(e.target.value);
-                }}
-              ></textarea>
-            </div>
-            <div>
-              <label htmlFor="image">영상 등록</label>
-              <input type="file" id="video" onChange={setVID} />
-            </div>
-            <div>
-              <label htmlFor="image">썸네일 등록</label>
-              <input type="file" id="image" onChange={setIMG} />
-            </div>
-            <button type="submit" className="btn btn-primary place-self-center bg-amber-500 w-28 rounded-md text-white">
-              등록
-            </button>
-          </form>
-        </div>
-      )}
+    <div className="mx-auto flex flex-col gap-28">
+      <h1 className="text-xl text-center">Video Upload</h1>
+      <div className="border border-slate-300 rounded-lg px-96">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+          <div>
+            <label className="label">
+              <span className="label-text">영상 제목</span>
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => {
+                setTitle(e.target.value);
+              }}
+              className="input input-bordered input-sm w-full max-w-xs"
+            />
+          </div>
+          <div>
+            <label className="label">
+              <span className="label-text">영상 설명</span>
+            </label>
+            <textarea
+              name=""
+              id="description"
+              cols={40}
+              rows={3}
+              value={content}
+              onChange={(e) => {
+                setContent(e.target.value);
+              }}
+              className="textarea textarea-bordered h-24"
+            ></textarea>
+          </div>
+          <div>
+            <label className="label">
+              <span className="label-text">영상 등록</span>
+            </label>
+            <input type="file" id="video" onChange={setVID} />
+          </div>
+          <div>
+            <label className="label">
+              <span className="label-text">썸네일 등록</span>
+            </label>
+            <input type="file" id="image" onChange={setIMG} />
+          </div>
+          <button type="submit" className="btn btn-primary place-self-center bg-amber-500 w-28 rounded-md text-white">
+            등록
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
