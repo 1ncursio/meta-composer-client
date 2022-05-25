@@ -19,6 +19,8 @@ const ConcourItem = ({ concours }: { concours: Concours }) => {
   const current_user = useUserSWR();
   console.log(current_user);
   const [entried, setEntried] = useState('');
+  const isAdmin = current_user.data?.is_admin;
+  console.log(isAdmin);
 
   const deleteConcours = () => {
     client.delete(`/concours/${concours.id}`).then((res) => Router.push(targetPage));
@@ -175,26 +177,32 @@ const ConcourItem = ({ concours }: { concours: Concours }) => {
                 <li>참가비 {concours.price}</li>
               </ul>
               <div className="card-actions justify-center">
-                {entried === '' ? (
-                  <button onClick={requestPay2} className="btn btn-primary">
-                    신청하기
-                  </button>
-                ) : (
-                  <button className="btn btn-primary">
-                    <Link href={`/concours/uploadVideo?id=${concours.id}`}>
-                      <a>영상 등록하기</a>
-                    </Link>
-                  </button>
-                )}
+                {entried === '' && isAdmin === false ? (
+                  <>
+                    <button onClick={requestPay2} className="btn btn-primary">
+                      신청하기
+                    </button>
+                    <button className="btn btn-primary">
+                      <Link href={`/concours/uploadVideo?id=${concours.id}`}>
+                        <a>영상 등록하기</a>
+                      </Link>
+                    </button>
+                  </>
+                ) : null}
 
-                <button className="btn btn-primary" onClick={deleteConcours}>
-                  삭제하기
-                </button>
-                <button className="btn btn-primary">
-                  <Link href={`/concours/update?id=${concours.id}`}>
-                    <a>수정하기</a>
-                  </Link>
-                </button>
+                {isAdmin ? (
+                  <>
+                    <button className="btn btn-primary" onClick={deleteConcours}>
+                      삭제하기
+                    </button>
+                    <button className="btn btn-primary">
+                      <Link href={`/concours/update?id=${concours.id}`}>
+                        <a>수정하기</a>
+                      </Link>
+                    </button>
+                  </>
+                ) : null}
+
                 <button className="btn btn-primary">
                   <Link href="/concours">
                     <a>목록으로</a>

@@ -156,7 +156,7 @@ const Header = () => {
             </>
           ) : (
             <>
-              <label className="my-modal" className="btn btn-primary btn-sm rounded-sm modal-btn">
+              <label htmlFor="my-modal" className="btn btn-primary btn-sm rounded-sm modal-btn">
                 로그인
               </label>
               <input type="checkbox" id="my-modal" className="modal-toggle" />
@@ -179,7 +179,7 @@ const Header = () => {
                     </button>
                   </div>
                   <div className="modal-action">
-                    <label className="my-modal" className="btn btn-accent">
+                    <label htmlFor="my-modal" className="btn btn-accent">
                       닫기
                     </label>
                   </div>
