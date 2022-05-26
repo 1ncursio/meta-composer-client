@@ -46,12 +46,9 @@ const StreamControlContainer = () => {
 
   return (
     <div className="flex gap-4 p-2 py-4 justify-center">
-      <div
-        className="tooltip tooltip-open tooltip-warning"
-        data-tip={!isMidiConnected ? 'MIDI 연결 필요' : 'MIDI 연결 완료'}
-      >
+      <div className="tooltip tooltip-open tooltip-warning" data-tip={!isMidiConnected && 'MIDI 연결 필요'}>
         <button className={styles.stateControlButton(isMidiConnected)}>
-          {isMidiConnected ? <MdPianoOff size={28} /> : <MdPiano size={28} />}
+          {isMidiConnected ? <MdPiano size={28} /> : <MdPianoOff size={28} />}
         </button>
       </div>
       <div className="tooltip" data-tip={isCameraOff ? '카메라 켜기' : '카메라 끄기'}>

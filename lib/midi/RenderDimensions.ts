@@ -38,7 +38,7 @@ export class RenderDimensions {
     this.resizeCallbacks = [];
     this.numberOfWhiteKeysShown = 52;
     this.minNoteNumber = MIN_NOTE_NUMBER;
-    this.minNoteNumber = MAX_NOTE_NUMBER;
+    this.maxNoteNumber = MAX_NOTE_NUMBER;
     this.menuHeight = 200;
     this.sheetHeight = getSetting('enableSheet') ? 340 : 0;
     setSettingCallback('blackKeyHeight', this.resize.bind(this));
@@ -300,9 +300,11 @@ export class RenderDimensions {
     let pianoPos = this._pianoPosition / 100;
     return Math.ceil(((1 - pianoPos) * this.getNoteToHeightConst()) / 1000);
   }
+
   getSecondsDisplayedAfter() {
     return Math.ceil(this.getMilisecondsDisplayedAfter() / 1000);
   }
+
   getMilisecondsDisplayedAfter() {
     let pianoPos = this._pianoPosition / 100;
     return pianoPos * (this.getNoteToHeightConst() / this._playedNoteFalloffSpeed);
@@ -323,6 +325,7 @@ export class RenderDimensions {
     }
     this.setZoom(range.min, range.max);
   }
+
   zoomIn() {
     this.minNoteNumber++;
     this.maxNoteNumber--;
@@ -334,6 +337,7 @@ export class RenderDimensions {
     }
     this.setZoom(this.minNoteNumber, this.maxNoteNumber);
   }
+
   zoomOut() {
     this.minNoteNumber--;
     this.maxNoteNumber++;
@@ -345,6 +349,7 @@ export class RenderDimensions {
     }
     this.setZoom(Math.max(MIN_NOTE_NUMBER, this.minNoteNumber), Math.min(MAX_NOTE_NUMBER, this.maxNoteNumber));
   }
+
   moveViewLeft() {
     if (this.minNoteNumber == MIN_NOTE_NUMBER) return;
     this.minNoteNumber--;
@@ -357,6 +362,7 @@ export class RenderDimensions {
     }
     this.setZoom(Math.max(MIN_NOTE_NUMBER, this.minNoteNumber), this.maxNoteNumber);
   }
+
   moveViewRight() {
     if (this.maxNoteNumber == MAX_NOTE_NUMBER) return;
     this.minNoteNumber++;
@@ -376,7 +382,7 @@ export class RenderDimensions {
    * @param {Number} minNoteNumber
    * @param {Number} maxNoteNumber
    */
-  setZoom(minNoteNumber, maxNoteNumber) {
+  setZoom(minNoteNumber: number, maxNoteNumber: number) {
     let numOfWhiteKeysInRange = 0;
     for (let i = minNoteNumber; i <= maxNoteNumber; i++) {
       numOfWhiteKeysInRange += isBlack(i - MIN_NOTE_NUMBER) ? 0 : 1;
