@@ -165,7 +165,7 @@ export class AudioPlayer {
     volume: number,
     isPlayAlong: boolean,
   ) {
-    let instrument = getTrack(note.track).overwrittenInstrument || note.instrument;
+    let instrument = getTrack(note.track.toString()).overwrittenInstrument || note.instrument;
     // if (getTrack(note.track).overwrittenInstrument) {
     //   instrument = getTrack(note.track).overwrittenInstrument;
     // }
