@@ -80,7 +80,7 @@ const LessonsIndexPage = () => {
     <div className="relative ">
       <div className="flex flex-col items-end mt-4">
         {userData?.teacher && (
-          <Link href="/lessons/createLesson">
+          <Link href="/lessons/create">
             <a className="bg-primary p-1 rounded font-bold text-sm hover:bg-gray-500">레슨생성</a>
           </Link>
         )}

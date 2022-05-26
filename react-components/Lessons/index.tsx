@@ -29,7 +29,7 @@ const LessonsPage = () => {
   }, [lessonData]);
 
   const moveRouter = () => {
-    Router.push('/lessons/createLesson');
+    Router.push('/lessons/create');
   };
 
   return (
