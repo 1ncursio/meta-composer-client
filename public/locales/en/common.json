@@ -17,8 +17,8 @@
     "beginner": "Beginner",
     "intermediate": "Intermediate",
     "advanced": "Advanced",
-    "sonata": "Sonata",
-    "etudes": "Etudes",
-    "waltzes": "Waltzes",
-    "marches": "Marches"
+    "Sonata": "Sonata",
+    "Etudes": "Etudes",
+    "Waltzes": "Waltzes",
+    "Marches": "Marches"
 }
