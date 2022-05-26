@@ -9,7 +9,7 @@ const ConcoursResultItem = (item: any) => {
         {/* <span>{item.item[0].snippet.title}</span> */}
         <iframe src={`https://www.youtube.com/embed/${item.item[0].id}?autoplay=0&mute=1`}></iframe>
         <span>{item.item[0].snippet.title}</span>
-        <span>{item.item[0].statistics.viewCount}</span>
+        <span>조회수 : {item.item[0].statistics.viewCount}</span>
       </div>
     </div>
   );
