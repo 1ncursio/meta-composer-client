@@ -19,6 +19,7 @@ import produce from 'immer';
 import dayjs from 'dayjs';
 import { json } from 'stream/consumers';
 import Cdatjs from 'dayjs/plugin/customParseFormat';
+import optimizeImage from '@utils/optimizeImage';
 export interface ISignupForm {
   buyer_name: string;
   buyer_tel: string;
@@ -155,7 +156,9 @@ const LessonSignup = () => {
           <div className="w-3/4  border-2 h-28 flex flex-row  justify-between gap-3">
             <div className="avatar w-1/4  p-2">
               <div className="">
-                <img src={lessonData?.imageURL} className="object-cover " />
+                {lessonData && lessonData?.imageURL && (
+                  <img src={optimizeImage(lessonData?.imageURL)} className="object-cover " />
+                )}
               </div>
             </div>
             <p>{lessonData?.name}</p>

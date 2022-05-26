@@ -81,7 +81,7 @@ const DashboardMain = () => {
               <p>
                 진도율: {'   '}
                 {closeSignup.finishedCount}/{closeSignup.lesson}
-                {'   '}({(closeSignup.finishedCount / closeSignup!.lesson) * 100}%)
+                {'   '}({closeSignup!.lesson !== 0 ? (closeSignup.finishedCount / closeSignup!.lesson) * 100 : 0}%)
               </p>
             )}
 

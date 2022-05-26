@@ -18,7 +18,7 @@ const PaymentsModal: FC<PaymentModalPropos> = ({ payment, pay }) => {
       },
     });
     console.log(res);
-    alert('환부이 완료 되었습니다');
+    alert('환불이 완료 되었습니다');
     window.location.href = window.location.origin + '/payments';
   }, [payment]);
 
