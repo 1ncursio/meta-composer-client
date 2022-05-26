@@ -197,11 +197,11 @@ const CreateLessons = () => {
               <span className="label-text">레슨 타입</span>
             </label>
             <select id="lessonType" {...register('type')} className="input input-sm input-bordered w-full max-w-xs">
-              <option value="Sonata">소나타</option>
-              <option value="Etudes">에튀드</option>
-              <option value="Waltzes">왈츠</option>
-              <option value="Nocturnes">녹턴</option>
-              <option value="Marches">행진곡</option>
+              <option value="Sonata">{t('sonata')}</option>
+              <option value="Etudes">{t('etudes')}</option>
+              <option value="Waltzes">{t('waltzes')}</option>
+              <option value="Nocturnes">{t('nocturnes')}</option>
+              <option value="Marches">{t('marches')}</option>
             </select>
             <br />
             <label className="label">
