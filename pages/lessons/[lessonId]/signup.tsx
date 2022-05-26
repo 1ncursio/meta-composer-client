@@ -1,6 +1,6 @@
 import client from '@lib/api/client';
 import fetcher from '@lib/api/fetcher';
-import LessonIntoroduce from '@react-components/lessonComponents/introduce';
+import LessonIntroduce from '@react-components/lessonComponents/introduce';
 import LessonReview from '@react-components/lessonComponents/review';
 import ILesson from '@typings/ILesson';
 import Link from 'next/link';

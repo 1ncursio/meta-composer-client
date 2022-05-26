@@ -2,9 +2,8 @@ import { useSchedulePicker } from '@hooks/useSchedulePicker';
 import client from '@lib/api/client';
 import fetcher from '@lib/api/fetcher';
 import ScheduluePicker from '@react-components/SchedulePicker';
-import optimizeImage from '@utils/optimizeImage';
 import dayjs from 'dayjs';
-import produce from 'immer';
+import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import Router from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -25,6 +24,8 @@ export interface ILessonForm {
 }
 
 const CreateLessons = () => {
+  const { t } = useTranslation('common');
+
   const { data: lessonData, mutate } = useSWR<Lesson[]>('/lessons?perPage=8&page=1', fetcher);
 
   const {
@@ -153,9 +154,9 @@ const CreateLessons = () => {
                 <span className="label-text">난이도</span>
               </label>
               <select id="lessonType" {...register('difficulty')} className="input input-bordered w-full max-w-xs">
-                <option value="beginner">입문자</option>
-                <option value="intermediate">중급자</option>
-                <option value="advanced">숙련자</option>
+                <option value="beginner">{t('beginner')}</option>
+                <option value="intermediate">{t('intermediate')}</option>
+                <option value="advanced">{t('advanced')}</option>
               </select>
             </div>
             <div>

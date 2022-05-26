@@ -15,6 +15,9 @@ export default interface ILesson {
   comments: Comment[];
   timeTables: TimeTables[];
   rating: number;
+  difficulty: string;
+  weLearnThis: string;
+  checkPlease: string;
 }
 export interface Comment {
   contents: string;

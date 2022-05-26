@@ -146,9 +146,9 @@ const Header = () => {
         <div className="navbar-end gap-2">
           {userData ? (
             <>
-              <Link href="/link">
+              {/* <Link href="/link">
                 <a className="btn btn-primary btn-sm rounded-sm">{t('create-room')}</a>
-              </Link>
+              </Link> */}
               <input className="input bg-base-200 input-sm input-primary w-full max-w-[12rem] rounded-sm" />
               {/* <BsBell size={24} /> */}
               <NavNoptification user={userData} hasDropdown />

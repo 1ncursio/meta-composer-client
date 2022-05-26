@@ -77,41 +77,34 @@ const LessonsIndexPage = () => {
   );
 
   return (
-    <div className="relative ">
-      <div className="flex flex-col items-end mt-4">
-        {userData?.teacher && (
-          <Link href="/lessons/create">
-            <a className="bg-primary p-1 rounded font-bold text-sm hover:bg-gray-500">레슨생성</a>
-          </Link>
-        )}
-      </div>
+    <div className="relative">
       <div className="flex h-screen p-4">
-        <div className="container    w-52 ">
+        <div className="container w-52 ">
           <div className=" flex flex-col items-center border bg-gray-100">
-            <div className="p-2 text-md text-center font-normal border-b-2  w-full">
+            <div className="p-2 text-md text-center font-normal border-b-2 w-full">
               <Link href={`/lessons`}>
                 <a>전체보기 </a>
               </Link>
             </div>
-            <div className="p-2 text-md text-center font-normal border-b-2  w-full">
+            <div className="p-2 text-md text-center font-normal border-b-2 w-full">
               {' '}
               <Link href={`/lessons?searchKeyword=Sonata`}>
                 <a>Sonata</a>
               </Link>
             </div>
-            <div className="p-2 text-md text-center font-normal border-b-2  w-full">
+            <div className="p-2 text-md text-center font-normal border-b-2 w-full">
               {' '}
               <Link href={`/lessons?searchKeyword=Etudes`}>
                 <a>Etudes</a>
               </Link>
             </div>
-            <div className="p-2 text-md text-center font-normal  border-b-2    w-full">
+            <div className="p-2 text-md text-center font-normal border-b-2 w-full">
               {' '}
               <Link href={`/lessons?searchKeyword=Waltzes`}>
                 <a>Waltzes</a>
               </Link>
             </div>
-            <div className="p-2 text-md text-center font-normal   w-full">
+            <div className="p-2 text-md text-center font-normal w-full">
               {' '}
               <Link href={`/lessons?searchKeyword=Marches`}>
                 <a>Marches</a>
@@ -119,23 +112,31 @@ const LessonsIndexPage = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col h-full w-4/5 gap-2 ">
-          {/* <div className="w-full  border-b-2 p-2 flex flex-row-reverse	 items-end"> */}
+        <div className="flex flex-col h-full w-4/5 gap-2">
           <form
             onSubmit={handleSubmit(onSearchSubmit)}
-            className="w-full  border-b-2 p-2 flex flex-row-reverse	 items-end"
+            className="w-full border-b-2 p-2 flex flex-row-reverse items-center"
           >
             <button className="bg-yellow-400 h-full p-2 font-bold text-white w-1/8">검색</button>
             <input
               type="text"
-              className="border p-2 text-sm h-full focus:outline-yellow-500 w-1/8  "
+              className="border p-2 text-sm h-full focus:outline-yellow-500 w-1/8"
               {...register('wordSearch')}
               placeholder="레슨 검색하기"
             />
+            {userData?.teacher && (
+              <Link href="/lessons/create">
+                <a>
+                  <button type="button" className="btn btn-primary btn-sm mr-4">
+                    레슨 만들기
+                  </button>
+                </a>
+              </Link>
+            )}
           </form>
           {/* </div> */}
-          <div className="w-full p-2 flex flex-row-reverse	items-center mb-4">
-            <select onChange={orderChange} className="select select-bordered select-sm  max-w-xs">
+          <div className="w-full p-2 flex flex-row-reverse items-center mb-4">
+            <select onChange={orderChange} className="select select-bordered select-sm max-w-xs">
               <option selected value={'created_at'}>
                 최신순
               </option>
@@ -144,7 +145,7 @@ const LessonsIndexPage = () => {
             </select>
           </div>
           {LessonDataList && LessonDataList[0]?.length > 0 ? (
-            <div className="container grid grid-cols-4 grid-rows-2 grid-flow-rows h-full w-full   ">
+            <div className="container grid grid-cols-4 grid-rows-2 grid-flow-rows h-full w-full">
               {LessonDataList[current - 1]?.map((lesson) => {
                 return (
                   <div
@@ -163,8 +164,8 @@ const LessonsIndexPage = () => {
         </div>
       </div>
       {LessonDataList && LessonDataList[0]?.length > 0 && (
-        <div className={` absolute bottom-30 w-full left-1/2`}>
-          <div className="btn-group ">
+        <div className="absolute bottom-30 w-full left-1/2">
+          <div className="btn-group">
             <button className="btn" onClick={onPage(-1, current)}>
               «
             </button>

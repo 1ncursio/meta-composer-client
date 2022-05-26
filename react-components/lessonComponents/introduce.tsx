@@ -1,20 +1,22 @@
 import ILesson from '@typings/ILesson';
-import Link from 'next/link';
-import { FC, useEffect } from 'react';
+import { useTranslation } from 'next-i18next';
+import { FC } from 'react';
 import { AiOutlineCheck } from 'react-icons/ai';
 
-export interface LessonnItoroduceProps {
-  lesson: ILesson | undefined;
+export interface LessonnIntroduceProps {
+  lesson: ILesson;
 }
 
-const LessonIntoroduce: FC<LessonnItoroduceProps> = ({ lesson }) => {
+const LessonIntroduce: FC<LessonnIntroduceProps> = ({ lesson }) => {
+  const { t } = useTranslation('common');
+
   return (
     <div className="py-8 container mx-auto w-full  ">
       <div>
-        <p className="font-bold text-xl text-black">[**] 를 위해 준비한 </p>
+        <p className="font-bold text-xl text-black">{t(lesson.difficulty)} 를 위해 준비한 </p>
         <p className="font-bold text-xl text-black"> {lesson?.type} 레슨 입니다.</p>
       </div>
-      <div className="py-8  w-2/3 ">
+      <div className="py-8  w-2/3">
         <p className="w-full break-all font-bold">{lesson?.introduce}</p>
       </div>
       <div className="border-2 h-40 sm:h-48 rounded-xl flex flex-row p-4  w-2/3">
@@ -52,4 +54,4 @@ const LessonIntoroduce: FC<LessonnItoroduceProps> = ({ lesson }) => {
   );
 };
 
-export default LessonIntoroduce;
+export default LessonIntroduce;

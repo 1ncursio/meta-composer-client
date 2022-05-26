@@ -1,7 +1,7 @@
 import { useSchedulePicker } from '@hooks/useSchedulePicker';
 import client from '@lib/api/client';
 import fetcher from '@lib/api/fetcher';
-import LessonIntoroduce from '@react-components/lessonComponents/introduce';
+import LessonIntroduce from '@react-components/lessonComponents/introduce';
 import LessonReview from '@react-components/lessonComponents/review';
 import ScheduluePicker from '@react-components/SchedulePicker';
 import ILesson from '@typings/ILesson';
@@ -157,7 +157,7 @@ const LessonPage = () => {
           <LessonReview commnets={lessonData.comments} start={start} Evaluation={Evaluation} />
         ) : (
           <div className="w-full">
-            <LessonIntoroduce lesson={lessonData} />
+            {lessonData && <LessonIntroduce lesson={lessonData} />}
             <p className="w-2/3 border-2 p-2 mt-10 border-gray-300 text-center font-bold text-lg  xl:text-2xl ">
               수강 시간표
             </p>

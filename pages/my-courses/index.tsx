@@ -66,8 +66,8 @@ const MyCoursesPage = () => {
         <div className="container w-2/3 items-center border p-2 mt-10">
           <Scheduler data={sData} height={640}>
             <ViewState currentDate={crrentDate} onCurrentDateChange={setCrrentDate} defaultCurrentViewName="Month" />
-            <DayView startDayHour={12} endDayHour={18} />
-            <WeekView startDayHour={12} endDayHour={18} />
+            <DayView startDayHour={9} endDayHour={18} />
+            <WeekView startDayHour={9} endDayHour={18} />
             <MonthView />
             <Toolbar />
             <DateNavigator />

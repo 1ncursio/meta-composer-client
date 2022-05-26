@@ -58,14 +58,15 @@ const DashboardSideBar = () => {
         selected: <RiBookFill size={iconSize} />,
       },
     },
-    {
-      path: '/my-sheets',
-      title: t('my-sheets'),
-      icon: {
-        unselected: <BsFileEarmarkMusic size={iconSize} />,
-        selected: <BsFileEarmarkMusicFill size={iconSize} />,
-      },
-    },
+    // TODO: 구현되지 않아서 주석처리
+    // {
+    //   path: '/my-sheets',
+    //   title: t('my-sheets'),
+    //   icon: {
+    //     unselected: <BsFileEarmarkMusic size={iconSize} />,
+    //     selected: <BsFileEarmarkMusicFill size={iconSize} />,
+    //   },
+    // },
     {
       path: '/my-profile',
       title: t('my-profile'),
@@ -90,14 +91,15 @@ const DashboardSideBar = () => {
         selected: <BsCreditCard2BackFill size={iconSize} />,
       },
     },
-    {
-      path: '/assignments',
-      title: t('assignments'),
-      icon: {
-        unselected: <MdOutlineAssignment size={iconSize} />,
-        selected: <MdAssignment size={iconSize} />,
-      },
-    },
+    // TODO: 구현되지 않아서 주석처리
+    // {
+    //   path: '/assignments',
+    //   title: t('assignments'),
+    //   icon: {
+    //     unselected: <MdOutlineAssignment size={iconSize} />,
+    //     selected: <MdAssignment size={iconSize} />,
+    //   },
+    // },
     {
       path: '/chats',
       title: t('chats'),

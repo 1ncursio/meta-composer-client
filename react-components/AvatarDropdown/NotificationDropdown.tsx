@@ -38,7 +38,9 @@ const NotificationDropdown: FC<NotificaitonProps> = ({ notifitionData }) => {
     <div tabIndex={0} className="shadow card card-compact  dropdown-content bg-base-100 w-80 rounded-none">
       <div className="card-body hover:bg-gray-200">
         <Link href="/notifications">
-          <button className="card-title">알림함</button>
+          <a>
+            <button className="card-title">알림함</button>
+          </a>
         </Link>
       </div>
       {/* <div>{notificationList && JSON.stringify(notificationList.notifitionData)}</div> */}
