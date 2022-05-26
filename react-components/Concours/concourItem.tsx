@@ -92,6 +92,8 @@ const ConcourItem = ({ concours }: { concours: Concours }) => {
 
           alert('결제성공');
 
+          location.reload();
+
           // 성공 이후의 결제정보 전달은 ,             https://docs.iamport.kr/implementation/payment 확인할것.
 
           console.log(rsp + 'zzzzzzzzzzzzzzz');
@@ -121,6 +123,7 @@ const ConcourItem = ({ concours }: { concours: Concours }) => {
               console.log(JSON.stringify(response.data) + '콩쿠르 등록 성공했다');
               const concoursSignupId = response.data.id;
               console.log(response.data.id + '<<<- concoursSignupId ');
+              console.log(response.data.merchant_uid + 'merchant_uid');
               client
                 .post('/payments', {
                   merchant_uid: response.data.merchant_uid,
@@ -131,6 +134,7 @@ const ConcourItem = ({ concours }: { concours: Concours }) => {
                 .then((response) => {
                   console.log(response.data);
                   alert('신청이 완료되었습니다.');
+                  location.reload();
                 })
                 .catch((error) => {
                   console.log('등록 취소되었습니다.');
