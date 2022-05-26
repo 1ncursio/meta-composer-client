@@ -2,8 +2,10 @@ import { useSchedulePicker } from '@hooks/useSchedulePicker';
 import client from '@lib/api/client';
 import fetcher from '@lib/api/fetcher';
 import ScheduluePicker from '@react-components/SchedulePicker';
+import optimizeImage from '@utils/optimizeImage';
 import dayjs from 'dayjs';
 import produce from 'immer';
+import Image from 'next/image';
 import Router from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -101,10 +103,6 @@ const CreateLessons = () => {
     if (lessonData) console.log(lessonData);
   }, [lessonData]);
 
-  const moveRouter = () => {
-    Router.push('/lessons');
-  };
-
   return (
     <div className="container mx-auto">
       <ul>
@@ -112,55 +110,58 @@ const CreateLessons = () => {
         <div>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
             <div>
-              <label className="input-group input-group-vertical">레슨 이름</label>
+              <label className="label">
+                <span className="label-text">레슨 이름</span>
+              </label>
               <input
                 type="text"
-                placeholder="name"
+                placeholder="레슨명을 입력해주세요."
                 {...register('name')}
                 autoComplete="off"
                 className="input input-bordered w-full max-w-xs"
               />
             </div>
             <div>
-              <label>이미지 첨부</label>
-              <table>
-                <tbody>
-                  <tr>
-                    <td>
-                      <div id="image">
-                        {thumbnailImageSrc && <img alt="sample" src={thumbnailImageSrc} style={{ margin: 'auto' }} />}
-                        <div
-                          style={{
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          <input id="image" name="imgUpload" type="file" accept="image/*" onChange={saveFileImage} />
+              <label className="label">
+                <span className="label-text">커버 이미지</span>
+              </label>
+              <div>
+                {thumbnailImageSrc && (
+                  <Image alt="Cover Image" src={thumbnailImageSrc} width={640} height={360} objectFit="cover" />
+                )}
+                <div
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <input name="imgUpload" type="file" accept="image/*" onChange={saveFileImage} />
+                  <button className="btn btn-sm btn-error" onClick={() => deleteFileImage()}>
+                    삭제
+                  </button>
+                </div>
 
-                          <button className="btn" onClick={() => deleteFileImage()}>
-                            삭제
-                          </button>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                {/* {thumbnailImageSrc ? (
+                  <Image alt="Cover Image" src="https://via.placeholder.com/600x363" width={400} />
+                ) : (
+                  <Image alt="Cover Image" src={optimizeImage(thumbnailImageSrc)} width={400} />
+                )} */}
+              </div>
             </div>
             <div>
-              <label className="input-group input-group-vertical">난이도</label>
-              <select
-                id="lessonType"
-                {...register('difficulty')}
-                className="input input-sm input-bordered w-full max-w-xs"
-              >
+              <label className="label">
+                <span className="label-text">난이도</span>
+              </label>
+              <select id="lessonType" {...register('difficulty')} className="input input-bordered w-full max-w-xs">
                 <option value="beginner">입문자</option>
                 <option value="intermediate">중급자</option>
                 <option value="advanced">숙련자</option>
               </select>
             </div>
             <div>
-              <label className="input-group input-group-vertical">이런 걸 배워요!</label>
+              <label className="label">
+                <span className="label-text">이런 걸 배워요!</span>
+              </label>
               <input
                 type="text"
                 placeholder="이런 걸 배워요!"
@@ -169,7 +170,9 @@ const CreateLessons = () => {
               />
             </div>
             <div>
-              <label className="input-group input-group-vertical">확인 사항</label>
+              <label className="label">
+                <span className="label-text">확인 사항</span>
+              </label>
               <input
                 type="text"
                 placeholder="확인 사항"
@@ -177,7 +180,9 @@ const CreateLessons = () => {
                 className="input input-bordered w-full max-w-xs"
               />
             </div>
-            <label className="input-group input-group-vertical">가격</label>
+            <label className="label">
+              <span className="label-text">가격</span>
+            </label>
             <input
               type="number"
               placeholder="숫자만 입력하세요"
@@ -187,34 +192,22 @@ const CreateLessons = () => {
               className="input input-bordered w-full max-w-xs"
             />
             <br />
-            <label className="input-group input-group-vertical">레슨 타입</label>
+            <label className="label">
+              <span className="label-text">레슨 타입</span>
+            </label>
             <select id="lessonType" {...register('type')} className="input input-sm input-bordered w-full max-w-xs">
-              <option value="Sonata">Sonata</option>
-              <option value="Etudes">Etudes</option>
-              <option value="Waltzes">Waltzes</option>
-              <option value="Nocturnes">Nocturnes</option>
-              <option value="Marches">Marches</option>
+              <option value="Sonata">소나타</option>
+              <option value="Etudes">에튀드</option>
+              <option value="Waltzes">왈츠</option>
+              <option value="Nocturnes">녹턴</option>
+              <option value="Marches">행진곡</option>
             </select>
             <br />
-            {/* <div className="relative">
-              <label className="input-group input-group-vertical">레슨 일정</label>
-              <select id="day" {...register('day')} className="input input-bordered w-full max-w-xs">
-                <option value="1">일</option>
-                <option value="2">월</option>
-                <option value="3">화</option>
-                <option value="4">수</option>
-                <option value="5">목</option>
-                <option value="6">금</option>
-                <option value="7">토</option>
-              </select>
-
-              <br />
-              <label className="input-group input-group-vertical">레슨 시간</label>
-              <input type="time" step="2" {...register('time')} />
-            </div> */}
-            <label className="input-group input-group-vertical">레슨 진행 시간</label>
+            <label className="label">
+              <span className="label-text">레슨 진행 시간</span>
+            </label>
             <input
-              // type="datetime"
+              type="number"
               placeholder="length"
               {...register('length', {
                 value: 60,
@@ -230,18 +223,18 @@ const CreateLessons = () => {
               days={days}
               times={times}
             />
-
-            <label className="input-group input-group-vertical">소개</label>
+            <label className="label">
+              <span className="label-text">
+                레슨 소개 <span className="text-error">(잠재 수강생들이 매력을 느낄만한 글을 짧게 남겨주세요.)</span>
+              </span>
+            </label>
             <textarea
               className="w-full max-w-xs textarea textarea-bordered h-24"
               {...register('introduce')}
-              placeholder="introduce"
+              placeholder="ex) 이 강의를 통해 수강생은 피아노 연주의 기초를 다질 수 있을 것으로 예상합니다."
             />
             <div>
-              <button className="btn">등록</button>
-              <button type="button" className="btn" onClick={moveRouter}>
-                취소
-              </button>
+              <button className="btn btn-primary">레슨 등록</button>
             </div>
           </form>
         </div>
