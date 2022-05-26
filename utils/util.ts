@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import CONST from '@lib/midi/CONST';
 import { getSetting } from '@lib/settings/Settings';
 
