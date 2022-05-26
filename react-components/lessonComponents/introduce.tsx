@@ -13,11 +13,11 @@ const LessonIntroduce: FC<LessonnIntroduceProps> = ({ lesson }) => {
   return (
     <div className="py-8 container mx-auto w-full  ">
       <div>
-        <p className="font-bold text-xl text-black">{t(lesson.difficulty)} 를 위해 준비한 </p>
-        <p className="font-bold text-xl text-black"> {lesson?.type} 레슨 입니다.</p>
+        <p className="font-bold text-xl text-black">{t(lesson.difficulty)}를 위해 준비한</p>
+        <p className="font-bold text-xl text-black">{t(lesson.type)} 레슨입니다.</p>
       </div>
       <div className="py-8  w-2/3">
-        <p className="w-full break-all font-bold">{lesson?.introduce}</p>
+        <p className="w-full break-all font-bold">{lesson.introduce}</p>
       </div>
       <div className="border-2 h-40 sm:h-48 rounded-xl flex flex-row p-4  w-2/3">
         <div className="flex flex-row items-center mr-6">
@@ -29,19 +29,19 @@ const LessonIntroduce: FC<LessonnIntroduceProps> = ({ lesson }) => {
         <div className="flex flex-col items-center gap-3 pt-10">
           <div className="flex flex-row gap-2 ">
             <AiOutlineCheck color="green" size={20} />
-            <p className="font-semibold text-sm">재즈하고싶은신분</p>
+            <p className="font-semibold text-sm">{lesson.weLearnThis}</p>
           </div>
-          <div className="flex flex-row gap-2">
+          {/* <div className="flex flex-row gap-2">
             <AiOutlineCheck color="green" size={20} /> <p className="font-semibold text-sm">재즈하고싶은신분</p>
           </div>
           <div className="flex flex-row gap-2">
             <AiOutlineCheck color="green" size={20} /> <p className="font-semibold text-sm">재즈하고싶은신분</p>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="bg-gray-800 h-28 mt-5  w-2/3">
         <p className="font-bold text-md text-white text-center p-10 ">
-          {lesson?.type} 연주자 라면 반드시 알아야 하는 기술
+          {lesson.type} 연주자 라면 반드시 알아야 하는 기술
         </p>
       </div>
       <div className="bg-gray-300 h-28 mt-5 p-5  w-2/3">

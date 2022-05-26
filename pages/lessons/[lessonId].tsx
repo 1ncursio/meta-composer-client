@@ -16,6 +16,8 @@ import useSWR from 'swr';
 
 import Cdatjs from 'dayjs/plugin/customParseFormat';
 import getFetcher from '@lib/api/getFetcher';
+import { GetStaticProps } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 const scrollToRef = (ref: any) => window.scrollTo({ top: ref.current.offsetTop, behavior: 'smooth' });
 const LessonPage = () => {
   const router = useRouter();
@@ -135,7 +137,7 @@ const LessonPage = () => {
       </div>
       <div className="tabs border-b-2  mt-2   ">
         <Link href={`/lessons/${lessonId}`}>
-          <p className="tab ml-16 text-black font-bold">강의 소개</p>
+          <a className="tab ml-16 text-black font-bold">강의 소개</a>
         </Link>
         {/* <Link href={`/lessons/${lessonId}?current=review`}>
           <p className="tab text-black font-bold">수강평</p>
@@ -220,5 +222,11 @@ const LessonPage = () => {
     </div>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => ({
+  props: {
+    ...(await serverSideTranslations(locale || 'ko', ['common'])),
+  },
+});
 
 export default LessonPage;
