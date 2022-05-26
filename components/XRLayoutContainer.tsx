@@ -20,7 +20,7 @@ const XRLayoutContainer = () => {
     setOffsetY,
     setOffsetZ,
   } = useStore((state) => state.xr);
-  const { initMyStream } = useStore((state) => state.webRTC);
+  // const { initMyStream } = useStore((state) => state.webRTC);
 
   const micIconUnicode = useMemo(() => (isMicMuted ? 'f131' : 'f130'), [isMicMuted]);
 
@@ -36,9 +36,9 @@ const XRLayoutContainer = () => {
     }
   };
 
-  useEffect(() => {
-    initMyStream();
-  }, []);
+  // useEffect(() => {
+  //   initMyStream();
+  // }, []);
 
   return (
     <>
