@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import isBlack from '@utils/isBlack';
 import CONST from './CONST';
 import { getKeyPositionX } from './keyParams';

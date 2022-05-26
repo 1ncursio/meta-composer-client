@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import Player, { START_DELAY } from '@lib/midi/Player';
 import { getSetting } from '../settings/Settings';
 

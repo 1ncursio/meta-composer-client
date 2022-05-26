@@ -156,7 +156,7 @@ const RoomEntryContainer: FC<RoomEntryContainerProps> = ({ isOculus }) => {
 
           const peer = addAfterMakePeer(userData.id, false, socket);
 
-          peer.signal(offerData.data);
+          // peer.signal(offerData.data);
         })
         .on('sendOffer', () => {
           console.log('offer 보냄');

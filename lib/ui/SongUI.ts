@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { FileLoader } from '../player/FileLoader.js';
 import { getCurrentSong, getPlayer } from '../player/Player.js';
 import { deleteSongInDb, getSongFromDb } from '../settings/IndexDbHandler.js';

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { DomHelper } from '../ui/DomHelper.js';
 import { getSetting, setSettingCallback } from '../settings/Settings.js';
 import { formatNote, isBlack } from '@utils/util';

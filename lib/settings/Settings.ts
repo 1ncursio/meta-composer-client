@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { getDefaultSettings } from './DefaultSettings.js';
 import { SettingUI } from '../ui/SettingUI.js';
 import { getGlobalSavedSettings, saveCurrentSettings } from './LocalStorageHandler.js';

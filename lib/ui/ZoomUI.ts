@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { RenderDimensions } from '@lib/midi/RenderDimensions.js';
 import { DomHelper } from './DomHelper.js';
 

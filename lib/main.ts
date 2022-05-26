@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { loadJson } from '@utils/util';
 import { InputListeners } from './InputListeners';
 import Player from './midi/Player';

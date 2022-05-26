@@ -48,7 +48,7 @@ const SheetContainer: FC<SheetContainerProps> = ({ id }) => {
       ];
 
       notes.forEach((note) => {
-        note.setStyle({ fillStyle: 'black' });
+        // note.setStyle({ fillStyle: 'black' });
       });
 
       const voice = new VF.Voice({ num_beats: 4, beat_value: 4 });

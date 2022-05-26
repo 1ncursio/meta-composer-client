@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import Player from '@lib/midi/Player';
 import { RenderDimensions } from '@lib/midi/RenderDimensions.js';
 import { isTrackSheetEnabled } from '@lib/midi/Tracks.js';

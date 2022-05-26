@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import useStore from '@store/useStore';
 import AudioNote from './AudioNote';
 import { AudioPlayer } from './AudioPlayer';

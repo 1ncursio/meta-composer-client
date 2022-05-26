@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { BackgroundRender } from '@lib/Rendering/BackgroundRender';
 import { DebugRender } from '@lib/Rendering/DebugRender';
 import { InSongTextRenderer } from '@lib/Rendering/InSongTextRenderer';

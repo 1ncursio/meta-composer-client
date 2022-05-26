@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import CONST from '@lib/midi/CONST';
 import { RenderDimensions } from '@lib/midi/RenderDimensions';
 import { getSetting, setSettingCallback } from '../../settings/Settings';

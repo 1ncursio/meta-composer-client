@@ -1,7 +1,9 @@
+// @ts-nocheck
+
 import { DomHelper } from './DomHelper.js';
 import { getSetting, setSetting } from '../settings/Settings.js';
 import { Notification } from './Notification.js';
-import { isBlack } from '../Util.js';
+import { isBlack } from '@utils/util';
 
 class KeyBindings {
   constructor(renderDimensions) {

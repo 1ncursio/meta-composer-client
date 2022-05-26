@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { DomHelper } from './DomHelper';
 
 class Loader {

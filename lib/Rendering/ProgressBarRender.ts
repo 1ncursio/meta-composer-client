@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { RenderDimensions } from '@lib/midi/RenderDimensions';
 import { PROGRESS_BAR_CANVAS_HEIGHT } from '@lib/midi/RenderV2';
 import { drawRoundRect, formatTime, getCssVariable } from '@utils/util';

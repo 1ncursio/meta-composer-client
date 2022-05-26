@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { getSetting } from '@lib/settings/Settings';
 
 /**

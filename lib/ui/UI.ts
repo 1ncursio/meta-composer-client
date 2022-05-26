@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { DomHelper } from './DomHelper';
 import { getSetting, getSettingsDiv, setSettingCallback, triggerSettingCallback } from '../settings/Settings.js';
 import { ZoomUI } from './ZoomUI';
@@ -478,7 +480,7 @@ export class UI {
     let fileName = file.name;
     reader.onload = function (theFile) {
       if (getSetting('saveIndexedDb')) {
-          // TODO: 지웠는데 필요하면 주석 삭제
+        // TODO: 지웠는데 필요하면 주석 삭제
         // saveSongInDb(fileName, reader.result);
       }
       getPlayer().loadSong(reader.result, fileName);

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { getCurrentParticleTypes } from '../../settings/ParticlePreset.js';
 import { getSetting, setSettingCallback } from '../../settings/Settings.js';
 import { ThreeJsBuffer } from './ThreeJsBuffer.js';

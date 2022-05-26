@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { RenderDimensions } from '@lib/midi/RenderDimensions';
 import { DomHelper } from '../../ui/DomHelper.js';
 import { ThreeJsParticle } from './threeJsParticles.js';

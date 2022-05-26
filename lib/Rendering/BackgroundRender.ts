@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { RenderDimensions } from '@lib/midi/RenderDimensions';
 import { isBlack } from '@utils/util';
 import { addDynamicSettingsToObj, getSetting, setSettingCallback } from '../settings/Settings';

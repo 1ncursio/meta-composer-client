@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { ConfirmDialog } from '../ui/ConfirmDialog.js';
 import { InputDialog } from '../ui/InputDialogue.js';
 import { Notification } from '../ui/Notification.js';

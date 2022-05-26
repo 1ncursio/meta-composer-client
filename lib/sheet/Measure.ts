@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { MidiChannelSongNoteEvent } from '@lib/midi/Song';
 import { MidiMetaKeySignatureEvent } from '@typings/MidiEvent';
 import RoundedNote from './RoundedNote';

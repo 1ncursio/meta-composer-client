@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import CONST from '@lib/midi/CONST';
 import { ActiveTrack, MidiChannelSongNoteEventWithIsOn, NotesBySeconds } from '@lib/midi/Song';
 import { MidiMetaKeySignatureEvent } from '@typings/MidiEvent';

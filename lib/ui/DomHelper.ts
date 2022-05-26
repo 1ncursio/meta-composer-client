@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { CONST } from '../data/CONST.js';
 import { replaceAllString } from '../Util.js';
 

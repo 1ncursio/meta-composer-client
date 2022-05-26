@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import Player from './midi/Player';
 import { getSetting } from './settings/Settings';
 import { getKeyBindings } from './ui/KeyBinder';

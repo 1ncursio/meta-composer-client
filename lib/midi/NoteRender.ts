@@ -1,13 +1,26 @@
-import { getSetting } from '../settings/Settings.js';
-import { getKeyBinder } from '../ui/KeyBinder.js';
-import { drawRoundRect, formatNote } from '../Util.js';
-import { createThreeJsParticles } from './ThreeJs/threeJsHandler.js';
+// @ts-nocheck
+
+import { createThreeJsParticles } from '@lib/Rendering/ThreeJs/threeJsHandler';
+import { drawRoundRect, formatNote } from '@utils/util';
+import { getSetting } from '../settings/Settings';
+import { getKeyBinder } from '../ui/KeyBinder';
+import { RenderInfoByTrackMap } from './Render.js';
+import { RenderDimensions } from './RenderDimensions';
 
 /**
  * Class to render the notes on screen.
  */
 export class NoteRender {
-  constructor(ctx, ctxForeground, renderDimensions, pianoRender) {
+  ctx: CanvasRenderingContext2D;
+  ctxForeground: CanvasRenderingContext2D;
+  renderDimensions: RenderDimensions;
+
+  constructor(
+    ctx: CanvasRenderingContext2D,
+    ctxForeground: CanvasRenderingContext2D,
+    renderDimensions: RenderDimensions,
+    pianoRender,
+  ) {
     this.ctx = ctx;
     this.renderDimensions = renderDimensions;
     this.ctxForeground = ctxForeground;
@@ -15,7 +28,8 @@ export class NoteRender {
     this.pianoRender = pianoRender;
     this.lastActiveNotes = {};
   }
-  render(time, renderInfoByTrackMap, inputActiveNotes, inputPlayedNotes) {
+
+  render(time: number, renderInfoByTrackMap: RenderInfoByTrackMap, inputActiveNotes, inputPlayedNotes) {
     renderInfoByTrackMap['input'] = {
       white: inputActiveNotes
         .filter((noteInfo) => !noteInfo.isBlack)

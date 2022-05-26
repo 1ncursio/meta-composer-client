@@ -1,3 +1,6 @@
+// @ts-nocheck
+
+import { RenderDimensions } from '@lib/midi/RenderDimensions';
 import { SustainPeriod } from '@lib/midi/Song';
 import { getSetting } from '@lib/settings/Settings';
 
@@ -6,8 +9,9 @@ import { getSetting } from '@lib/settings/Settings';
  */
 export class SustainRender {
   ctx: CanvasRenderingContext2D;
+  renderDimensions: RenderDimensions;
 
-  constructor(ctx: CanvasRenderingContext2D, renderDimensions) {
+  constructor(ctx: CanvasRenderingContext2D, renderDimensions: RenderDimensions) {
     this.ctx = ctx;
     this.renderDimensions = renderDimensions;
 

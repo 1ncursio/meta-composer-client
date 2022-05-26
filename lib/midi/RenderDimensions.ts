@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { getWhiteKeyNumber, isBlack } from '@utils/util';
 import { addDynamicSettingsToObj, getSetting, setSettingCallback, triggerSettingCallback } from '../settings/Settings';
 import CONST from './CONST';

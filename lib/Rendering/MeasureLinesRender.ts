@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { RenderDimensions } from '@lib/midi/RenderDimensions.js';
 import { getSetting, setSettingCallback } from '../settings/Settings.js';
 
