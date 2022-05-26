@@ -1,8 +1,8 @@
 import React from 'react';
+import Image from 'next/image';
 
 const ConcoursResultItem = (item: any) => {
   // console.log(item.item[0]);
-  const link = `https://www.youtube.com/watch?v=${item.item[0].id}`;
   return (
     <div className="card w-96 bg-base-100 shadow-xl place-self-center">
       <div className="card-body text-center">
