@@ -1,23 +1,22 @@
 import { useSchedulePicker } from '@hooks/useSchedulePicker';
 import client from '@lib/api/client';
-import fetcher from '@lib/api/fetcher';
+import getFetcher from '@lib/api/getFetcher';
 import LessonIntroduce from '@react-components/lessonComponents/introduce';
 import LessonReview from '@react-components/lessonComponents/review';
 import ScheduluePicker from '@react-components/SchedulePicker';
 import ILesson from '@typings/ILesson';
 import optimizeImage from '@utils/optimizeImage';
 import dayjs from 'dayjs';
+import Cdatjs from 'dayjs/plugin/customParseFormat';
 import produce from 'immer';
+import { GetServerSideProps } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BsFillPersonFill } from 'react-icons/bs';
 import useSWR from 'swr';
 
-import Cdatjs from 'dayjs/plugin/customParseFormat';
-import getFetcher from '@lib/api/getFetcher';
-import { GetStaticProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 const scrollToRef = (ref: any) => window.scrollTo({ top: ref.current.offsetTop, behavior: 'smooth' });
 const LessonPage = () => {
   const router = useRouter();
@@ -223,7 +222,7 @@ const LessonPage = () => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => ({
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => ({
   props: {
     ...(await serverSideTranslations(locale || 'ko', ['common'])),
   },
