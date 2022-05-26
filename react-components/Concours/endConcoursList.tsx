@@ -33,7 +33,7 @@ const EndConcoursList = () => {
                   <p>{item.contents}</p>
                   <div className="card-actions">
                     <a href={`/concours/concoursResult?id=${item.id}`}>
-                      <button className="btn btn-primary">Show Details</button>
+                      <button className="btn btn-primary">수상작 보기</button>
                     </a>
                   </div>
                 </div>

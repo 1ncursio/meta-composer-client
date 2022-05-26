@@ -40,7 +40,7 @@ const ConcourList = () => {
                 <p>{item.contents}</p>
                 <div className="card-actions">
                   <a href={`/concours/details?id=${item.id}`}>
-                    <button className="btn btn-primary">Show Details</button>
+                    <button className="btn btn-primary">상세 정보 확인</button>
                   </a>
                 </div>
               </div>
