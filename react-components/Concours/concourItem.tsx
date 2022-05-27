@@ -161,7 +161,7 @@ const ConcourItem = ({ concours }: { concours: Concours }) => {
 
   return (
     <div className="flex flex-col gap-52">
-      <h1 className="text-xl text-center">Concours Details</h1>
+      <h1 className="text-xl text-center">콩쿠르 상세정보</h1>
       {concours ? (
         <div className="flex">
           <div className="card card-side bg-base-100 w-full shadow-xl">
