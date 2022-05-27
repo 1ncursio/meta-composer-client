@@ -77,8 +77,6 @@ const LessonPage = () => {
   }, [lessonData]);
 
   useEffect(() => {
-    if (!lessonData) return;
-    if (!check) return;
     if (lessonData && check) {
       setTimeTableList(
         produce((draft) => {
