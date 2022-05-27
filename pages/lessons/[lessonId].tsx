@@ -73,6 +73,8 @@ const LessonPage = () => {
   }, [lessonData]);
 
   useEffect(() => {
+    if (!lessonData) return;
+    if (!check) return;
     if (lessonData && check) {
       setTimeTableList(
         produce((draft) => {
@@ -92,11 +94,6 @@ const LessonPage = () => {
       setCheck(false);
     }
   }, [lessonData, check, setTimeTableList]);
-
-  const wishListAdd = useCallback(async () => {
-    const res = await client.post(`/wishlists/${lessonId}`);
-    console.log(res);
-  }, [lessonId]);
 
   return (
     //이거 크기 조절 해보기
