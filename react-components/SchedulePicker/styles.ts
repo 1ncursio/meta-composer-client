@@ -15,7 +15,7 @@ export const timeTableButton = ({
   // @ts-ignore
   classnames('flex-1', 'h-12', 'inline-flex', 'justify-center', 'items-center', 'border-r', 'border-b', {
     'bg-primary': isChecked,
-    'bg-red-700': isEmpty,
-    'bg-red-400': isSelect,
+    'bg-error': isEmpty,
+    'bg-info': isSelect,
     'hover:bg-base-300': !readonly,
   });
