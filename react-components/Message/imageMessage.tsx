@@ -1,5 +1,6 @@
 import useUserSWR from '@hooks/swr/useUserSWR';
 import { IMessage } from '@typings/IMessage';
+import { getBackEndUrl } from '@utils/getEnv';
 import dayjs from 'dayjs';
 import React, { FC, useMemo } from 'react';
 import * as styles from './styles';
@@ -25,7 +26,7 @@ const ImageMessage: FC<MessageProps> = ({ message }) => {
 
   return (
     <div className={styles.messageRow(isOwnMessage)}>
-      <img className="w-1/4" src={'http://localhost:4000/' + message.image} />
+      <img className="w-1/4" src={`${getBackEndUrl()}/${message.image}`} />
       <div className="text-base-content select-none">{dayjs(message.created_at).format('A HH:mm')}</div>
       <div>{isReadMessage}</div>
     </div>
