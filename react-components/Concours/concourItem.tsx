@@ -166,7 +166,13 @@ const ConcourItem = ({ concours }: { concours: Concours }) => {
         <div className="flex">
           <div className="card card-side bg-base-100 w-full shadow-xl">
             <figure>
-              <Image src={optimizeImage(concours?.coverIMG_url)} alt="Cover Image" width={400} height={450} />
+              <Image
+                src={optimizeImage(concours?.coverIMG_url)}
+                alt="Cover Image"
+                width={400}
+                height={450}
+                objectFit="cover"
+              />
             </figure>
             <div className="card-body">
               <h2 className="card-title">{concours.title}</h2>
