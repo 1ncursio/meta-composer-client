@@ -123,12 +123,13 @@ const LessonPage = () => {
               <BsFillPersonFill />
               <p className="text-xs font-semibold text-white">{lessonData?.__teacher__.user.username}</p>
             </div>
-            <div className="hidden lg:flex flex-row gap-2">
-              <p className="text-white">#</p>
-              <div className="badge badge-primary">태그</div>
-              <div className="badge badge-primary">태그</div>
-              <div className="badge badge-primary">태그</div>
-            </div>
+            {lessonData && (
+              <div className="hidden lg:flex flex-row gap-2">
+                <p className="text-white">#</p>
+                <div className="badge badge-primary">{t(lessonData.type)}</div>
+                <div className="badge badge-primary">{t(lessonData.difficulty)}</div>
+              </div>
+            )}
           </div>
         </div>
       </div>
