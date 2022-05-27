@@ -5,9 +5,12 @@ import fetcher from '@lib/api/fetcher';
 import ILesson from '@typings/ILesson';
 
 import Carousel from 'nuka-carousel';
+import client from '@lib/api/client';
 
 const CarouselComponent = () => {
   const perPage = 4;
+
+  client.post('/py').then((res) => console.log(res));
 
   const {
     data: LessonDataList,
