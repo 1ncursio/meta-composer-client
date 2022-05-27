@@ -70,8 +70,8 @@ const LessonComponent: FC<LessonProps> = ({ lesson, show, wordCount, deleteWish 
 		   inset-0  w-full text-sm lg:text-xl  font-bold p-4 "
           >
             {' '}
-            <Link href={'/lessons/' + lesson.id}>
-              <a href="">
+            <Link href={`/lessons/${lesson.id}`}>
+              <a>
                 <div>
                   <p className="text-white">{lesson.name}</p>
                   <br></br>
