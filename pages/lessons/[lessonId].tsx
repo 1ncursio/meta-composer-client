@@ -1,3 +1,4 @@
+import useUserSWR from '@hooks/swr/useUserSWR';
 import { useSchedulePicker } from '@hooks/useSchedulePicker';
 import client from '@lib/api/client';
 import getFetcher from '@lib/api/getFetcher';
@@ -20,7 +21,9 @@ import { BsFillPersonFill } from 'react-icons/bs';
 import useSWR from 'swr';
 
 const scrollToRef = (ref: any) => window.scrollTo({ top: ref.current.offsetTop, behavior: 'smooth' });
+
 const LessonPage = () => {
+  const { data: userData, mutate: userMutate } = useUserSWR();
   const { t } = useTranslation();
   const router = useRouter();
   const { lessonId, current } = router.query;
@@ -29,6 +32,15 @@ const LessonPage = () => {
     getFetcher,
   );
   const [start, setStart] = useState<boolean[]>();
+
+  const selfLesson = useMemo(() => {
+    if (userData && lessonData) {
+      if (lessonData.__teacher__.user.id === userData.id) {
+        return false;
+      }
+    }
+    return true;
+  }, [userData, lessonData]);
 
   useEffect(() => {
     console.log(lessonData);
@@ -187,7 +199,7 @@ const LessonPage = () => {
           </div>
         )}
 
-        {lessonData && <LessonSignupCard lesson={lessonData} />}
+        {lessonData && selfLesson && <LessonSignupCard lesson={lessonData} />}
       </div>
     </div>
   );

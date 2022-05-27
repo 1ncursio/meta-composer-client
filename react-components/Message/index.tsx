@@ -28,7 +28,7 @@ const Message: FC<MessageProps> = ({ message }) => {
       {/* <div className={styles.messageRowContent(isOwnMessage)}>{message.message}</div> */}
       <div
         className={`font-normal max-w-md pt-2 pb-3 pl-4 pr-3 ${
-          userData.id === message.senderId ? 'bg-blue-500' : 'bg-gray-200'
+          userData.id === message.senderId ? 'bg-blue-500 text-white' : 'bg-gray-200'
         } rounded-md rounded-tl-2xl text-left`}
       >
         {message.message}
