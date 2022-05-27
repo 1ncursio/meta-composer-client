@@ -161,13 +161,13 @@ const LessonPage = () => {
               수강 시간표
             </p>
             <div className="w-2/3 flex gap-2 flex-row-reverse mb-4">
-              <div className="flex flex-row items-center">
-                <div className="bg-red-700 h-4 w-4"></div>
-                <p className="text-sm font-bold">수강중</p>
+              <div className="flex flex-row items-center gap-1">
+                <div className="bg-error h-4 w-4"></div>
+                <p className="text-sm font-bold">수강 중</p>
               </div>
-              <div className="flex flex-row items-center">
+              <div className="flex flex-row items-center gap-1">
                 <div className="bg-primary h-4 w-4"></div>
-                <p className="text-sm font-bold">수강가능</p>
+                <p className="text-sm font-bold">수강 가능</p>
               </div>
             </div>
             <div className="w-2/3  border mb-10">
