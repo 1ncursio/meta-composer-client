@@ -97,6 +97,8 @@ const LessonPage = () => {
                 item.isAvailableByWeekDays[WeekDay.indexOf(time.day)] =
                   !item.isAvailableByWeekDays[WeekDay.indexOf(time.day)];
                 if (time.signupId !== null) {
+                  item.isAvailableByWeekDays[WeekDay.indexOf(time.day)] =
+                    !item.isAvailableByWeekDays[WeekDay.indexOf(time.day)];
                   item.isEmpty[WeekDay.indexOf(time.day)] = true;
                 }
               }
