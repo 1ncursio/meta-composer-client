@@ -16,9 +16,8 @@ declare const window: typeof globalThis & {
 
 const ConcourItem = ({ concours }: { concours: Concours }) => {
   const targetPage = '/concours';
-  const current_user = useUserSWR();
+  const { data: userData } = useUserSWR();
   const [entried, setEntried] = useState('');
-  const isAdmin = current_user.data?.is_admin;
 
   const deleteConcours = () => {
     client.delete(`/concours/${concours.id}`).then((res) => Router.push(targetPage));
@@ -75,8 +74,8 @@ const ConcourItem = ({ concours }: { concours: Concours }) => {
         merchant_uid: `ORD20180131-${Math.random() * 1000000}`,
         name: '메타컴포저 수강신청',
         amount: concours.price,
-        buyer_email: current_user.data?.email,
-        buyer_name: current_user.data?.id,
+        buyer_email: userData?.email,
+        buyer_name: userData?.id,
         buyer_tel: '',
         buyer_postcode: '41416',
       },
@@ -151,7 +150,7 @@ const ConcourItem = ({ concours }: { concours: Concours }) => {
   const participateConcours = () => {
     const formData = new FormData();
     formData.append('concoursId', `${concours.id}`);
-    formData.append('userId', `${current_user.data?.id}`);
+    formData.append('userId', `${userData?.id}`);
     formData.append('youtubeURL', 'url');
     formData.append('merchant_uid', 'uid');
     formData.append('participated_date', `${new Date()}`);
@@ -160,62 +159,73 @@ const ConcourItem = ({ concours }: { concours: Concours }) => {
   };
 
   return (
-    <div className="flex flex-col gap-52">
+    <div className="flex flex-col gap-20">
       <h1 className="text-xl text-center">콩쿠르 상세정보</h1>
       {concours ? (
-        <div className="flex">
-          <div className="card card-side bg-base-100 w-full shadow-xl">
-            <figure>
+        <div className="flex flex-col gap-8 border rounded-xl p-4">
+          <h2 className="text-4xl place-self-center">{concours.title}</h2>
+          <div className="flex gap-20 self-center">
+            <figure className="place-self-center">
               <Image
                 src={optimizeImage(concours?.coverIMG_url)}
                 alt="Cover Image"
                 width={400}
-                height={450}
                 objectFit="cover"
+                height={500}
+                className="rounded-xl"
               />
             </figure>
-            <div className="card-body">
-              <h2 className="card-title">{concours.title}</h2>
-              <ul className="m-0 mb-30">
-                <li>
-                  대회 기간 {concours.startTime.split('T')[0]} ~ {concours.finishTime.split('T')[0]}
-                </li>
-                <li>대회 설명 {concours.contents}</li>
-                <li>최소 참가 인원 {concours.minimum_starting_people}</li>
-                <li>참가비 {concours.price}</li>
-              </ul>
-              <div className="card-actions justify-center">
-                {isAdmin ? (
-                  <>
-                    <button className="btn btn-primary" onClick={deleteConcours}>
-                      삭제하기
-                    </button>
-                    <button className="btn btn-primary">
-                      <Link href={`/concours/update?id=${concours.id}`}>
-                        <a>수정하기</a>
-                      </Link>
-                    </button>
-                  </>
-                ) : entried === '' ? (
-                  <>
-                    <button onClick={requestPay2} className="btn btn-primary">
-                      신청하기
-                    </button>
-                  </>
-                ) : (
+            <div className="flex flex-col w-96 gap-10 place-self-center">
+              <div>
+                <h2 className="text-xl">대회 기간</h2>
+                <p>
+                  {concours.startTime.split('T')[0]} ~ {concours.finishTime.split('T')[0]}
+                </p>
+              </div>
+              <div>
+                <h2 className="text-xl">대회 설명</h2>
+                <p>{concours.contents}</p>
+              </div>
+              <div>
+                <h2 className="text-xl">최소 참가 인원</h2> <p>{concours.minimum_starting_people}명</p>
+              </div>
+              <div>
+                <h2 className="text-xl">참가비</h2> <p>{concours.price}원</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="card-body">
+            <div className="card-actions justify-center">
+              <button className="btn btn-primary">
+                <Link href="/concours">
+                  <a>목록으로</a>
+                </Link>
+              </button>
+              {userData?.is_admin ? (
+                <>
                   <button className="btn btn-primary">
-                    <Link href={`/concours/uploadVideo?id=${concours.id}`}>
-                      <a>영상 등록하기</a>
+                    <Link href={`/concours/update?id=${concours.id}`}>
+                      <a>수정하기</a>
                     </Link>
                   </button>
-                )}
-
+                  <button className="btn btn-error" onClick={deleteConcours}>
+                    삭제하기
+                  </button>
+                </>
+              ) : entried === '' ? (
+                <>
+                  <button onClick={requestPay2} className="btn btn-primary">
+                    신청하기
+                  </button>
+                </>
+              ) : (
                 <button className="btn btn-primary">
-                  <Link href="/concours">
-                    <a>목록으로</a>
+                  <Link href={`/concours/uploadVideo?id=${concours.id}`}>
+                    <a>영상 등록하기</a>
                   </Link>
                 </button>
-              </div>
+              )}
             </div>
           </div>
         </div>
