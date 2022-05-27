@@ -6,6 +6,7 @@ import fetcher from '@lib/api/fetcher';
 import Concours from '@store/concours';
 
 import Carousel from 'nuka-carousel';
+import Link from 'next/link';
 
 const ConcourComponent = () => {
   const { data: concours } = useSWR<Concours[]>('/concours', fetcher);
@@ -25,9 +26,11 @@ const ConcourComponent = () => {
                 <h2 className="card-title">{item.title}</h2>
                 <p>{item.contents}</p>
                 <div className="card-actions">
-                  <a href={`/concours/details?id=${item.id}`}>
-                    <button className="btn btn-primary">Show Details</button>
-                  </a>
+                  <Link href={`/concours/details?id=${item.id}`}>
+                    <a>
+                      <button className="btn btn-primary">Show Details</button>
+                    </a>
+                  </Link>
                 </div>
               </div>
             </div>
