@@ -2,6 +2,7 @@ import ILesson from '@typings/ILesson';
 import { getBackEndUrl } from '@utils/getEnv';
 import optimizeImage from '@utils/optimizeImage';
 import { randomInt } from 'crypto';
+import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { FC, useCallback, useEffect, useState } from 'react';
 import { AiFillDelete } from 'react-icons/ai';
@@ -15,6 +16,8 @@ export interface LessonProps {
 }
 
 const LessonComponent: FC<LessonProps> = ({ lesson, show, wordCount, deleteWish }) => {
+  const { t } = useTranslation('common');
+
   const [start, setStart] = useState<boolean[]>();
 
   useEffect(() => {
@@ -80,7 +83,7 @@ const LessonComponent: FC<LessonProps> = ({ lesson, show, wordCount, deleteWish 
             </Link>
             <br />
             <div className="hidden lg:flex justify-between items-center">
-              <div className="badge badge-ghost">{lesson.type}</div>
+              <div className="badge badge-ghost">{t(lesson.type)}</div>
               {deleteWish && (
                 <button onClick={() => deleteWish(lesson.id)}>
                   <RiDeleteBin2Line size={30} color="white" />

@@ -1,16 +1,16 @@
 import useUserSWR from '@hooks/swr/useUserSWR';
-import fetcher from '@lib/api/fetcher';
 import getFetcher from '@lib/api/getFetcher';
 import LessonComponent from '@react-components/lessonComponents';
 import LessonNoSearchComponent from '@react-components/lessonComponents/noSearchResult';
 import ILesson from '@typings/ILesson';
-import produce from 'immer';
+import { GetStaticProps } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { ChangeEvent, ChangeEventHandler, KeyboardEventHandler, useCallback, useEffect, useState } from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import useSWR from 'swr';
 import useSWRInfinite from 'swr/infinite';
+
 interface ISearchForm {
   wordSearch: string;
 }
@@ -179,5 +179,11 @@ const LessonsIndexPage = () => {
     </div>
   );
 };
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => ({
+  props: {
+    ...(await serverSideTranslations(locale || 'ko', ['common'])),
+  },
+});
 
 export default LessonsIndexPage;

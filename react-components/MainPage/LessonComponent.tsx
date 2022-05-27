@@ -1,5 +1,5 @@
 import ILesson from '@typings/ILesson';
-import { randomInt } from 'crypto';
+import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { FC, useEffect, useState } from 'react';
 
@@ -9,6 +9,8 @@ export interface LessonProps {
 }
 
 const LessonComponent: FC<LessonProps> = ({ lesson, show }) => {
+  const { t } = useTranslation('common');
+
   const [start, setStart] = useState<boolean[]>();
   useEffect(() => {
     const a = Math.floor(Math.random() * 5);
@@ -29,10 +31,10 @@ const LessonComponent: FC<LessonProps> = ({ lesson, show }) => {
       </div>
       {/* <img src={lesson.imageURL} className="rounded-t-lg  w-2/5" /> */}
       {/* </a> */}
-      <div className="text-center rounded-b-lg  w-4/5 ">
-        <div className="text-gray-700 h-10 lg:text-lg t  font-bold md:text-xm ">{!show && lesson.name}</div>
-        <p className="text-gray-400 text-sm font-light ">{lesson.__teacher__?.user.username}</p>
-        <p className="text-blue-600 text-lg font-bold ">₩{lesson.price}</p>
+      <div className="text-center rounded-b-lg w-4/5">
+        <div className="text-gray-700 h-10 lg:text-lg font-bold md:text-xm">{!show && lesson.name}</div>
+        <p className="text-gray-400 text-sm font-light">{lesson.__teacher__?.user.username}</p>
+        <p className="text-blue-600 text-lg font-bold">₩{lesson.price}</p>
         <div className="rating rating-sm">
           <input type="radio" className="mask mask-star-2 bg-orange-400" />
           {start?.map((start, index) => {
@@ -45,25 +47,21 @@ const LessonComponent: FC<LessonProps> = ({ lesson, show }) => {
         </div>
       </div>
       {show && (
-        <Link href={'/lessons/' + lesson.id}>
-          <div>
-            <div
-              className=" absolute h-full w-full bg-black opacity-75  
-		top-0 left-0 right-0 botton-0 text-center  "
-            ></div>
-            <div
-              className=" absolute text-gray-900 
-		   inset-0  w-full lg:text-2xl  font-bold p-4 md:text-sm"
-            >
-              <p className="text-white">{lesson.name}</p>
-              <br></br>
-              <p className=" lg:text-lg md:text-xs text-cyan-200">
-                {lesson.introduce.length > 100 ? lesson.introduce.slice(0, 100) + '...' : lesson.introduce}
-              </p>
-              <br />
-              <div className="badge badge-ghost">{lesson.type}</div>
+        <Link href={`/lessons/${lesson.id}`}>
+          <a>
+            <div>
+              <div className="absolute h-full w-full bg-black opacity-75 top-0 left-0 right-0 botton-0 text-center"></div>
+              <div className=" absolute text-gray-900 inset-0 w-full lg:text-2xl font-bold p-4 md:text-sm">
+                <p className="text-white">{lesson.name}</p>
+                <br />
+                <p className=" lg:text-lg md:text-xs text-cyan-200">
+                  {lesson.introduce.length > 100 ? lesson.introduce.slice(0, 100) + '...' : lesson.introduce}
+                </p>
+                <br />
+                <div className="badge badge-ghost">{t(lesson.type)}</div>
+              </div>
             </div>
-          </div>
+          </a>
         </Link>
       )}
     </div>
