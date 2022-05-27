@@ -10,8 +10,6 @@ import client from '@lib/api/client';
 const CarouselComponent = () => {
   const perPage = 4;
 
-  client.post('/py').then((res) => console.log(res));
-
   const {
     data: LessonDataList,
     mutate: mutateLessonData,
