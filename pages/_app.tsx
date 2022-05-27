@@ -19,6 +19,7 @@ if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
 import { INotification } from '@typings/INotification';
 import Script from 'next/script';
 import useStore from '@store/useStore';
+import { useRouter } from 'next/router';
 export type NextPageWithLayout = NextPage & { getLayout: (page: ReactElement) => ReactElement };
 
 const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
@@ -28,15 +29,18 @@ const MyApp: NextComponentType<AppContext, AppInitialProps, AppLayoutProps> = ({
   const [socket] = useSocket('notification');
   const [state, setState] = useState('');
   const { sendNoti } = useStore((state) => state.notification);
+  const router = useRouter();
+
   useEffect(() => {
     setState(window.location.pathname);
-  });
+  }, []);
+
   useEffect(() => {
     //여기서 이벤트 재등록 해줘야함
     if (!state.includes('chats')) {
       const ws = window;
       socket?.on('push-message', (msg: IMessage) => {
-        sendNoti({ msg, ws });
+        sendNoti({ msg, ws, router });
       });
     }
   }, [socket, state]);

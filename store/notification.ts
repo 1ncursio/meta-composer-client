@@ -6,16 +6,17 @@ import IUser from '@typings/IUser';
 import { ISignupForm, SumitDays } from '@pages/lessons/[lessonId]/signup';
 import { getBackEndUrl } from '@utils/getEnv';
 import ICurrentTarget from '@typings/IEvent';
+import { NextRouter } from 'next/router';
 
 export interface NotificationSlice {
   notification: {
-    sendNoti: ({ msg, ws }: { msg: IMessage; ws: Window }) => Promise<void>;
+    sendNoti: ({ msg, ws, router }: { msg: IMessage; ws: Window; router: NextRouter }) => Promise<void>;
   };
 }
 
 const createNotificationSliceSlice: AppSlice<NotificationSlice> = (set, get) => ({
   notification: {
-    sendNoti: async ({ msg, ws }) => {
+    sendNoti: async ({ msg, ws, router }) => {
       if (!Notification) {
         return;
       }
@@ -32,7 +33,8 @@ const createNotificationSliceSlice: AppSlice<NotificationSlice> = (set, get) => 
       el.onclick = function (event) {
         if (event.currentTarget !== null) {
           const test: ICurrentTarget = event.currentTarget;
-          ws.location.href = `${ws.location.origin}/chats/${test.data?.chatRoomId}`;
+          // ws.location.href = `${ws.location.origin}/chats/${test.data?.chatRoomId}`;
+          router.push(`/chats/${test.data?.chatRoomId}`);
         }
       };
     },
