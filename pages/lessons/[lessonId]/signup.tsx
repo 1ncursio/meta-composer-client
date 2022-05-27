@@ -247,7 +247,7 @@ const LessonSignup = () => {
             <p>(필수) 구매조건 및 개인정보취급방침 동의 </p>
           </div>
           <div className="text-center p-2">
-            <button className="rounded-xl  w-full bg-green-500  py-2 text-white">결제하기</button>
+            <button className="rounded-xl w-full bg-primary py-2 text-white">결제하기</button>
           </div>
         </form>
       </div>
