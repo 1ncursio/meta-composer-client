@@ -10,7 +10,7 @@ const ConcoursPage = () => {
 
   return (
     <div className="flex flex-col gap-8">
-      <h1 className="m-auto">concours page</h1>
+      <h1 className="m-auto text-xl">개최 중인 콩쿠르</h1>
       {isAdmin ? (
         <>
           <Link href="/concours/register">

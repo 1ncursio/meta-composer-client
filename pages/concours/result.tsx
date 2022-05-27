@@ -21,7 +21,7 @@ const ConcourResultPage = () => {
 
   return (
     <div className="flex flex-col gap-8">
-      <h2 className="text-2xl text-center">Concours Result</h2>
+      <h2 className="text-2xl text-center">콩쿠르 결과</h2>
       {/* <ConcoursResult result={top} /> */}
       <EndConcoursList />
     </div>

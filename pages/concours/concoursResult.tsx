@@ -42,7 +42,7 @@ const ConcoursResult = () => {
   }
   return (
     <div>
-      <h2 className="text-2xl text-center">Concours Result</h2>
+      <h2 className="text-2xl text-center">시상 결과</h2>
       <div className="flex flex-col gap-4 ">
         {top && top.map((item: any, index: any) => <ConcoursResultItem key={index} item={item.items} />)}
       </div>
