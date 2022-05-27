@@ -109,7 +109,7 @@ const LessonPage = () => {
             </div>
           </div>
           <div className="flex flex-col ml-8">
-            <p className="text-sm  lg:text-md font-semibold text-white mb-4">{lessonData?.type}</p>
+            {lessonData && <p className="text-sm  lg:text-md font-semibold text-white mb-4">{t(lessonData.type)}</p>}
             <p className="text-sx  lg:text-2xl font-extrabold text-white mb-10">{lessonData?.name}</p>
             <div className="rating rating-sm mb-4">
               <input type="radio" className="mask mask-star-2 bg-orange-400" />
@@ -121,7 +121,7 @@ const LessonPage = () => {
                 }
               })}
             </div>
-            <div className="flex flex-row gap-2 mb-5  ">
+            <div className="flex flex-row gap-2 mb-5">
               <BsFillPersonFill />
               <p className="text-xs font-semibold text-white">{lessonData?.__teacher__.user.username}</p>
             </div>
