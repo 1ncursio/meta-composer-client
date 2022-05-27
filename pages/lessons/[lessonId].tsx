@@ -3,6 +3,7 @@ import client from '@lib/api/client';
 import getFetcher from '@lib/api/getFetcher';
 import LessonIntroduce from '@react-components/lessonComponents/introduce';
 import LessonReview from '@react-components/lessonComponents/review';
+import LessonSignupCard from '@react-components/LessonSignupCard';
 import ScheduluePicker from '@react-components/SchedulePicker';
 import ILesson from '@typings/ILesson';
 import optimizeImage from '@utils/optimizeImage';
@@ -10,6 +11,7 @@ import dayjs from 'dayjs';
 import Cdatjs from 'dayjs/plugin/customParseFormat';
 import produce from 'immer';
 import { GetServerSideProps } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -19,6 +21,7 @@ import useSWR from 'swr';
 
 const scrollToRef = (ref: any) => window.scrollTo({ top: ref.current.offsetTop, behavior: 'smooth' });
 const LessonPage = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const { lessonId, current } = router.query;
   const { data: lessonData, mutate: mutateLessonData } = useSWR<ILesson>(
@@ -184,34 +187,7 @@ const LessonPage = () => {
           </div>
         )}
 
-        <div className="relative">
-          <div className="fixed  top-1/2 xl:right-60 md:right-0 lg:w-52  h-80 rounded-xl border-2 bg-gray-100 ">
-            <div className="rounded-t-xl bg-red-500 h-8 text-white text-center font-bold">얼리버드 할인중</div>
-            <div className="pt-5">
-              <div className="text-center">
-                <h3 className="text-center text-2xl font-bold">{`${lessonData?.price}원`}</h3>
-                <span className="text-sm">Shooting Guard</span>
-              </div>
-              <div className="text-center p-2">
-                <Link href={`/lessons/${lessonData?.id}/signup`}>
-                  <button className="rounded-xl  w-full bg-green-500  py-2 text-white">수강신청 하기</button>
-                </Link>
-              </div>
-              <div className="text-center p-2">
-                <button onClick={wishListAdd} className="rounded-xl text-sm  w-full border-2  py-2 text-black">
-                  위시리스트 추가
-                </button>
-              </div>
-            </div>
-            <hr />
-            <div className="flex flex-col pl-5">
-              <span className="text-sm font-semibold">
-                - 지식 공유자: {lessonData?.__teacher__.user.username.slice(0, 7)}
-              </span>
-              <span className="text-sm font-semibold">- 난이도</span>
-            </div>
-          </div>
-        </div>
+        {lessonData && <LessonSignupCard lesson={lessonData} />}
       </div>
     </div>
   );
