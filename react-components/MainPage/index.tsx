@@ -1,15 +1,13 @@
-import client from '@lib/api/client';
 import fetcher from '@lib/api/fetcher';
 import ILesson from '@typings/ILesson';
+import Link from 'next/link';
 import { useCallback, useState } from 'react';
-import useSWR from 'swr';
-import CarouselComponent from './CarouselComponent';
-
 import useSWRInfinite from 'swr/infinite';
 import CardItem from './CardItem';
-import TypeLessonCard from './TypeLessonCard';
-import HeroItem from './HeroItem';
+import CarouselComponent from './CarouselComponent';
 import ConcourComponent from './ConcourComponent';
+import HeroItem from './HeroItem';
+import TypeLessonCard from './TypeLessonCard';
 
 const MainPage = () => {
   const perPage = 4;
@@ -59,7 +57,9 @@ const MainPage = () => {
       <h1 className="text-2xl font-bold">
         새로 등록된 레슨!&nbsp;
         <div className="badge badge-secondary">
-          <a href="/lessons"> NEW &nbsp;&gt;</a>
+          <Link href="/lessons">
+            <a> NEW &nbsp;&gt;</a>
+          </Link>
         </div>
       </h1>
       <h2 className="opacity-50">한 번 도전해보세요!</h2>
@@ -70,7 +70,9 @@ const MainPage = () => {
       <h1 className="text-2xl font-bold">
         Sonata 레슨&nbsp;
         <div className="badge badge-error">
-          <a href="/lessons"> GO &nbsp;&gt;</a>
+          <Link href="/lessons">
+            <a> GO &nbsp;&gt;</a>
+          </Link>
         </div>
       </h1>
       <h2 className="opacity-50 pb-4">당신도 할 수 있다!!</h2>
@@ -83,7 +85,9 @@ const MainPage = () => {
       <h1 className="text-2xl font-bold">
         콩쿠르 참가하러 가기&nbsp;
         <div className="badge badge-error">
-          <a href="/concours"> GO &nbsp;&gt;</a>
+          <Link href="/lessons">
+            <a> GO &nbsp;&gt;</a>
+          </Link>
         </div>
       </h1>
       <div>
