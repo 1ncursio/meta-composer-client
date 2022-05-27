@@ -79,23 +79,25 @@ const LessonPage = () => {
   useEffect(() => {
     if (!lessonData) return;
     if (!check) return;
-    setTimeTableList(
-      produce((draft) => {
-        draft.forEach((item) => {
-          lessonData.timeTables.forEach((time) => {
-            if (item.time.isSame(dayjs(`${dayjs().format('YYYY-MM-DD')} ${time.time}`))) {
-              item.isAvailableByWeekDays[WeekDay.indexOf(time.day)] =
-                !item.isAvailableByWeekDays[WeekDay.indexOf(time.day)];
-              if (time.signupId !== null) {
-                item.isEmpty[WeekDay.indexOf(time.day)] = true;
+    if (lessonData && check) {
+      setTimeTableList(
+        produce((draft) => {
+          draft.forEach((item) => {
+            lessonData.timeTables.forEach((time) => {
+              if (item.time.isSame(dayjs(`${dayjs().format('YYYY-MM-DD')} ${time.time}`))) {
+                item.isAvailableByWeekDays[WeekDay.indexOf(time.day)] =
+                  !item.isAvailableByWeekDays[WeekDay.indexOf(time.day)];
+                if (time.signupId !== null) {
+                  item.isEmpty[WeekDay.indexOf(time.day)] = true;
+                }
               }
-            }
+            });
           });
-        });
-      }),
-    );
-    setCheck(false);
-  }, [lessonData, check]);
+        }),
+      );
+      setCheck(false);
+    }
+  }, [lessonData, check, setTimeTableList]);
 
   return (
     //이거 크기 조절 해보기
