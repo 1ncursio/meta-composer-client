@@ -4,6 +4,7 @@ import LessonComponent from '@react-components/lessonComponents';
 import LessonNoSearchComponent from '@react-components/lessonComponents/noSearchResult';
 import ILesson from '@typings/ILesson';
 import { GetStaticProps } from 'next';
+import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -16,6 +17,8 @@ interface ISearchForm {
 }
 
 const LessonsIndexPage = () => {
+  const { t } = useTranslation('common');
+
   const router = useRouter();
   const { searchKeyword, searchWord, order } = router.query;
 
@@ -89,25 +92,25 @@ const LessonsIndexPage = () => {
             <div className="p-2 text-md text-center font-normal border-b-2 w-full">
               {' '}
               <Link href={`/lessons?searchKeyword=Sonata`}>
-                <a>Sonata</a>
+                <a>{t('Sonata')}</a>
               </Link>
             </div>
             <div className="p-2 text-md text-center font-normal border-b-2 w-full">
               {' '}
               <Link href={`/lessons?searchKeyword=Etudes`}>
-                <a>Etudes</a>
+                <a>{t('Etudes')}</a>
               </Link>
             </div>
             <div className="p-2 text-md text-center font-normal border-b-2 w-full">
               {' '}
               <Link href={`/lessons?searchKeyword=Waltzes`}>
-                <a>Waltzes</a>
+                <a>{t('Waltzes')}</a>
               </Link>
             </div>
             <div className="p-2 text-md text-center font-normal w-full">
               {' '}
               <Link href={`/lessons?searchKeyword=Marches`}>
-                <a>Marches</a>
+                <a>{t('Marches')}</a>
               </Link>
             </div>
           </div>

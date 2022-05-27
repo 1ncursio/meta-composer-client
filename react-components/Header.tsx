@@ -59,27 +59,27 @@ const Header = () => {
               <ul className="p-2 bg-white">
                 <li>
                   <Link href={`/lessons?searchKeyword=Sonata`}>
-                    <a>Sonata</a>
+                    <a>{t('Sonata')}</a>
                   </Link>
                 </li>
                 <li>
                   <Link href={`/lessons?searchKeyword=Etudes`}>
-                    <a>Etudes</a>
+                    <a>{t('Etudes')}</a>
                   </Link>
                 </li>
                 <li>
                   <Link href={`/lessons?searchKeyword=Waltzes`}>
-                    <a>Waltzes</a>
+                    <a>{t('Waltzes')}</a>
                   </Link>
                 </li>
                 <li>
                   <Link href={`/lessons?searchKeyword=Nocturnes`}>
-                    <a>Nocturnes</a>
+                    <a>{t('Nocturnes')}</a>
                   </Link>
                 </li>
                 <li>
                   <Link href={`/lessons?searchKeyword=Marches`}>
-                    <a>Marches</a>
+                    <a>{t('Marches')}</a>
                   </Link>
                 </li>
               </ul>
