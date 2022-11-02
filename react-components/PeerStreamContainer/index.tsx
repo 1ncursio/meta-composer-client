@@ -7,18 +7,18 @@ const firstNote: number = MidiNumbers.fromNote('e1');
 const lastNote: number = MidiNumbers.fromNote('g7');
 
 const PeerStreamContainer = forwardRef<HTMLVideoElement>((props, peerVideoRef) => {
-  const { pressedKeys, addPressedKey, removePressedKey } = useStore((state) => state.piano);
+  const { peerPressedKeys, addPeerPressedKey, removePeerPressedKey } = useStore((state) => state.piano);
 
   return (
     <div className="h-full flex-1">
-      <div className="w-full h-14">
+      <div className="w-full h-24">
         <ControlledPiano
           noteRange={{ first: firstNote, last: lastNote }}
-          activeNotes={Array.from(pressedKeys)}
+          activeNotes={Array.from(peerPressedKeys)}
           playNote={() => {}}
           stopNote={() => {}}
-          onPlayNoteInput={addPressedKey}
-          onStopNoteInput={removePressedKey}
+          onPlayNoteInput={addPeerPressedKey}
+          onStopNoteInput={removePeerPressedKey}
           keyWidthToHeight={0.5}
           css={pianoStyle}
         />
@@ -39,7 +39,7 @@ const PeerStreamContainer = forwardRef<HTMLVideoElement>((props, peerVideoRef) =
 
 const pianoStyle = css`
   .ReactPiano__Key--active {
-    background: #f59e0b; /* Change the default active key color to bright red */
+    background: #22d3ee; /* Change the default active key color to bright red */
   }
 
   .ReactPiano__Key--accidental {

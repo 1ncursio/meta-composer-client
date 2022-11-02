@@ -8,6 +8,7 @@ import RtcData from '@typings/RtcData';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import React, { ReactElement, useEffect, useMemo, useRef, useState } from 'react';
+import SimplePeer from 'simple-peer';
 
 const SheetContainer = dynamic(() => import('@react-components/SheetContainer'), { ssr: false });
 
@@ -17,12 +18,13 @@ const RealtimeLessonShowPage = () => {
   const { id } = router.query;
 
   const { data: userData } = useUserSWR();
-  const { peers, addAfterMakePeer, linkState, setLinkState } = useStore((state) => state.webRTC);
+  const { peers, addPeer, addAfterMakePeer, linkState, setLinkState } = useStore((state) => state.webRTC);
 
   const peerVideoRef = useRef<HTMLVideoElement | null>(null);
 
   const lessonId = useMemo(() => {
     if (typeof id === 'string') {
+      console.log({ id });
       return parseInt(id);
     }
 
@@ -34,6 +36,7 @@ const RealtimeLessonShowPage = () => {
 
   useEffect(() => {
     if (lessonId && userData) {
+      console.log('레슨 아이디가 있고 유저 데이터가 있으므로 웹소켓 연결을 시도합니다.', { lessonId });
       setWorkspaceName('lesson');
     }
   }, [lessonId, userData]);
@@ -52,6 +55,7 @@ const RealtimeLessonShowPage = () => {
           try {
             const peer = await addAfterMakePeer(userData.id, false, socket, peerVideoRef.current as HTMLVideoElement);
             peer.signal(offerData.data);
+            socket.emit('');
           } catch (err) {
             console.error(err);
           }
@@ -65,6 +69,9 @@ const RealtimeLessonShowPage = () => {
             console.error(err);
           }
         })
+        .on('peerList', ({ userId, peer }: { userId: number; peer: SimplePeer.Instance }) => {
+          addPeer(userId, peer);
+        })
         .on('disconnect', () => {
           console.log('lesson 소켓 연결 끊김');
           // setLinkState('disconnected');
@@ -77,8 +84,7 @@ const RealtimeLessonShowPage = () => {
   }, [socket, userData, id, peerVideoRef.current]);
 
   return (
-    <div className="bg-neutral-focus">
-      <SheetContainer />
+    <div className="bg-neutral-focus h-full flex flex-col justify-between">
       <div className="flex gap-4">
         <MyStreamContainer />
         <PeerStreamContainer ref={peerVideoRef} />

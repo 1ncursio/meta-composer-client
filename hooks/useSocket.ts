@@ -21,6 +21,7 @@ const useSocket = (workspace?: string, query?: Record<string, any>): [Socket | u
   }
 
   if (!sockets[workspace] && accessToken) {
+    console.log('socket connect함');
     console.log(query);
     sockets[workspace] = io(`${getSocketUrl()}/${workspace}`, {
       transports: ['websocket'],
@@ -28,7 +29,11 @@ const useSocket = (workspace?: string, query?: Record<string, any>): [Socket | u
       auth: {
         token: accessToken,
       },
-      query,
+      query: {
+        // ...query,
+        // TODO: 버그때문에 임시로 넣어둠
+        lessonId: 1,
+      },
     });
   }
 

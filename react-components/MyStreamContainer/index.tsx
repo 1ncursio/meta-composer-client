@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import useUserSWR from '@hooks/swr/useUserSWR';
 import useStore from '@store/useStore';
 import React, { useEffect, useRef } from 'react';
 import { ControlledPiano, MidiNumbers } from 'react-piano';
@@ -10,10 +11,28 @@ const firstNote: number = MidiNumbers.fromNote('e1');
 const lastNote: number = MidiNumbers.fromNote('g7');
 
 const MyStreamContainer = () => {
-  const { getMedia } = useStore((state) => state.webRTC);
+  const { data: userData } = useUserSWR();
+  const { getMedia, peers } = useStore((state) => state.webRTC);
   const { pressedKeys, addPressedKey, removePressedKey } = useStore((state) => state.piano);
 
   const myVideoRef = useRef<HTMLVideoElement | null>(null);
+
+  const onPlayNoteInput = (midiNumber: number) => {
+    addPressedKey(midiNumber);
+    if (!userData) return;
+
+    const data = JSON.stringify({
+      type: 'noteOn',
+      note: midiNumber,
+    });
+    const peer = peers[parseInt(Object.keys(peers).filter((key) => key !== userData.id.toString())[0])];
+    if (peer) {
+      console.log('상대방 피어 찾아서 midi 전송', { peer });
+    } else {
+      console.log('상대방 피어 못찾음');
+    }
+    peer.send(data);
+  };
 
   useEffect(() => {
     if (myVideoRef.current) {
@@ -22,17 +41,17 @@ const MyStreamContainer = () => {
   }, [myVideoRef.current]);
 
   return (
-    <div className="h-full flex-2">
+    <div className="h-full flex-1">
       <div
         // className="w-full 2xl:h-36 xl:h-32 lg:h-28 md:h-24 h-20"
-        className="w-full h-14"
+        className="w-full h-24"
       >
         <ControlledPiano
           noteRange={{ first: firstNote, last: lastNote }}
           activeNotes={Array.from(pressedKeys)}
           playNote={() => {}}
           stopNote={() => {}}
-          onPlayNoteInput={addPressedKey}
+          onPlayNoteInput={onPlayNoteInput}
           onStopNoteInput={removePressedKey}
           // keyWidthToHeight={0.5}
           css={pianoStyle}

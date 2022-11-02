@@ -10,6 +10,7 @@ import { AppSlice, AppState } from './useStore';
 export interface WebRTCSlice {
   webRTC: {
     peers: Peers;
+    addPeer: (userId: number, peer: Peer.Instance) => void;
     resetPeers: () => void;
     removePeer: (userId: IUser['id']) => void;
     addAfterMakePeer: (
@@ -38,6 +39,13 @@ export interface WebRTCSlice {
 const createWebRTCSlice: AppSlice<WebRTCSlice> = (set, get) => ({
   webRTC: {
     peers: {},
+    addPeer: (userId, peer) => {
+      set(
+        produce((state: AppState) => {
+          state.webRTC.peers[userId] = peer;
+        }),
+      );
+    },
     resetPeers: () => {
       set(
         produce((state: AppState) => {
@@ -57,7 +65,7 @@ const createWebRTCSlice: AppSlice<WebRTCSlice> = (set, get) => ({
 
       console.log({ peerVideoElement });
       if (isAlreadyPeer) {
-        console.log('이미 존재하는 피어');
+        console.log('이미 존재하는 피어입니다. 기존 피어를 반환합니다.');
         return isAlreadyPeer;
       }
 
@@ -75,6 +83,7 @@ const createWebRTCSlice: AppSlice<WebRTCSlice> = (set, get) => ({
 
       console.log('피어 생성 중');
 
+      // TODO: video true 해야됨
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
 
       const peer = new Peer({
@@ -109,24 +118,24 @@ const createWebRTCSlice: AppSlice<WebRTCSlice> = (set, get) => ({
             }),
           );
 
-          socket.emit('peerConnectComplete', (roomId: string) => {
-            console.log({ roomId });
-            // if (isOculus) {
-            // history.push(`/oculus/${roomId}`);
-            // }
+          socket.emit('peerConnectComplete', {
+            lessonId: 1,
+            userId,
+            peer,
           });
         })
         .on('data', (chuck: string) => {
           const data: INoteEvent = JSON.parse(chuck);
+
           // console.log(data);
           switch (data.type) {
             case 'noteOn':
               console.log({ message: 'WebRTC noteOn 신호 왔음', data });
-              get().piano.addPressedKey(data.note);
+              get().piano.addPeerPressedKey(data.note);
               break;
             case 'noteOff':
               console.log({ message: 'WebRTC noteOff 신호 왔음', data });
-              get().piano.removePressedKey(data.note);
+              get().piano.removePeerPressedKey(data.note);
               break;
             default:
               break;
