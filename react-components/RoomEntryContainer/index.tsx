@@ -1,3 +1,7 @@
+/**
+ *  @deprecated
+ *  This component is deprecated and will be removed in a future release.
+ */
 import { css } from '@emotion/react';
 import useUserSWR from '@hooks/swr/useUserSWR';
 import useSocket from '@hooks/useSocket';

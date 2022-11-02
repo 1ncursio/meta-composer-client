@@ -117,12 +117,6 @@ const createWebRTCSlice: AppSlice<WebRTCSlice> = (set, get) => ({
               state.webRTC.linkState = 'connected';
             }),
           );
-
-          socket.emit('peerConnectComplete', {
-            lessonId: 1,
-            userId,
-            peer,
-          });
         })
         .on('data', (chuck: string) => {
           const data: INoteEvent = JSON.parse(chuck);

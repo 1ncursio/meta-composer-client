@@ -5,12 +5,8 @@ import PeerStreamContainer from '@react-components/PeerStreamContainer';
 import StreamControlContainer from '@react-components/StreamControlContainer';
 import useStore from '@store/useStore';
 import RtcData from '@typings/RtcData';
-import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import React, { ReactElement, useEffect, useMemo, useRef, useState } from 'react';
-import SimplePeer from 'simple-peer';
-
-const SheetContainer = dynamic(() => import('@react-components/SheetContainer'), { ssr: false });
 
 const RealtimeLessonShowPage = () => {
   const [workspaceName, setWorkspaceName] = useState('');
@@ -55,7 +51,6 @@ const RealtimeLessonShowPage = () => {
           try {
             const peer = await addAfterMakePeer(userData.id, false, socket, peerVideoRef.current as HTMLVideoElement);
             peer.signal(offerData.data);
-            socket.emit('');
           } catch (err) {
             console.error(err);
           }
@@ -68,9 +63,6 @@ const RealtimeLessonShowPage = () => {
           } catch (err) {
             console.error(err);
           }
-        })
-        .on('peerList', ({ userId, peer }: { userId: number; peer: SimplePeer.Instance }) => {
-          addPeer(userId, peer);
         })
         .on('disconnect', () => {
           console.log('lesson 소켓 연결 끊김');
