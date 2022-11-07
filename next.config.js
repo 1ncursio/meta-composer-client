@@ -7,7 +7,10 @@ const nextConfig = {
   images: {
     domains: ['via.placeholder.com', 'lh3.googleusercontent.com', 'localhost', 'images.unsplash.com'],
   },
-  i18n,
+  i18n: {
+    locales: ['en', 'ko', 'ja'],
+    defaultLocale: 'ko',
+  },
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },

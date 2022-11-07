@@ -3,6 +3,7 @@ import fetcher from '@lib/api/fetcher';
 import ISignup from '@typings/ISignup';
 import optimizeImage from '@utils/optimizeImage';
 import dayjs from 'dayjs';
+import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useMemo } from 'react';
@@ -11,7 +12,7 @@ import useSWR from 'swr';
 const DashboardMain = () => {
   const { data: userData } = useUserSWR();
   const { data: signUpData, mutate: mutateLessonData } = useSWR<ISignup[]>('/signup-timetables', fetcher);
-
+  const { t } = useTranslation(['common']);
   const closeSignup = useMemo(() => {
     if (!signUpData || signUpData?.length < 1)
       return { signup: null, lesson: 0, finishedCount: 0, date: `아직 없습니다` };
@@ -39,7 +40,9 @@ const DashboardMain = () => {
 
   return (
     <div className="w-4/5 h-full">
-      <div className="w-full h-12 bg-gray-600 text-white font-bold text-xl flex items-center pl-10 mb-6">대시보드</div>
+      <div className="w-full h-12 bg-gray-600 text-white font-bold text-xl flex items-center pl-10 mb-6">
+        {t('dashboard')}
+      </div>
       <div className="grid grid-cols-2 mx-auto  w-full lg:w-2/3 h-full gap-x-4 gap-y-4 ">
         {/* 프로필 */}
         <div className="w-full h-48 border flex flex-col gap-y-2 p-2 rounded">
@@ -56,12 +59,14 @@ const DashboardMain = () => {
                 className="mask mask-squircle"
               />
             )}
-            <p className="font-bold text-lg ">{userData?.username} 님, 오늘 하루 화이팅!</p>
+            <p className="font-bold text-lg ">
+              {userData?.username} {t('님, 오늘 하루 화이팅!')}
+            </p>
           </div>
           <div className="h-full  w-full flex flex-col-reverse ">
             <div className="w-full flex flex-row-reverse">
               <Link href="/my-profile">
-                <a className=" text-gray-400">프로필 수정하기</a>
+                <a className=" text-gray-400">{t('프로필 수정하기')}</a>
               </Link>
               {/* <button className=" text-gray-400">프로필 수정하기 </button> */}
             </div>
@@ -69,17 +74,17 @@ const DashboardMain = () => {
         </div>
         {/* 바로다음 레슨 */}
         <div className="w-full h-48 border flex flex-col gap-y-2 p-2 justify-between rounded">
-          <p className="font-bold text-md">📖다음 레슨</p>
+          <p className="font-bold text-md">📖{t('다음 레슨')}</p>
           <div className="flex items-end gap-2">
             <p className="font-bold text-md">
-              {closeSignup.signup ? closeSignup.signup?.__lesson__.name : '아직 없습니다'}
+              {closeSignup.signup ? closeSignup.signup?.__lesson__.name : t('아직 없습니다')}
             </p>
             <p className=" text-xs">({closeSignup?.date})</p>
           </div>
           <div className="w-full">
             {closeSignup && (
               <p>
-                진도율: {'   '}
+                {t('진도율')}: {'   '}
                 {closeSignup.finishedCount}/{closeSignup.lesson}
                 {'   '}({closeSignup!.lesson !== 0 ? (closeSignup.finishedCount / closeSignup!.lesson) * 100 : 0}%)
               </p>
@@ -95,16 +100,16 @@ const DashboardMain = () => {
 
             <div className="w-full flex flex-row-reverse">
               <Link href={closeSignup.signup ? `/lessons/${closeSignup.signup.__lesson__.id}` : `/lessons`}>
-                <a className="btn btn-error btn-sm">레슨 하러가기</a>
+                <a className="btn btn-error btn-sm">{t('레슨 하러가기')}</a>
               </Link>
               {/* <button className="btn btn-error btn-sm">레슨 하러가기</button> */}
-              <button className="btn btn-success btn-sm">내모든 레슨</button>
+              <button className="btn btn-success btn-sm">{t('내모든 레슨')}</button>
             </div>
           </div>
         </div>
         {/* 내노트  */}
         <div className="w-full h-48 border flex flex-col gap-y-2 p-2  rounded">
-          <p className="font-bold text-md-2">📚최근 학습중인 강의</p>
+          <p className="font-bold text-md-2">📚{t('최근 학습중인 강의')}</p>
           {signUpData &&
             signUpData?.length > 0 &&
             signUpData.map((signup) => {
@@ -119,19 +124,19 @@ const DashboardMain = () => {
         </div>
         {/* 학습통계 */}
         <div className="w-full h-48 border flex flex-col gap-y-2 p-2 justify-between rounded">
-          <p className="font-bold text-md">🏃🏻학습 통계</p>
+          <p className="font-bold text-md">🏃🏻{t('학습 통계')}</p>
           <div className="flex w-full my-auto justify-between">
             <div>
               <p className="text-center text-5xl font-bold text-gray-400">0</p>
-              <p className="text-xs lg:text-base">완료 레슨수</p>
+              <p className="text-xs lg:text-base">{t('완료 레슨수')}</p>
             </div>
             <div>
               <p className="text-center text-5xl font-bold text-gray-400">0</p>
-              <p className="text-xs lg:text-base">완료 수업수</p>
+              <p className="text-xs lg:text-base">{t('완료 수업수')}</p>
             </div>
             <div>
               <p className="text-center text-5xl font-bold text-gray-400">0</p>
-              <p className="text-xs lg:text-base">획득 수료증</p>
+              <p className="text-xs lg:text-base">{t('획득 수료증')}</p>
             </div>
           </div>
         </div>
@@ -141,7 +146,7 @@ const DashboardMain = () => {
         </div>
         {/* 완료한 강의 */}
         <div className="w-full h-48 border flex flex-col gap-y-2 p-2 justify-between rounded">
-          <p className="font-bold text-md">🎓완료한 강의</p>
+          <p className="font-bold text-md">🎓{t('완료한 강의')}</p>
         </div>
       </div>
     </div>
