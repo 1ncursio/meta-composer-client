@@ -120,7 +120,7 @@ const MyStreamContainer = () => {
       </div>
       <video
         autoPlay
-        // muted
+        muted
         playsInline
         ref={myVideoRef}
         width="100%"
